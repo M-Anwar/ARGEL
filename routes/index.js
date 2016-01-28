@@ -16,6 +16,18 @@ router.get('/users', function(req, res, next) {
   res.render('users');
 });
 
+router.get('/ads', passport.authenticate('local'),function(req, res, next) {
+  res.render('ads');
+});
+
+router.get('/users', passport.authenticate('local'),function(req, res, next) {
+  res.render('users');
+});
+
+router.get('/dashboard', passport.authenticate('local'),function(req, res) {
+    res.render('dashboard', { user : req.user });
+});
+
 router.get('/register', function(req, res) {
     res.render('register', { });
 });
@@ -29,11 +41,10 @@ router.post('/register', function(req, res) {
 			isSuperadmin=true;
 			isAdmin = true;
 		}
-		var geo = geoip.lookup(req.ip);
+		
 		//username should be email, as it is required  for passport
 		Account.register(new Account({ username : req.body.username,  email : req.body.username,
 									   displayname: req.body.username, superadmin: isSuperadmin,
-									   ipaddr: req.ip, location: geo, device: req.device.type, pageviews: 0,
 									   profilepicture: "Default.jpg",
 									   admin: isAdmin}), req.body.password, function(err, account) {
 			if (err) {
@@ -56,7 +67,7 @@ router.get('/login', function(req, res) {
 });
 
 router.post('/login', passport.authenticate('local'), function(req, res) {
-    res.redirect('/');
+    res.redirect('/dashboard');
 });
 
 router.get('/logout', function(req, res) {
