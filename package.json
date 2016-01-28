@@ -15,7 +15,11 @@
     "mongoose": "^4.3.7",
     "morgan": "~1.6.1",
     "passport": "^0.3.2",
+<<<<<<< HEAD
     "passport-local-mongoose": "^4.0.0",
+=======
+    "passport-local": "^1.0.0",
+>>>>>>> origin/master
     "serve-favicon": "~2.3.0"
   }
 }
