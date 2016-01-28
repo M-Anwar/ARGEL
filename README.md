@@ -3,7 +3,9 @@ ARGEL Marketing Solutions
 
 ##Setup
 Before cloning the repo, make sure you install Node.js along with MongoDB. Both can be found here by following the link.
+
 1. [Node.js Download](https://nodejs.org/en/download/) - Download the appropriate windows/mac installer for your system (32/64 bit)
+
 2. [MongoDB Download](https://www.mongodb.org/downloads#production) - Select the appropriate version from the drop down and download
 
 After installing both Node.js and MongoDB, clone this ARGEL repository from github ([download github](https://desktop.github.com/) client for windows and login)
