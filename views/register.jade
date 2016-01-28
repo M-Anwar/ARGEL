@@ -1,0 +1,46 @@
+extends layout
+
+block content
+  h4
+    small
+      span.glyphicon.glyphicon-list-alt
+    |   Sign up
+  hr.reg-header-hr
+
+  .container.container-position
+    .row
+      .col-sm-3.col-sm-offset-4
+        #errorbox
+          if (info)
+            .alert.alert-danger
+              p.leftside Error! 
+              p.leftside #{info}
+        #registErrors.alert.alert-danger
+        .spacer 
+
+        form(role='form', action="/register",method="post", style='max-width: 300px;' id="register")
+          .form-group
+            input.form-control(type='text', id="username", name="username", placeholder='Enter Email')
+          .form-group
+            input.form-control(type='password', id="password", name="password", placeholder='Password')
+            p(style="text-align:left;font-size:12px;") Your password must be at least 8 characters long and must contain at least one number, lowercase letter and capital letter. Your password may not contain your username.
+          .form-group
+            input.form-control(type='password', id="confirmpassword", name="confirmpassword", placeholder='Confirm Password') 
+          a(href='/')
+            button.btn.btn-default(type="button") Cancel
+          &nbsp;
+          button.btn.btn-success(type='submit' id='submitbutton') Sign up
+
+  script.
+    $('#confirmpassword').on('change', function() {
+      if ($('#password').val() != $('#confirmpassword').val()) { 
+        var text = "<div class='alert alert-danger'>" + 
+                     "<p class='leftside'> Error! </p>" + 
+                     "<p class='leftside'> Password mismatch! </p>" +  
+                   "</div>"
+        $('#errorbox').html(text);
+      }
+      else { 
+        $('#errorbox').html("<div> </div>");
+      }
+    });

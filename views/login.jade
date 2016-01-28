@@ -1,0 +1,26 @@
+extends layout
+
+block content
+  h4
+    small
+      span.glyphicon.glyphicon-user
+    |   Login
+  hr.reg-header-hr
+
+  .container.container-position
+    .row
+      .col-sm-3.col-sm-offset-4
+        if (info != "")
+          .alert.alert-danger
+            p.leftside Error! 
+            p.leftside #{info}
+
+        form(role='form', action="/login",method="post", style='max-width: 300px;')
+          .form-group
+              input.form-control(type='text', name="username", id="username", placeholder='Enter Email')
+          .form-group
+            input.form-control(type='password', name="password", id="password", placeholder='Password')
+          a(href='/')
+            button.btn.btn-default(type="button") Cancel
+          &nbsp;
+          button.btn.btn-success(type='submit' id='loginsubmit') Submit
