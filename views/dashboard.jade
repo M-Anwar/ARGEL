@@ -1,9 +1,20 @@
 extends layout
+block setpagetitle
+	title= Dashboard
 
 block content
 	.jumbotron
 		.container
 			h1.
-				Welcome to ARGEL <br/>
+				Welcome #{user.username} <br/>
 			<br/><br/>
-			p This is the dashboard
+			div.container
+				div.row
+					.panel.panel-primary 
+						.panel-heading User Profile: #{user.username}   
+							a.btn.btn-danger.btn-md(href="/editprofile/#{user._id}", role='button') Edit
+						.panel-body
+							ul.user-details
+								li <b>Display Name: </b>#{user.username}
+								li <b>Email: </b>#{user.email}
+								li <b>Description: </b>#{user.description} 

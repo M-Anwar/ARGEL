@@ -1,5 +1,24 @@
 extends layout
 
 block content
-  h1= ads
-  p Welcome to ads
+	h1 Ads Database
+	.alert.alert-success(role='alert') Here, you can find the list of ads and corresponding descriptions
+	#displayusers.container
+		table.table.table-hover
+			thead
+				tr
+					th Ad name
+					th Descriptions
+					th Tags
+					th View Ad
+					th Delete Ad
+			tbody
+				each adslist, index in adscollection
+					tr
+						td= adslist.email
+						td= adslist.username
+						td= adslist.tags
+						td
+							a(href="/profile/#{adslist._id}")="view"
+						td
+							a(href="/deleteprofile/#{adslist._id}")="delete"

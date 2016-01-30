@@ -8,6 +8,8 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 var Account = require('./models/account');
+// var User = require('./models/account');
+var Ad = require('./models/ad');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 var expressSession = require('express-session');
@@ -40,8 +42,19 @@ app.enable('trust proxy');
 app.use('/', routes);
 
 passport.use(new LocalStrategy(Account.authenticate()));
-passport.serializeUser(Account.serializeUser());
-passport.deserializeUser(Account.deserializeUser());
+
+
+passport.serializeUser(function(user, done) {
+	console.log('serializing user: ', user);
+	done(null, user);
+});
+
+passport.deserializeUser(function(id, done) {
+	Account.findById(id, function(err, user) {
+		console.log('deserializing user:',user);
+		done(err, user);
+	});
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

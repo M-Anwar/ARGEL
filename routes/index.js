@@ -2,34 +2,65 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var Account = require('../models/account');
+var Ad = require('../models/ad');
+
+// check if the user is authenticated 
+var isAuthenticated = function (req, res, next) {
+	if (req.isAuthenticated())
+		return next();
+	//redirecto to the following if not authenticated 
+	res.redirect('/login');
+}
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'LOL' });
+	if (req.isAuthenticated())
+		res.redirect('/dashboard');
+	else  res.render('index', { title: 'ARGEL' });
 });
 
-router.get('/ads', function(req, res, next) {
-  res.render('ads');
+router.get('/ads', isAuthenticated,function(req, res, next) {
+	Ad.find({}, function(err, adsobjects) {
+		console.log("adsobjects:" + adsobjects);
+		res.render('ads',
+				{adscollection : adsobjects,
+				user: req.user
+			});
+
+	});
 });
 
-router.get('/users', function(req, res, next) {
-  res.render('users');
+router.get('/users', isAuthenticated,function(req, res, next) {
+	Account.find({}, function(err, userobjects) {
+		console.log("userobjects:" + userobjects);
+		res.render('users',
+				{usercollection : userobjects,
+				user: req.user
+			});
+
+	});
 });
 
-router.get('/ads', passport.authenticate('local'),function(req, res, next) {
-  res.render('ads');
+//  profile Page for current viewer  GET
+router.get('/profile', isAuthenticated, function(req, res){
+	res.render('profile', { user: req.user , viewthisuser: req.user}); 
 });
 
-router.get('/users', passport.authenticate('local'),function(req, res, next) {
-  res.render('users');
+ // profile Page for other viewers GET
+router.get('/profile/:profile_id', isAuthenticated, function(req, res){
+	//find the user that is being viewed
+	Account.findOne({ "_id" : req.params.profile_id }, function(err, viewthisuser) {
+		res.render('profile', { user: req.user , viewthisuser: viewthisuser});
+	});
+
 });
 
-router.get('/dashboard', passport.authenticate('local'),function(req, res) {
-    res.render('dashboard', { user : req.user });
+router.get('/dashboard',isAuthenticated, function(req, res) {
+  res.render('dashboard',{ user : req.user });
 });
 
 router.get('/register', function(req, res) {
-    res.render('register', { });
+    res.render('register');
 });
 
 router.post('/register', function(req, res) {
@@ -66,10 +97,14 @@ router.get('/login', function(req, res) {
     res.render('login', { user : req.user });
 });
 
-router.post('/login', passport.authenticate('local'), function(req, res) {
+/* router.post('/login', passport.authenticate('local'), function(req, res) {
     res.redirect('/dashboard');
 });
-
+ */
+router.post('/login', 
+	passport.authenticate('local', { successRedirect: '/dashboard',
+                                   	failureRedirect: '/login'})
+);
 router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');

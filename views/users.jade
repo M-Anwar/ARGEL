@@ -1,5 +1,22 @@
 extends layout
 
 block content
-  h1= users
-  p Welcome to users
+	h1 User Database
+	.alert.alert-success(role='alert') Here, you can find the list of users and corresponding emails
+	#displayusers.container
+		table.table.table-hover
+			thead
+				tr
+					th Email
+					th User Name
+					th View User
+					th Delete User
+			tbody
+				each userslist, index in usercollection
+					tr
+						td= userslist.email
+						td= userslist.username
+						td
+							a(href="/profile/#{userslist._id}")="view"
+						td
+							a(href="/deleteprofile/#{userslist._id}")="delete"

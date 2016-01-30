@@ -1,0 +1,15 @@
+extends layout
+
+block content
+	h1 Profile Page
+	.alert.alert-success(role='alert') Here, you can view profile details of users
+	div.container
+		div.row
+			.panel.panel-primary 
+				.panel-heading User Profile: #{viewthisuser.username}   
+					a.btn.btn-danger.btn-md(href="/editprofile/#{viewthisuser._id}", role='button') Edit
+				.panel-body
+					ul.user-details
+						li <b>Display Name: </b>#{viewthisuser.username}
+						li <b>Email: </b>#{viewthisuser.email}
+						li <b>Description: </b>#{viewthisuser.description} 

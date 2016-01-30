@@ -1,7 +1,8 @@
 doctype html
 html
   head
-    title= title
+    // title= title
+    block setpagetitle
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css')
 
@@ -15,18 +16,20 @@ html
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='/home') UserWorld
+          a.navbar-brand(href='/dashboard') ARGEL
         // Collect the nav links, forms, and other content for toggling
         #bs-example-navbar-collapse-1.collapse.navbar-collapse
           ul.nav.navbar-nav
           ul.nav.navbar-nav.navbar-right
-            li.active
-              a(href='/userdatabase') User Database
+            li
+              a(href='/users') User Database
                 span.sr-only (current)	
+            li.active
+              a(href='/ads') Ads Database
             li
               a(href='/profile') My Profile
             li.active
-              a(href='/signout') Sign Out
+              a(href='/logout') Log Out
         // /.navbar-collapse
       // /.container-fluid
   block content
