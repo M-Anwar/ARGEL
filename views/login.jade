@@ -11,8 +11,7 @@ block content
     .row
       .col-sm-3.col-sm-offset-4
         if (info != "")
-          .alert.alert-danger
-            p.leftside Error! 
+          .alert.alert-danger           
             p.leftside #{info}
 
         form(role='form', action="/login",method="post", style='max-width: 300px;')

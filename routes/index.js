@@ -93,8 +93,8 @@ router.post('/register', function(req, res) {
 	});
 });
 
-router.get('/login', function(req, res) {
-    res.render('login', { user : req.user });
+router.get('/login', function(req, res) {    
+    res.render('login', { user : req.user, info : req.flash('error') });
 });
 
 /* router.post('/login', passport.authenticate('local'), function(req, res) {
@@ -103,7 +103,8 @@ router.get('/login', function(req, res) {
  */
 router.post('/login', 
 	passport.authenticate('local', { successRedirect: '/dashboard',
-                                   	failureRedirect: '/login'})
+                                   	failureRedirect: '/login',
+                                    failureFlash : true})
 );
 router.get('/logout', function(req, res) {
     req.logout();
