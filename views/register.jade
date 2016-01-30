@@ -14,8 +14,7 @@ block content
           if (info)
             .alert.alert-danger
               p.leftside Error! 
-              p.leftside #{info}
-        #registErrors.alert.alert-danger
+              p.leftside #{info}        
         .spacer 
 
         form(role='form', action="/register",method="post", style='max-width: 300px;' id="register")
@@ -34,9 +33,8 @@ block content
   script.
     $('#confirmpassword').on('change', function() {
       if ($('#password').val() != $('#confirmpassword').val()) { 
-        var text = "<div class='alert alert-danger'>" + 
-                     "<p class='leftside'> Error! </p>" + 
-                     "<p class='leftside'> Password mismatch! </p>" +  
+        var text = "<div class='alert alert-danger'>" +                       
+                     "<p class='leftside'> Error: Password mismatch! </p>" +  
                    "</div>"
         $('#errorbox').html(text);
       }

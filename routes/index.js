@@ -103,8 +103,8 @@ router.get('/login', function(req, res) {
  */
 router.post('/login', 
 	passport.authenticate('local', { successRedirect: '/dashboard',
-                                   	failureRedirect: '/login',
-                                    failureFlash : true})
+                                   	 failureRedirect: '/login',
+                                     failureFlash : true})
 );
 router.get('/logout', function(req, res) {
     req.logout();
