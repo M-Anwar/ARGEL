@@ -1,44 +1,86 @@
 extends layout
 
-block content
-  h4
-    small
-      span.glyphicon.glyphicon-list-alt
-    |   Sign up
-  hr.reg-header-hr
+block content 
+    section#header1-73.mbr-box.mbr-section.mbr-section--relative.mbr-section--fixed-size.mbr-section--full-height.mbr-section--bg-adapted.mbr-parallax-background.mbr-after-navbar    
+        .mbr-box__magnet.mbr-box__magnet--sm-padding.mbr-box__magnet--center-left
+            .mbr-overlay(style='opacity: 0.8; background-color: rgb(76, 105, 114);')
+            .mbr-box__container.mbr-section__container.container
+                .mbr-box.mbr-box--stretched
+                    .mbr-box__magnet.mbr-box__magnet--center-left
+                        .row
+                            .col-sm-6
+                                .mbr-hero.animated.fadeInUp
+                                    
+                                    .container.container-position
+                                        .row
+                                          .col-sm-3.col-sm-offset-4
+                                            #errorbox
+                                              if (info)
+                                                .alert.alert-danger
+                                                  p.leftside Error! 
+                                                  p.leftside #{info}        
+                                            .spacer 
+                                            h1 Register
 
-  .container.container-position
-    .row
-      .col-sm-3.col-sm-offset-4
-        #errorbox
-          if (info)
-            .alert.alert-danger
-              p.leftside Error! 
-              p.leftside #{info}        
-        .spacer 
+                                            form(role='form', action="/register",method="post", style='max-width: 300px;' id="register")
+                                              .form-group
+                                                input.form-control(type='text', id="username", name="username", placeholder='Enter Email')
+                                              .form-group
+                                                input.form-control(type='password', id="password", name="password", placeholder='Password')
+                                                p(style="text-align:left;font-size:12px;") Your password must be at least 8 characters long and must contain at least one number, lowercase letter and capital letter. Your password may not contain your username.
+                                              .form-group
+                                                input.form-control(type='password', id="confirmpassword", name="confirmpassword", placeholder='Confirm Password') 
+                                              a(href='/')
+                                                button.btn.btn-default(type="button") Cancel
+                                              &nbsp;
+                                              button.btn.btn-success(type='submit' id='submitbutton') Sign up
 
-        form(role='form', action="/register",method="post", style='max-width: 300px;' id="register")
-          .form-group
-            input.form-control(type='text', id="username", name="username", placeholder='Enter Email')
-          .form-group
-            input.form-control(type='password', id="password", name="password", placeholder='Password')
-            p(style="text-align:left;font-size:12px;") Your password must be at least 8 characters long and must contain at least one number, lowercase letter and capital letter. Your password may not contain your username.
-          .form-group
-            input.form-control(type='password', id="confirmpassword", name="confirmpassword", placeholder='Confirm Password') 
-          a(href='/')
-            button.btn.btn-default(type="button") Cancel
-          &nbsp;
-          button.btn.btn-success(type='submit' id='submitbutton') Sign up
-
-  script.
-    $('#confirmpassword').on('change', function() {
-      if ($('#password').val() != $('#confirmpassword').val()) { 
-        var text = "<div class='alert alert-danger'>" +                       
-                     "<p class='leftside'> Error: Password mismatch! </p>" +  
-                   "</div>"
-        $('#errorbox').html(text);
-      }
-      else { 
-        $('#errorbox').html("<div> </div>");
-      }
-    });
+                                      script.
+                                        $('#confirmpassword').on('change', function() {
+                                          if ($('#password').val() != $('#confirmpassword').val()) { 
+                                            var text = "<div class='alert alert-danger'>" +                       
+                                                         "<p class='leftside'> Error: Password mismatch! </p>" +  
+                                                       "</div>"
+                                            $('#errorbox').html(text);
+                                          }
+                                          else { 
+                                            $('#errorbox').html("<div> </div>");
+                                          }
+                                        });
+                                
+                                
+//  .container.container-position
+//    .row
+//      .col-sm-3.col-sm-offset-4
+//        #errorbox
+//          if (info)
+//            .alert.alert-danger
+//              p.leftside Error! 
+//              p.leftside #{info}        
+//        .spacer 
+//
+//        form(role='form', action="/register",method="post", style='max-width: 300px;' id="register")
+//          .form-group
+//            input.form-control(type='text', id="username", name="username", placeholder='Enter Email')
+//          .form-group
+//            input.form-control(type='password', id="password", name="password", placeholder='Password')
+//            p(style="text-align:left;font-size:12px;") Your password must be at least 8 characters long and must contain at least one number, lowercase letter and capital letter. Your password may not contain your username.
+//          .form-group
+//            input.form-control(type='password', id="confirmpassword", name="confirmpassword", placeholder='Confirm Password') 
+//          a(href='/')
+//            button.btn.btn-default(type="button") Cancel
+//          &nbsp;
+//          button.btn.btn-success(type='submit' id='submitbutton') Sign up
+//
+//  script.
+//    $('#confirmpassword').on('change', function() {
+//      if ($('#password').val() != $('#confirmpassword').val()) { 
+//        var text = "<div class='alert alert-danger'>" +                       
+//                     "<p class='leftside'> Error: Password mismatch! </p>" +  
+//                   "</div>"
+//        $('#errorbox').html(text);
+//      }
+//      else { 
+//        $('#errorbox').html("<div> </div>");
+//      }
+//    });

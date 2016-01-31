@@ -1,22 +1,55 @@
 extends layout
 
 block content
-	h1 User Database
-	.alert.alert-success(role='alert') Here, you can find the list of users and corresponding emails
-	#displayusers.container
-		table.table.table-hover
-			thead
-				tr
-					th Email
-					th User Name
-					th View User
-					th Delete User
-			tbody
-				each userslist, index in usercollection
-					tr
-						td= userslist.email
-						td= userslist.username
-						td
-							a(href="/profile/#{userslist._id}")="view"
-						td
-							a(href="/deleteprofile/#{userslist._id}")="delete"
+    section#header1-73.mbr-box.mbr-section.mbr-section--relative.mbr-section--fixed-size.mbr-section--full-height.mbr-section--bg-adapted.mbr-parallax-background.mbr-after-navbar    
+        .mbr-box__magnet.mbr-box__magnet--sm-padding.mbr-box__magnet--center-left
+            .mbr-overlay(style='opacity: 0.8; background-color: rgb(76, 105, 114);')
+            .mbr-box__container.mbr-section__container.container
+                .mbr-box.mbr-box--stretched
+                    .mbr-box__magnet.mbr-box__magnet--center-left
+                        .row
+                            .col-sm-6
+                                .mbr-hero.animated.fadeInUp
+                                    h1 User Database                                  
+                                    .alert.alert-success(role='alert') Here, you can find the list of users and corresponding emails
+                                    #displayusers.container
+                                        table.table.table-hover
+                                            thead
+                                                tr
+                                                    th Email
+                                                    th User Name
+                                                    th View User
+                                                    th Delete User
+                                            tbody
+                                                each userslist, index in usercollection
+                                                    tr
+                                                        td= userslist.email
+                                                        td= userslist.username
+                                                        td
+                                                            a(href="/profile/#{userslist._id}")="view"
+                                                        td
+                                                            a(href="/deleteprofile/#{userslist._id}")="delete"
+                                               
+                                                        
+
+                              
+                                
+//	h1 User Database
+//	.alert.alert-success(role='alert') Here, you can find the list of users and corresponding emails
+//	#displayusers.container
+//		table.table.table-hover
+//			thead
+//				tr
+//					th Email
+//					th User Name
+//					th View User
+//					th Delete User
+//			tbody
+//				each userslist, index in usercollection
+//					tr
+//						td= userslist.email
+//						td= userslist.username
+//						td
+//							a(href="/profile/#{userslist._id}")="view"
+//						td
+//							a(href="/deleteprofile/#{userslist._id}")="delete"

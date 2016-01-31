@@ -12,6 +12,14 @@ var isAuthenticated = function (req, res, next) {
 	res.redirect('/login');
 }
 
+router.get('*', function(req, res, next) {
+  // just use boolean for loggedIn
+    console.log("Authenticaed: "+ req.isAuthenticated());
+  res.locals.loggedIn = req.isAuthenticated() ? true : false;
+
+  next();
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
 	if (req.isAuthenticated())
@@ -61,6 +69,10 @@ router.get('/dashboard',isAuthenticated, function(req, res) {
 
 router.get('/register', function(req, res) {
     res.render('register');
+});
+
+router.get('/test', function(req,res){
+    res.render('test');
 });
 
 router.post('/register', function(req, res) {

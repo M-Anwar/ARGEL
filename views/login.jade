@@ -1,25 +1,47 @@
 extends layout
 
 block content
-  h4
-    small
-      span.glyphicon.glyphicon-user
-    |   Login
-  hr.reg-header-hr
+    section#header1-73.mbr-box.mbr-section.mbr-section--relative.mbr-section--fixed-size.mbr-section--full-height.mbr-section--bg-adapted.mbr-parallax-background.mbr-after-navbar    
+        .mbr-box__magnet.mbr-box__magnet--sm-padding.mbr-box__magnet--center-left
+            .mbr-overlay(style='opacity: 0.8; background-color: rgb(76, 105, 114);')
+            .mbr-box__container.mbr-section__container.container
+                .mbr-box.mbr-box--stretched
+                    .mbr-box__magnet.mbr-box__magnet--center-left
+                        .row
+                            .col-sm-6
+                                .mbr-hero.animated.fadeInUp
+                                    .container.container-position
+                                        .row                                         
+                                          .col-sm-3.col-sm-offset-4
+                                            if (info != "")
+                                              .alert.alert-danger           
+                                                p.leftside #{info}
+                                            h1 Login
+                                            form(role='form', action="/login",method="post", style='max-width: 300px;')
+                                              .form-group
+                                                  input.form-control(type='text', name="username", id="username", placeholder='Enter Email')
+                                              .form-group
+                                                input.form-control(type='password', name="password", id="password", placeholder='Password')
+                                              a(href='/')
+                                                button.btn.btn-default(type="button") Cancel
+                                              &nbsp;
+                                              button.btn.btn-success(type='submit' id='loginsubmit') Submit
+ 
+ 
 
-  .container.container-position
-    .row
-      .col-sm-3.col-sm-offset-4
-        if (info != "")
-          .alert.alert-danger           
-            p.leftside #{info}
-
-        form(role='form', action="/login",method="post", style='max-width: 300px;')
-          .form-group
-              input.form-control(type='text', name="username", id="username", placeholder='Enter Email')
-          .form-group
-            input.form-control(type='password', name="password", id="password", placeholder='Password')
-          a(href='/')
-            button.btn.btn-default(type="button") Cancel
-          &nbsp;
-          button.btn.btn-success(type='submit' id='loginsubmit') Submit
+//  .container.container-position
+//    .row
+//      .col-sm-3.col-sm-offset-4
+//        if (info != "")
+//          .alert.alert-danger           
+//            p.leftside #{info}
+//
+//        form(role='form', action="/login",method="post", style='max-width: 300px;')
+//          .form-group
+//              input.form-control(type='text', name="username", id="username", placeholder='Enter Email')
+//          .form-group
+//            input.form-control(type='password', name="password", id="password", placeholder='Password')
+//          a(href='/')
+//            button.btn.btn-default(type="button") Cancel
+//          &nbsp;
+//          button.btn.btn-success(type='submit' id='loginsubmit') Submit
