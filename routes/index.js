@@ -71,12 +71,13 @@ router.get('/register', function(req, res) {
     res.render('register');
 });
 
-router.get('/test', function(req,res){
-    res.render('test');
-});
-router.get('/error', function(req,res){
-    res.render('error');
-});
+/* FOR DEBUG PURPOSES ENABLE THESE ROUTES TO MANUALLY SEE PAGES */
+//router.get('/test', function(req,res){
+//    res.render('test');
+//});
+//router.get('/error', function(req,res){
+//    res.render('error');
+//});
 
 router.post('/register', function(req, res) {
 	var isSuperadmin=false;

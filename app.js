@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 
 var routes = require('./routes/index');
+var api = require('./routes/api');
 var users = require('./routes/users');
 var Account = require('./models/account');
 // var User = require('./models/account');
@@ -28,7 +29,7 @@ app.set('view engine', 'jade');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(require('express-session')({ //Changed secret from the default value
     secret: 'argel marketting sol',
@@ -43,6 +44,7 @@ app.enable('trust proxy');
 
 
 app.use('/', routes);
+app.use('/api', api);
 
 passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
