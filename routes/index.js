@@ -74,6 +74,9 @@ router.get('/register', function(req, res) {
 router.get('/test', function(req,res){
     res.render('test');
 });
+router.get('/error', function(req,res){
+    res.render('error');
+});
 
 router.post('/register', function(req, res) {
 	var isSuperadmin=false;
@@ -85,6 +88,10 @@ router.post('/register', function(req, res) {
 			isAdmin = true;
 		}
 		
+        if (req.body.password != req.body.confirmpassword) {
+			  return res.render("register", {info: "Sorry. Password does not match Confirm Password. Try again."});
+			}
+        
 		//username should be email, as it is required  for passport
 		Account.register(new Account({ username : req.body.username,  email : req.body.username,
 									   displayname: req.body.username, superadmin: isSuperadmin,
@@ -92,11 +99,8 @@ router.post('/register', function(req, res) {
 									   admin: isAdmin}), req.body.password, function(err, account) {
 			if (err) {
 			  return res.render("register", {info: "Sorry. That email already exists. Try again."});
-			}
+			}			
 			
-			if (req.body.password != req.body.confirmpassword) {
-			  return res.render("register", {info: "Sorry. Password does not match Confirm Password. Try again."});
-			}
 			
 			passport.authenticate('local')(req, res, function () {
 				res.redirect('/');

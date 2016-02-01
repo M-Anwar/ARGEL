@@ -1,7 +1,10 @@
 extends layout
 
-block content
-    
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+block content   
+    section.content.content-2     
+      .mbr-section__container.container      
+        .row.animated.fadeInUp   
+            .col-sm-12
+                h1.text-white= message
+                h2.text-white= error.status
+                pre #{error.stack}

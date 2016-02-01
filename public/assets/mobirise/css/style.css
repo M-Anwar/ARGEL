@@ -2046,3 +2046,27 @@ html {
 	text-align: center;
 	padding: 0;
 }
+
+.content{
+    padding-top:100px;
+}
+.page-wrap {
+  min-height: 100%;
+  /* equal to footer height */
+  margin-bottom: -100px; 
+  opacity: 0.8; 
+  background-color: rgb(76, 105, 114);
+}
+.page-wrap:after {
+  content: "";
+  display: block;
+    
+    
+}
+
+.site-footer, .page-wrap:after {
+  height: 100px; 
+}
+html, body {
+  height: 100%;
+}

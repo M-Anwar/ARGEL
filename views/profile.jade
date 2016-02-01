@@ -1,42 +1,20 @@
 extends layout
 
 block content
-    section#header1-73.mbr-box.mbr-section.mbr-section--relative.mbr-section--fixed-size.mbr-section--full-height.mbr-section--bg-adapted.mbr-parallax-background.mbr-after-navbar    
-        .mbr-box__magnet.mbr-box__magnet--sm-padding.mbr-box__magnet--center-left
-            .mbr-overlay(style='opacity: 0.8; background-color: rgb(76, 105, 114);')
-            .mbr-box__container.mbr-section__container.container
-                .mbr-box.mbr-box--stretched
-                    .mbr-box__magnet.mbr-box__magnet--center-left
-                        .row
-                            .col-sm-6
-                                .mbr-hero.animated.fadeInUp
-                                    h1 Profile Page
-                                    .alert.alert-success(role='alert') Here, you can view profile details of users
-                                    div.container
-                                        div.row
-                                            .panel.panel-primary 
-                                                .panel-heading User Profile: #{viewthisuser.username}   
-                                                    a.btn.btn-danger.btn-md(href="/editprofile/#{viewthisuser._id}", role='button') Edit
-                                                .panel-body
-                                                    ul.user-details
-                                                        li.text-black <b>Display Name: </b>#{viewthisuser.username}
-                                                        li.text-black <b>Email: </b>#{viewthisuser.email}
-                                                        li.text-black <b>Description: </b>#{viewthisuser.description} 
-               
+    section.content.content-2      
+      .mbr-section__container.container      
+        .row.animated.fadeInUp   
+            .col-sm-12.text-white
+                h1 Profile Page
+                .alert.alert-success(role='alert') Here, you can view profile details of users
+                .container
+                    .row
+                        .panel.panel-primary 
+                            .panel-heading User Profile: #{viewthisuser.username}   
+                                a.btn.btn-danger.btn-md(href="/editprofile/#{viewthisuser._id}", role='button') Edit
+                            .panel-body
+                                ul.user-details
+                                    li.text-black <b>Display Name: </b>#{viewthisuser.username}
+                                    li.text-black <b>Email: </b>#{viewthisuser.email}
+                                    li.text-black <b>Description: </b>#{viewthisuser.description}                
                             
-//    h1 Profile Page
-//        .alert.alert-success(role='alert') Here, you can view profile details of users
-//        div.container
-//            div.row
-//                .panel.panel-primary 
-//                    .panel-heading User Profile: #{viewthisuser.username}   
-//                        a.btn.btn-danger.btn-md(href="/editprofile/#{viewthisuser._id}", role='button') Edit
-//                    .panel-body
-//                        ul.user-details
-//                            li <b>Display Name: </b>#{viewthisuser.username}
-//                            li <b>Email: </b>#{viewthisuser.email}
-//                            li <b>Description: </b>#{viewthisuser.description} 
-
-
-
-

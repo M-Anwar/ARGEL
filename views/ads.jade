@@ -1,58 +1,30 @@
 extends layout
 
 block content
-    section#header1-73.mbr-box.mbr-section.mbr-section--relative.mbr-section--fixed-size.mbr-section--full-height.mbr-section--bg-adapted.mbr-parallax-background.mbr-after-navbar    
-        .mbr-box__magnet.mbr-box__magnet--sm-padding.mbr-box__magnet--center-left
-            .mbr-overlay(style='opacity: 0.8; background-color: rgb(76, 105, 114);')
-            .mbr-box__container.mbr-section__container.container
-                .mbr-box.mbr-box--stretched
-                    .mbr-box__magnet.mbr-box__magnet--center-left
-                        .row
-                            .col-sm-6
-                                .mbr-hero.animated.fadeInUp
-                                    h1 Profile Page                                   
-                                    .alert.alert-success(role='alert') Here, you can find the list of ads and corresponding descriptions
-                                    #displayusers.container
-                                        table.table.table-hover
-                                            thead
-                                                tr
-                                                    th Ad name
-                                                    th Descriptions
-                                                    th Tags
-                                                    th View Ad
-                                                    th Delete Ad
-                                            tbody
-                                                each adslist, index in adscollection
-                                                    tr
-                                                        td= adslist.email
-                                                        td= adslist.username
-                                                        td= adslist.tags
-                                                        td
-                                                            a(href="/profile/#{adslist._id}")="view"
-                                                        td
-                                                            a(href="/deleteprofile/#{adslist._id}")="delete"
+    section.content.content-2      
+      .mbr-section__container.container      
+        .row.animated.fadeInUp   
+            .col-sm-12.text-white
+                h1 Ads Database                                   
+                .alert.alert-success(role='alert') Here, you can find the list of ads and corresponding descriptions
+                #displayusers.container
+                    table.table
+                        thead
+                            tr
+                                th Ad name
+                                th Descriptions
+                                th Tags
+                                th View Ad
+                                th Delete Ad
+                        tbody
+                            each adslist, index in adscollection
+                                tr
+                                    td= adslist.email
+                                    td= adslist.username
+                                    td= adslist.tags
+                                    td
+                                        a(href="/profile/#{adslist._id}")="view"
+                                    td
+                                        a(href="/deleteprofile/#{adslist._id}")="delete"
                                     
 
-
-
-//	h1 Ads Database
-//	.alert.alert-success(role='alert') Here, you can find the list of ads and corresponding descriptions
-//	#displayusers.container
-//		table.table.table-hover
-//			thead
-//				tr
-//					th Ad name
-//					th Descriptions
-//					th Tags
-//					th View Ad
-//					th Delete Ad
-//			tbody
-//				each adslist, index in adscollection
-//					tr
-//						td= adslist.email
-//						td= adslist.username
-//						td= adslist.tags
-//						td
-//							a(href="/profile/#{adslist._id}")="view"
-//						td
-//							a(href="/deleteprofile/#{adslist._id}")="delete"
