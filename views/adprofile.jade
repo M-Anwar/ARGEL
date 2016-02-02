@@ -1,0 +1,20 @@
+extends layout
+
+block content
+    section.content.content-2      
+      .mbr-section__container.container      
+        .row.animated.fadeInUp   
+            .col-sm-12.text-white
+                h1 Ad Profile Page
+                .alert.alert-success(role='alert') Here, you can view details of an ad
+                .container
+                    .row
+                        .panel.panel-primary 
+                            .panel-heading Ad Profile: #{ad.adname}   
+                                a.btn.btn-danger.btn-md(href="/editadprofile/#{ad._id}", role='button') Edit
+                            .panel-body
+                                ul.user-details
+                                    li.text-black <b>Ad Name: </b>#{ad.adname}
+                                    li.text-black <b>Tags: </b>#{ad.tags}
+                                    li.text-black <b>Description: </b>#{ad.description}                
+                            

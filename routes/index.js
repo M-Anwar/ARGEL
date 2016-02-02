@@ -37,6 +37,13 @@ router.get('/ads', isAuthenticated,function(req, res, next) {
 
 	});
 });
+//  profile Page for current viewer  GET
+router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
+	Ad.findOne({ "_id" : req.params.ad_id }, function(err, viewthisad) {
+        res.render('adprofile', { user: req.user , ad: viewthisad}); 
+	});
+
+});
 
 router.get('/aduploadpage', isAuthenticated,function(req, res, next) {
 	res.render('aduploadpage');
