@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var Session = require('../models/session');
 
 router.use(function(req,res,next){
     console.log("API call made");
@@ -36,5 +37,22 @@ router.post('/add', function(req, res, next) {
     });
     
 });
+
+router.get('/database', function(req, res, next) {
+    var temp = new Session({
+        metaData: {
+            temperature: 12,
+            weather: "Sunny",
+            location: "University of Toronto"
+        }
+    });
+    temp.save(function(err, thor) {
+        if (err) return console.error(err);
+        console.dir(thor);
+        res.send("Entry added to Database");        
+        
+    });
+});
+
 module.exports = router;
 
