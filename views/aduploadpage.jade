@@ -1,0 +1,44 @@
+extends layout
+
+block content 
+    section#header1-73.mbr-box.mbr-section.mbr-section--relative.mbr-section--fixed-size.mbr-section--full-height.mbr-section--bg-adapted.mbr-parallax-background.mbr-after-navbar    
+        .mbr-box__magnet.mbr-box__magnet--sm-padding.mbr-box__magnet--center-left
+            .mbr-overlay(style='opacity: 0.8; background-color: rgb(76, 105, 114);')
+            .mbr-box__container.mbr-section__container.container
+                .mbr-box.mbr-box--stretched
+                    .mbr-box__magnet.mbr-box__magnet--center-left
+                        .row
+                            .col-sm-6
+                                .mbr-hero.animated.fadeInUp
+                                    
+                                    .container.container-position
+                                        .row
+                                          .col-sm-5.col-sm-offset-4
+                                            #errorbox
+                                              if (info)
+                                                .alert.alert-danger
+                                                  p.leftside Error! 
+                                                  p.leftside #{info}        
+                                            .spacer 
+                                            h1 Upload New Ad
+
+                                            form(role='form', action="/adupload",method="post", enctype="multipart/form-data", style='max-width: 400px;' id="adupload")
+                                              .form-group(style='display:none;')
+                                                input.form-control(type='text', id="userid", name="userid", placeholder='Upload User ID')
+                                              .form-group
+                                                span.label Ad Name
+                                                input.form-control(type='text', id="adname", name="adname", placeholder='Name of the Ad')
+                                              .form-group
+                                                span.label Description
+                                                input.form-control(type='text', id="description", name="description", placeholder='Ad Description')
+                                              .form-group
+                                                span.label Tags
+                                                input.form-control(type='text', id="tag1", name="tag1", placeholder='Tag 1') 
+                                              NOTE You need to use jquery to have a small button here to add a new input text box for more tags.
+                                              .form-group
+                                                span.label Upload File
+                                                input(type="file", name="displayImage")
+                                              a(href='/adupload')
+                                                button.btn.btn-default(type="button") Cancel
+                                              &nbsp;
+                                              button.btn.btn-success(type='submit' id='submitbutton') Sign up

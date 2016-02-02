@@ -38,6 +38,10 @@ router.get('/ads', isAuthenticated,function(req, res, next) {
 	});
 });
 
+router.get('/aduploadpage', isAuthenticated,function(req, res, next) {
+	res.render('aduploadpage');
+});
+
 router.get('/users', isAuthenticated,function(req, res, next) {
 	Account.find({}, function(err, userobjects) {
 		console.log("userobjects:" + userobjects);

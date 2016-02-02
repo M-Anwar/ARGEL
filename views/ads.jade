@@ -5,7 +5,8 @@ block content
       .mbr-section__container.container      
         .row.animated.fadeInUp   
             .col-sm-12.text-white
-                h1 Ads Database                                   
+                h1 Ads Database
+                    a.mbr-buttons__link.btn.text-white(href='/aduploadpage') Upload Ad (MOVE this to the right)
                 .alert.alert-success(role='alert') Here, you can find the list of ads and corresponding descriptions
                 #displayusers.container
                     table.table
@@ -14,17 +15,19 @@ block content
                                 th Ad name
                                 th Descriptions
                                 th Tags
+                                th Upload User ID
                                 th View Ad
                                 th Delete Ad
                         tbody
                             each adslist, index in adscollection
                                 tr
-                                    td= adslist.email
-                                    td= adslist.username
+                                    td= adslist.name
+                                    td= adslist.description
                                     td= adslist.tags
+                                    td= adslist.userid
                                     td
-                                        a(href="/profile/#{adslist._id}")="view"
+                                        a(href="/adprofile/#{adslist._id}")="view"
                                     td
-                                        a(href="/deleteprofile/#{adslist._id}")="delete"
+                                        a(href="/deleteadprofile/#{adslist._id}")="delete"
                                     
 
