@@ -3,6 +3,13 @@ var router = express.Router();
 var passport = require('passport');
 var Account = require('../models/account');
 var Ad = require('../models/ad');
+var fs = require('fs');
+var multer = require('multer');
+var mongoose = require('mongoose');
+var upload = multer({
+    dest:'./uploads/',
+    limits: { fileSize: 100* 1024 * 1024} //Max file size for upload multer
+});
 
 // check if the user is authenticated 
 var isAuthenticated = function (req, res, next) {
@@ -137,6 +144,77 @@ router.post('/login',
 router.get('/logout', function(req, res) {
     req.logout();
     res.redirect('/');
+});
+
+
+
+router.post('/adupload', upload.single('videoAd'), function(req,res){
+	var dirname = require('path').dirname(__dirname);
+	var filename = req.file.filename;
+	var path = req.file.path;
+	var type = req.file.mimetype;
+
+	var read_stream =  fs.createReadStream(dirname + '/' + path);
+
+	var conn = mongoose.connection;
+	console.log("req.conn:" + req.conn);
+	var Grid = require('gridfs-stream');
+	Grid.mongo = mongoose.mongo;
+
+	var gfs = Grid(conn.db);
+
+	var writestream = gfs.createWriteStream({
+	filename: filename
+	});
+	read_stream.pipe(writestream);
+	read_stream.on('close', function(){
+		//After file added to session data base - remove from temp folder
+		fs.unlink(dirname+ '\\' + path, function(err){
+			if(err){console.log("Error: " + err);}
+		});
+	});
+
+	var ad = new Ad();
+    ad.videoad.contentType = type;
+	ad.videoad.filename = filename;
+	ad.adname = req.body.adname;
+	ad.userid = req.body.userid;
+	ad.description = req.body.description;
+	ad.tags = req.body.tags;
+    ad.save(function(err,a){
+        if(err) throw err;        
+                 
+    });
+
+
+	res.redirect('/ads');
+	// res.send(200,filename);
+});
+
+router.get('/viewad/:id',function(req,res){
+		var pic_id = req.param('id');
+		var conn = mongoose.connection;
+		console.log("req.conn:" + req.conn);
+		var Grid = require('gridfs-stream');
+		Grid.mongo = mongoose.mongo;
+ 
+		var gfs = Grid(conn.db);
+ 
+		gfs.files.find({filename: pic_id}).toArray(function (err, files) {
+
+		if (err) {
+			res.json(err);
+		}
+		if (files.length > 0) {
+			// var mime = 'image/jpeg';
+			var mime = 'binary/octet-stream';
+			res.set('Content-Type', mime);
+			var read_stream = gfs.createReadStream({filename: pic_id});
+			read_stream.pipe(res);
+		} else {
+			res.json('File Not Found');
+		}
+    });
 });
 
 
