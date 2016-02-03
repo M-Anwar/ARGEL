@@ -6,6 +6,7 @@ var Ad = require('../models/ad');
 var fs = require('fs');
 var multer = require('multer');
 var mongoose = require('mongoose');
+var gridfs = require("gridfs");
 var upload = multer({
     dest:'./uploads/',
     limits: { fileSize: 100* 1024 * 1024} //Max file size for upload multer
@@ -191,15 +192,13 @@ router.post('/adupload', upload.single('videoAd'), function(req,res){
 	// res.send(200,filename);
 });
 
-router.get('/viewad/:id',function(req,res){
+router.get('/viewadtest/:id',function(req,res){
 		var pic_id = req.param('id');
 		var conn = mongoose.connection;
 		console.log("req.conn:" + req.conn);
 		var Grid = require('gridfs-stream');
-		Grid.mongo = mongoose.mongo;
- 
-		var gfs = Grid(conn.db);
- 
+		Grid.mongo = mongoose.mongo; 
+		var gfs = Grid(conn.db); 
 		gfs.files.find({filename: pic_id}).toArray(function (err, files) {
 
 		if (err) {
@@ -207,13 +206,113 @@ router.get('/viewad/:id',function(req,res){
 		}
 		if (files.length > 0) {
 			// var mime = 'image/jpeg';
-			var mime = 'binary/octet-stream';
+			var mime = 'video/mp4';
 			res.set('Content-Type', mime);
 			var read_stream = gfs.createReadStream({filename: pic_id});
 			read_stream.pipe(res);
+			
+			
+			
 		} else {
 			res.json('File Not Found');
 		}
+    });
+});
+
+router.get('/viewad/:id',function(req,res){
+	var pic_id = req.param('id');
+	var conn = mongoose.connection;	
+	var Grid = require('gridfs-stream');
+	Grid.mongo = mongoose.mongo; 
+	var gfs = Grid(conn.db); 
+	
+	var range = req.headers.range;	
+    var positions = range.replace(/bytes=/, "").split("-");
+    var start = parseInt(positions[0], 10);
+	
+	gfs.files.findOne({filename: pic_id}, function (err, files) {
+		if (err) {
+			res.json(err);
+		}		
+		var total = files.length;
+		var end = positions[1] ? parseInt(positions[1], 10) : total - 1;
+		var chunksize = (end - start) + 1;
+		
+		res.writeHead(206, {
+			"Content-Range": "bytes " + start + "-" + end + "/" + total,
+			"Accept-Ranges": "bytes",
+			"Content-Length": chunksize,
+			"Content-Type": "video/mp4"
+		});
+
+		var stream = gfs.createReadStream({filename: pic_id}, { start: start, end: end })
+		.on("open", function() {
+		  stream.pipe(res);
+		}).on("error", function(err) {
+		  res.end(err);
+		});
+			
+			
+			
+	});
+});
+
+router.get('/viewadstream',function(req,res){
+	var dirname = require('path').dirname(__dirname);
+	var file = dirname + '/uploads/reallyeasy.mp4';
+    var range = req.headers.range;
+	console.log('range' +range);
+    var positions = range.replace(/bytes=/, "").split("-");
+    var start = parseInt(positions[0], 10);
+
+    fs.stat(file, function(err, stats) {
+      var total = stats.size;
+      var end = positions[1] ? parseInt(positions[1], 10) : total - 1;
+      var chunksize = (end - start) + 1;
+
+      res.writeHead(206, {
+        "Content-Range": "bytes " + start + "-" + end + "/" + total,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunksize,
+        "Content-Type": "video/mp4"
+      });
+
+      var stream = fs.createReadStream(file, { start: start, end: end })
+        .on("open", function() {
+          stream.pipe(res);
+        }).on("error", function(err) {
+          res.end(err);
+        });
+    });
+});
+
+/**WORKGNG Video Stream**/
+router.get('/viewadstreamtest',function(req,res){
+	var dirname = require('path').dirname(__dirname);
+	var file = dirname + '/uploads/reallyeasy.mp4';
+    var range = req.headers.range;
+	console.log('range' +range);
+    var positions = range.replace(/bytes=/, "").split("-");
+    var start = parseInt(positions[0], 10);
+
+    fs.stat(file, function(err, stats) {
+      var total = stats.size;
+      var end = positions[1] ? parseInt(positions[1], 10) : total - 1;
+      var chunksize = (end - start) + 1;
+
+      res.writeHead(206, {
+        "Content-Range": "bytes " + start + "-" + end + "/" + total,
+        "Accept-Ranges": "bytes",
+        "Content-Length": chunksize,
+        "Content-Type": "video/mp4"
+      });
+
+      var stream = fs.createReadStream(file, { start: start, end: end })
+        .on("open", function() {
+          stream.pipe(res);
+        }).on("error", function(err) {
+          res.end(err);
+        });
     });
 });
 
