@@ -5,13 +5,10 @@ var Ad = new Schema({
 	adname: String,
     userid: String,
 	description: String,
-	tags: String,
+	tags: {type : Array, "default" : []},
 	videoad: { filename: String, contentType: String },
-    metaData: {
-        temperature: Number,
-        weather: String,
-        location: String
-    }
+    metaData: {type: Array, "default" : [] },
+    statistics: {type: Array, "default": []}
 });
 
 module.exports = mongoose.model('Ad', Ad);
