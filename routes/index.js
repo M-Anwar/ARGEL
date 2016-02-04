@@ -9,7 +9,7 @@ var mongoose = require('mongoose');
 var gridfs = require("gridfs");
 var upload = multer({
     dest:'./uploads/',
-    limits: { fileSize: 100* 1024 * 1024} //Max file size for upload multer
+    limits: { fileSize: 400* 1024 * 1024} //Max file size for upload multer
 });
 
 // check if the user is authenticated 
@@ -190,7 +190,7 @@ router.post('/adupload', upload.single('videoAd'), function(req,res){
 	
 });
 
-router.get('/viewad/:id',function(req,res){
+router.get('/view/:id',function(req,res){
 	var pic_id = req.param('id');
 	var conn = mongoose.connection;	
 	var Grid = require('gridfs-stream');
@@ -206,9 +206,10 @@ router.get('/viewad/:id',function(req,res){
 			res.json(err);
 		}		
 		var total = files.length;
-		var end = positions[1] ? parseInt(positions[1], 10) : total - 1;
+		var end = positions[1] ? parseInt(positions[1], 10) : total - 1;        
 		var chunksize = (end - start) + 1;
-		
+        console.log("Positions[1]: " + positions[1]);
+		console.log("Positions[0]: " + positions[0]);
 		res.writeHead(206, {
 			"Content-Range": "bytes " + start + "-" + end + "/" + total,
 			"Accept-Ranges": "bytes",
@@ -218,9 +219,10 @@ router.get('/viewad/:id',function(req,res){
 
 		var stream = gfs.createReadStream({filename: pic_id}, { start: start, end: end })
 		.on("open", function() {
-		  stream.pipe(res);
+            console.log("Starting Stream Open");
+            stream.pipe(res);
 		}).on("error", function(err) {
-		  res.end(err);
+            res.end(err);
 		});		
 			
 	});

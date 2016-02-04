@@ -36,14 +36,16 @@ html
                                 nav.mbr-navbar__menu-box.mbr-navbar__menu-box--inline-right
                                     .mbr-navbar__column
                                         ul.mbr-navbar__items.mbr-navbar__items--right.mbr-buttons.mbr-buttons--freeze.mbr-buttons--right.btn-decorator.mbr-buttons--active
-                                            li.mbr-navbar__item
-                                                a.mbr-buttons__link.btn.text-white(href='/ads') Ad Database
-                                            li.mbr-navbar__item
-                                                a.mbr-buttons__link.btn.text-white(href='/users') User Database
-                                            li.mbr-navbar__item
-                                                a.mbr-buttons__link.btn.text-white(href='/profile') My Profile
-                                            li.mbr-navbar__item
-                                                a.mbr-buttons__link.btn.text-white(href='/register') Register
+                                            if(loggedIn)
+                                                li.mbr-navbar__item
+                                                    a.mbr-buttons__link.btn.text-white(href='/ads') Ad Database
+                                                li.mbr-navbar__item
+                                                    a.mbr-buttons__link.btn.text-white(href='/users') User Database
+                                                li.mbr-navbar__item
+                                                    a.mbr-buttons__link.btn.text-white(href='/profile') My Profile
+                                            if(!loggedIn)
+                                                li.mbr-navbar__item
+                                                    a.mbr-buttons__link.btn.text-white(href='/register') Register
                                     .mbr-navbar__column
                                         ul.mbr-navbar__items.mbr-navbar__items--right.mbr-buttons.mbr-buttons--freeze.mbr-buttons--right.btn-inverse.mbr-buttons--active
                                             li.mbr-navbar__item                        

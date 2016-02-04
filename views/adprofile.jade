@@ -20,8 +20,7 @@ block content
                                     li.text-black <b>Video ID: </b>#{ad.videoad.filename}
                     .row
                         .panel.panel-primary 
-                            .panel-heading Ad Video: #{ad.adname}   
-                                Edit
+                            .panel-heading Ad Video: #{ad.adname}                               
                             .panel-body
-                                video(width = '480', height = '320',src='/viewad/#{ad.videoad.filename}', controls='')
+                                video(width = '480', height = '320',src='/view/#{ad.videoad.filename}', controls='')
                             

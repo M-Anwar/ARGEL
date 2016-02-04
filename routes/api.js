@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var Session = require('../models/session');
+var Ad = require('../models/ad');
 var fs = require('fs');
 var multer = require('multer');
 var upload = multer({
@@ -9,65 +10,70 @@ var upload = multer({
     limits: { fileSize: 16* 1024 * 1024} //Max file size for upload multer is 16Mb
 });
 
-router.use(function(req,res,next){
-    console.log("API call made");
-    next();    
+router.use(function(req,res,next){   
+
+    //PUBLIC API must comply with cross-origin-resource-sharing to allow others to use it.
+    //So apply these headers to all responses that come through our API. 
+    //Yah this took me a couple of hours to figure out...so don't delete it.
     
+    // Website you wish to allow to connect
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Request methods you wish to allow
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    // Request headers you wish to allow
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+     console.log("API call made");
+    // Pass to next layer of middleware
+    next();   
+   
 });
 
 router.get('/helloworld', function(req, res, next) {
-  res.json({message: 'Hello World and Welcome to our API'});
+    res.json({message: 'Hello World and Welcome to our API'});
 });
 
-router.get('/python', function(req,res,next){    
-    var python = require('child_process').spawn('python',["./Python/pythonRPC.py"]);
-    var output = "";
-    python.stdout.on('data', function(data){ output += data });
-    python.stderr.on('data', function(err){console.log("Error: " + err); output+=err})
-    python.on('close', function(code){ 
-        if (code !== 0) {  return res.send(500, output); }
-        return res.send(200, output)
-    });  
+router.get('/getsessioninfo/:id',function(req,res,next){
+    Session.findOne({"_id" : req.params.id}, {"metaData": true}, function(err, session){
+        if(err){res.send(err); return;}
+        res.json(session);
+    });
 });
-
-router.post('/add', function(req, res, next) {    
-    num1 = req.body.arg1;
-    num2 = req.body.arg2;
-    var python = require('child_process').spawn('python',["./Python/pythonRPC1.py", num1,num2]);
-    var output = "";
-    python.stdout.on('data', function(data){ output += data });
-    python.stderr.on('data', function(err){console.log("Error: " + err); output+=err})
-    python.on('close', function(code){ 
-        if (code !== 0) {  return res.send(500, output); }
-        return res.send(200, output)
+router.get('/getsessionimage/:id',function(req,res,next){
+    Session.findOne({"_id" : req.params.id}, function(err, session){
+        if (err){res.send(err); return;}
+        res.contentType(session.crowdPicture.contentType);
+        res.send(session.crowdPicture.data);
+    });
+});
+router.get('/getads', function(req,res,next){
+    Ad.find({}, function(err,ads){
+        if(err){console.log(err);res.send(err); return;}        
+        res.json(ads);
+    });
+});
+router.post('/postrecommendation', function(req,res,next){
+    var sessionID = req.body.sessionID;
+    var adID = req.body.adID;
+    Session.findOne({"_id" : sessionID}, function(err, session){
+        if (err){res.send(err); return;}
+        session.bestAd = adID;
+        session.save(function(err){
+            if (err){res.send(err); return;}            
+            res.json({"result": "AD recommendation added!"});
+        });
+       
     });
     
 });
-
-router.get('/database', function(req, res, next) {
-    var temp = new Session({
-        metaData: {
-            temperature: 12,
-            weather: "Sunny",
-            location: "University of Toronto"
-        }
-    });
-    temp.save(function(err, thor) {
-        if (err) return console.error(err);
-        console.dir(thor);
-        res.send("Entry added to Database");        
-        
-    });
-});
-router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
-    console.log(req.file);
+router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {       
     var dirname = require('path').dirname(__dirname);
     var filename = req.file.filename;
     var path = req.file.path;
     var type = req.file.mimetype;
-//  console.log(dirname + '\\' + path);
-//	console.log(req.file);
-//  console.log(type);        
     
     //Here add the file to our mongoDB database - OPTIMIZE HERE 
     //Use file-stream to load data into session instead of loading
@@ -85,21 +91,31 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
         python.stderr.on('data', function(err){console.log("Error: " + err); output+=err})
         python.on('close', function(code){ 
             if (code !== 0) { res.send(500, output); }
-            res.send(200, output);
+            //res.send(200, output); //Un-comment to view pythons script output            
             
-            //After the python program has closed - remove the session from data base;
-            sess.remove(function (err, result){
-                if(err) throw err;
-                console.log("Session Removed!");
-            })                 
-        });          
+            Session.findOne({"_id" : sess._id}, {"bestAd": true}).populate('bestAd')
+                .exec(function(err, session){
+                    if(err){res.send(err); return;}                                        
+                    res.json({"filelink": session.bestAd.videoad.filename}); //Send back the best ad file name
+                
+                     //After the python program has closed - remove the session from data base;
+                    sess.remove(function (err, result){
+                        if(err) throw err;
+                        console.log("Session Removed!");
+                    }) 
+                });
+            
+                           
+        });   
+        
+        //After file added to session data base - remove from temp folder
+        fs.unlink(dirname+ '\\' + path, function(err){
+            if(err){console.log("Error: " + err);}
+        });
         
     });
     
-    //After file added to session data base - remove from temp folder
-    fs.unlink(dirname+ '\\' + path, function(err){
-        if(err){console.log("Error: " + err);}
-    });
+    
 });
 
 

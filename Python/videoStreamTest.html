@@ -1,8 +1,65 @@
+<!--src="http://localhost:3000/view/881cc8a0aa793cd83a7ca96ed0414b01"-->
+<!--http://localhost:3000/fetchad-->
+<!DOCTYPE html>
 <html>
-<head>    
+<head>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+       $('#myform').submit(function() { // catch the form's submit event 
+           console.log("Submitting post request");
+           
+            $.ajax({ // create an AJAX call...     
+                dataType: "JSON",
+                data: new FormData(this),
+                processData: false,
+                contentType: false,                
+                type: $(this).attr('method'), // GET or POST
+                url: $(this).attr('action'), // the file to call
+                enctype: $(this).attr('enctype'),
+                success: function(data, status) { // on success..
+                    $('#created').html(data.filelink); // update the DIV
+                    $('#display').attr('src',"http://localhost:3000/view/"+data.filelink);
+                    console.log(data);
+                },
+                error: function(xhr, desc, err) { // on success..                    
+                    console.log(desc);
+                }
+            });
+            return false; // cancel original event to prevent form submitting
+        });
+    });
+    </script>
 </head>
-    
 <body>
-    <video src="http://localhost:3000/viewad/881cc8a0aa793cd83a7ca96ed0414b01" controls autoplay = "true"> </video>    
+    <h1> Front End API DEMO </h1>
+    <h4> Author: Muhammed Anwar </h4>
+    <p> This demo showcases the main flow for ARGEL's front end. To ensure the demo works, follow these steps</p>
+    <ol>
+        <li>Make sure you have a MongoDB data base instance running</li>
+        <li>Make sure you have our Node.js server running</li>
+        <li>Make sure you have uploaded atleast ONE Ad to our server (Login->Ad Data Base->upload a video ad )</li>
+        <li>Python is installed on your computer, and is on the system PATH -> no additional libraries for now</li>
+    </ol>
+    
+    <p>To run this demo, select a picture to upload. Then press the "Upload" button, and the first Ad should begin streaming into the video player</p>
+    <p>When you post a picture, the backend recieves it, launches a python process which determines the ad to show (just one in this demo), and then returns to the
+    browswer the fileID of the ad to show. Then your browser sends a GET request to the backend again with the fileID of the video to stream. And VOILA! the ad
+    comes streaming in!</p>
+    <video id= "display" src="" controls autoplay = "true" width ="720" height ="480"> </video> 
+    <img id ="submitImg" src=""></img>
+    
+    
+    <form id="myform" action="http://localhost:3000/api/fetchad" method="post" enctype="multipart/form-data">
+        File: <input type="file" name="crowdPic" id ="crowdPic"/><br/>        
+        <input type="submit" value="Upload!" id ="upload"/>
+    </form>
+    
+    <p id=created></p>
+    
+
 </body>
 </html>
+
+
