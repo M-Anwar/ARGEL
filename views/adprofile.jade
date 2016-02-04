@@ -16,5 +16,12 @@ block content
                                 ul.user-details
                                     li.text-black <b>Ad Name: </b>#{ad.adname}
                                     li.text-black <b>Tags: </b>#{ad.tags}
-                                    li.text-black <b>Description: </b>#{ad.description}                
+                                    li.text-black <b>Description: </b>#{ad.description}
+                                    li.text-black <b>Video ID: </b>#{ad.videoad.filename}
+                    .row
+                        .panel.panel-primary 
+                            .panel-heading Ad Video: #{ad.adname}   
+                                Edit
+                            .panel-body
+                                video(width = '480', height = '320',src='/viewad/#{ad.videoad.filename}', controls='')
                             

@@ -155,26 +155,25 @@ router.post('/adupload', upload.single('videoAd'), function(req,res){
 	var path = req.file.path;
 	var type = req.file.mimetype;
 
+    //Uploaded video is temporarily stored in an uploads folder
 	var read_stream =  fs.createReadStream(dirname + '/' + path);
-
-	var conn = mongoose.connection;
-	console.log("req.conn:" + req.conn);
+    
+	var conn = mongoose.connection;	
 	var Grid = require('gridfs-stream');
 	Grid.mongo = mongoose.mongo;
-
 	var gfs = Grid(conn.db);
 
-	var writestream = gfs.createWriteStream({
-	filename: filename
-	});
+    //Read the file from the temp folder and add it to data base
+	var writestream = gfs.createWriteStream({filename: filename});
 	read_stream.pipe(writestream);
 	read_stream.on('close', function(){
-		//After file added to session data base - remove from temp folder
+		//After file added to video data base - remove from temp folder
 		fs.unlink(dirname+ '\\' + path, function(err){
 			if(err){console.log("Error: " + err);}
 		});
-	});
-
+	});    
+    
+    //Add an entry to our ad data base with all the required information inside
 	var ad = new Ad();
     ad.videoad.contentType = type;
 	ad.videoad.filename = filename;
@@ -183,40 +182,12 @@ router.post('/adupload', upload.single('videoAd'), function(req,res){
 	ad.description = req.body.description;
 	ad.tags = req.body.tags;
     ad.save(function(err,a){
-        if(err) throw err;        
-                 
+        if(err) throw err;                   
     });
 
 
 	res.redirect('/ads');
-	// res.send(200,filename);
-});
-
-router.get('/viewadtest/:id',function(req,res){
-		var pic_id = req.param('id');
-		var conn = mongoose.connection;
-		console.log("req.conn:" + req.conn);
-		var Grid = require('gridfs-stream');
-		Grid.mongo = mongoose.mongo; 
-		var gfs = Grid(conn.db); 
-		gfs.files.find({filename: pic_id}).toArray(function (err, files) {
-
-		if (err) {
-			res.json(err);
-		}
-		if (files.length > 0) {
-			// var mime = 'image/jpeg';
-			var mime = 'video/mp4';
-			res.set('Content-Type', mime);
-			var read_stream = gfs.createReadStream({filename: pic_id});
-			read_stream.pipe(res);
-			
-			
-			
-		} else {
-			res.json('File Not Found');
-		}
-    });
+	
 });
 
 router.get('/viewad/:id',function(req,res){
@@ -250,12 +221,42 @@ router.get('/viewad/:id',function(req,res){
 		  stream.pipe(res);
 		}).on("error", function(err) {
 		  res.end(err);
-		});
-			
-			
+		});		
 			
 	});
 });
+
+
+/** Video Streaming Tests -- Remove When Necessary **/
+/*
+router.get('/viewadtest/:id',function(req,res){
+		var pic_id = req.param('id');
+		var conn = mongoose.connection;
+		console.log("req.conn:" + req.conn);
+		var Grid = require('gridfs-stream');
+		Grid.mongo = mongoose.mongo; 
+		var gfs = Grid(conn.db); 
+		gfs.files.find({filename: pic_id}).toArray(function (err, files) {
+
+		if (err) {
+			res.json(err);
+		}
+		if (files.length > 0) {
+			// var mime = 'image/jpeg';
+			var mime = 'video/mp4';
+			res.set('Content-Type', mime);
+			var read_stream = gfs.createReadStream({filename: pic_id});
+			read_stream.pipe(res);
+			
+			
+			
+		} else {
+			res.json('File Not Found');
+		}
+    });
+});
+
+
 
 router.get('/viewadstream',function(req,res){
 	var dirname = require('path').dirname(__dirname);
@@ -286,7 +287,7 @@ router.get('/viewadstream',function(req,res){
     });
 });
 
-/**WORKGNG Video Stream**/
+//WORKGNG Video Stream
 router.get('/viewadstreamtest',function(req,res){
 	var dirname = require('path').dirname(__dirname);
 	var file = dirname + '/uploads/reallyeasy.mp4';
@@ -315,6 +316,6 @@ router.get('/viewadstreamtest',function(req,res){
         });
     });
 });
-
+*/
 
 module.exports = router;
