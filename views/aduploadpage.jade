@@ -1,6 +1,7 @@
 extends layout
 
 block content 
+    script(src='/javascripts/aduploadpage.js')
     section#header1-73.mbr-box.mbr-section.mbr-section--relative.mbr-section--fixed-size.mbr-section--full-height.mbr-section--bg-adapted.mbr-parallax-background.mbr-after-navbar    
         .mbr-box__magnet.mbr-box__magnet--sm-padding.mbr-box__magnet--center-left
             .mbr-overlay(style='opacity: 0.8; background-color: rgb(76, 105, 114);')
@@ -24,7 +25,7 @@ block content
 
                                             form(role='form', action="/adupload",method="post", enctype="multipart/form-data", style='max-width: 400px;' id="adupload")
                                               .form-group(style='display:none;')
-                                                input.form-control(type='text', id="userid", name="userid", placeholder='Upload User ID')
+                                                input.form-control(type='text', id="userid", name="userid", value='#{user._id}')
                                               .form-group
                                                 span.label Ad Name
                                                 input.form-control(type='text', id="adname", name="adname", placeholder='Name of the Ad')
@@ -41,4 +42,5 @@ block content
                                               a(href='/adupload')
                                                 button.btn.btn-default(type="button") Cancel
                                               &nbsp;
-                                              button.btn.btn-success(type='submit' id='submitbutton') Sign up
+                                              button.btn.btn-success(type='submit' id='submitbutton') Upload
+

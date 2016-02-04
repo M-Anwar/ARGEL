@@ -6,7 +6,7 @@ var Ad = new Schema({
     userid: String,
 	description: String,
 	tags: {type : Array, "default" : []},
-	videoad: { filename: String, contentType: String },
+	videoad: { _id: String, filename: String, contentType: String },
     metaData: {type: Array, "default" : [] },
     statistics: {type: Array, "default": []}
 });
