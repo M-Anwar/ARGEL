@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ARGEL webRTC Test</title>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body onload="init();">
+    
+    <div class="container-fluid">        
+        <div class = "row">
+            <div class = "col-sm-6">
+                <video id="camFeed" width="320" height="240" autoplay></video>
+            </div>
+            <div class = "col-sm-6">
+                <canvas id="photo" width="320" height="240"></canvas>
+            </div>          
+        </div>       
+
+        <div>
+            <input type="button" class="btn btn-primary" value="Take Photo" onclick="takePhoto();">
+        </div>
+    </div>
+    
+    
+    <script>
+        function init()
+        {
+            document.documentElement.style.overflow = 'hidden';
+            if(navigator.webkitGetUserMedia)
+            {
+                navigator.webkitGetUserMedia({video:true}, onSuccess, onFail);
+            }
+            else
+            {
+                alert('webRTC not available');
+            }
+        }
+
+        function onSuccess(stream)
+        {
+            document.getElementById('camFeed').src = webkitURL.createObjectURL(stream);
+        }
+
+        function onFail()
+        {
+            alert('could not connect stream');
+        }
+
+        function takePhoto()
+        {
+            var c = document.getElementById('photo');
+            var v = document.getElementById('camFeed');
+            c.getContext('2d').drawImage(v, 0, 0, 320, 240);
+        }
+    </script>
+</body>
+</html>
