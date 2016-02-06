@@ -118,9 +118,7 @@ router.get('/view/:id',function(req,res){
 		}		
 		var total = files.length;
 		var end = positions[1] ? parseInt(positions[1], 10) : total - 1;        
-		var chunksize = (end - start) + 1;
-        console.log("Positions[1]: " + positions[1]);
-		console.log("Positions[0]: " + positions[0]);
+		var chunksize = (end - start) + 1;        
 		res.writeHead(206, {
 			"Content-Range": "bytes " + start + "-" + end + "/" + total,
 			"Accept-Ranges": "bytes",
@@ -128,9 +126,8 @@ router.get('/view/:id',function(req,res){
 			"Content-Type": "video/mp4"
 		});
 
-		var stream = gfs.createReadStream({filename: pic_id}, { start: start, end: end })
-		.on("open", function() {
-            console.log("Starting Stream Open");
+		var stream = gfs.createReadStream({filename: pic_id, range:{startPos: start, endPos:end}})
+		.on("open", function() {           
             stream.pipe(res);
 		}).on("error", function(err) {
             res.end(err);
@@ -199,11 +196,11 @@ router.get('/viewadstream',function(req,res){
         });
     });
 });
-
+*/
 //WORKGNG Video Stream
 router.get('/viewadstreamtest',function(req,res){
 	var dirname = require('path').dirname(__dirname);
-	var file = dirname + '/uploads/reallyeasy.mp4';
+	var file = dirname + '/uploads/TestFootage.mp4';
     var range = req.headers.range;
 	console.log('range' +range);
     var positions = range.replace(/bytes=/, "").split("-");
@@ -229,7 +226,7 @@ router.get('/viewadstreamtest',function(req,res){
         });
     });
 });
-*/
+
 
 
 router.get('/users', isAuthenticated,function(req, res, next) {
