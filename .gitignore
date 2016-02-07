@@ -17,6 +17,9 @@ $RECYCLE.BIN/
 #node modules
 node_modules/**
 
+#front-end node webkit modules
+frontApp/node_modules/**
+
 searchindex/**
 
 #uploads

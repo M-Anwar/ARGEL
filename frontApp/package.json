@@ -8,8 +8,11 @@
     "toolbar": true,
     "frame": true,
     "width": 800,
-    "height": 500,	
+    "height": 500,
     "min_width": 400,
-    "min_height": 400   
+    "min_height": 400
+  },
+  "dependencies": {
+    "request": "^2.69.0"
   }
 }

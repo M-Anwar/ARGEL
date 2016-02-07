@@ -9,10 +9,11 @@
     $(document).ready(function(){
        $('#myform').submit(function() { // catch the form's submit event 
            console.log("Submitting post request");
-           
+           var myFormData = new FormData(this);
+           console.log(myFormData);
             $.ajax({ // create an AJAX call...     
                 dataType: "JSON",
-                data: new FormData(this),
+                data: myFormData,
                 processData: false,
                 contentType: false,                
                 type: $(this).attr('method'), // GET or POST
@@ -20,8 +21,7 @@
                 enctype: $(this).attr('enctype'),
                 success: function(data, status) { // on success..
                     $('#created').html(data.filelink); // update the DIV
-                    $('#display').attr('src',"http://localhost:3000/view/"+data.filelink);
-                    console.log(data);
+                    $('#display').attr('src',"http://localhost:3000/view/"+data.filelink);                    
                 },
                 error: function(xhr, desc, err) { // on success..                    
                     console.log(desc);

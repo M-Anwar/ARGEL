@@ -21,14 +21,14 @@
                     </a>
                 </li>
                 <li>
-                    <video id="camFeed" width="210" height="161" autoplay></video>
+                    <video style="display:none" id="camFeed" autoplay></video>
                 </li>
                 <li>
                     <canvas id="photo" width="210" height="161"></canvas>
                 </li>
                 <li>
                     <input type="button" class="btn btn-primary" value="Take Photo" onclick="takePhoto();">
-                </li>              
+                </li>                         
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -38,13 +38,14 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        <video id= "display" src="http://localhost:3000/view/c856e5873d990edc4f8a0e70b67e9ba1" width = "720" height ="480" controls autoplay = "true" </video>                       
+                        <video id= "display" src="" width = "720" height ="480" controls autoplay = "true" </video>                       
                         
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-12">
-                        <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Show Menu</a>
+                        <a class="btn btn-default" id="menu-toggle">Show Menu</a>
+                        <a class="btn btn-default" id="refresh">Refresh Page</a>
                     </div>
                 </div>
             </div>
@@ -57,6 +58,10 @@
 
     
     <script>
+        $("#refresh").click(function(e){
+            if(location)
+                location.reload();
+        });
         $("#menu-toggle").click(function(e) {
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
@@ -89,6 +94,69 @@
             var c = document.getElementById('photo');
             var v = document.getElementById('camFeed');
             c.getContext('2d').drawImage(v, 0, 0, 210, 161);
+            
+                 
+            var canvas = document.createElement('canvas');
+            canvas.width = $("#camFeed").innerWidth();
+            canvas.height = $("#camFeed").innerHeight();
+            canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
+            
+            console.log("Submitting post request");
+            
+            var fs = require("fs");            
+            img = canvas.toDataURL('image/jpg');
+            var data = img.replace(/^data:image\/\w+;base64,/, "");
+            var buf = new Buffer(data, 'base64');
+            fs.writeFileSync('image.jpg', buf);
+            
+            canvas = null;
+            
+//            
+//            console.log($("#crowdPic").prop("files")[0]);
+            
+            
+            var request = require("request");
+            var path = require('path');            
+            
+            var formData = {
+                crowdPic: fs.createReadStream('image.jpg')
+            }
+            request.post({url:'http://localhost:3000/api/fetchad', formData: formData}, function optionalCallback(err, httpResponse, body) {
+                if (err) {
+                    console.log(err);
+                    return console.error('upload failed:', err);
+                }
+                console.log('Upload successful!  Server responded with:', body);
+                var jsonBody = JSON.parse(body);
+                $('#display').attr('src',"http://localhost:3000/view/"+jsonBody.filelink);
+                
+            });
+            
+            fs.unlink('image.jpg', function(err){
+                if(err)console.log(err);
+            });
+            
+//            var myFormData = new FormData();
+//            myFormData.append('crowdPic', $("#crowdPic").prop("files")[0]);            
+//            console.log(myFormData);
+//            $.ajax({ // create an AJAX call...     
+//                dataType: "JSON",
+//                data: myFormData,
+//                processData: false,
+//                contentType: false,                
+//                type: 'POST', // GET or POST
+//                url: "http://localhost:3000/api/fetchad", // the file to call                
+//                success: function(data, status) { // on success..                
+//                    $('#display').attr('src',"http://localhost:3000/view/"+data.filelink);
+//                    console.log(data);
+//                },
+//                error: function(xhr, desc, err) { // on success..                    
+//                    console.log(desc);
+//                }
+//            });
+//            return false; // cancel original event to prevent form submitting
+            
+            
         }
     </script>
 </body>
