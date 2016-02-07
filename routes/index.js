@@ -200,7 +200,7 @@ router.get('/viewadstream',function(req,res){
 //WORKGNG Video Stream
 router.get('/viewadstreamtest',function(req,res){
 	var dirname = require('path').dirname(__dirname);
-	var file = dirname + '/uploads/TestFootage.mp4';
+	var file = dirname + '/uploads/TestFootage.ogv';
     var range = req.headers.range;
 	console.log('range' +range);
     var positions = range.replace(/bytes=/, "").split("-");
