@@ -41,6 +41,20 @@
                     <a href="#"> Server Address </a>                                   
                     <input type="text" class="form-control" value="" id="serverAddress" >                             
                 </li>
+                <li>
+                    <a href="#" data-toggle="collapse" data-target="#dataRecorderDiv"> Data Recorder </a>                    
+                    <div id= "dataRecorderDiv" class ="collapse">
+                        <select class="form-control" id = "timeSelection">
+                            <option value="2000">2 Seconds</option>
+                            <option value="5000">5 Seconds</option>
+                            <option value="7000">7 Seconds</option>
+                            <option value="10000">10 Seconds</option>
+                            <option value="15000">15 Seconds</option>
+                        </select>  
+                        <button class="btn btn-primary" id = "btnRecord" onclick = "record()">Record</button>
+                    </div>
+                    
+                </li>
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -83,9 +97,10 @@
     <script>
         var defaultAddress = "http://localhost:3000";
         var fetchAd = "/api/fetchad";
-        var viewAd = "/view/";
-        
+        var viewAd = "/view/";        
         var ipcam = false;
+        var interval;
+        var recording = false;
 
         //UI toggles and updates
         $("#refresh").click(function(e){
@@ -177,7 +192,70 @@
            
         }
 
-        
+        //Recording
+        function record(){
+            var value = parseInt($("#timeSelection").val());
+            if(recording==false){
+                $("#btnRecord").removeClass("btn-primary").addClass("btn-danger");
+                recording = true;
+                interval = setInterval(captureAndStoreImage,value);
+            }
+            else{               
+                $("#btnRecord").removeClass("btn-danger").addClass("btn-primary"); 
+                recording = false;
+                clearInterval(interval);
+                alert("Capture Stopped");
+            }
+        }
+        function captureAndStoreImage(){         
+            var date = new Date().getTime();            
+            
+            var fs = require("fs");
+            if (!fs.existsSync('captures')){
+                fs.mkdirSync('captures');
+            }
+            if(ipcam==false){
+                saveCamToImage('captures/'+date +".jpg");
+            }
+            else{
+                saveIPToImage('captures/'+date +".jpg");
+            }
+        }
+
+        function saveCamToImage(imageName){
+            var c = document.getElementById('photo');
+            var v = document.getElementById('camFeed');
+            c.getContext('2d').drawImage(v, 0, 0, 210, 161);
+
+            var canvas = document.createElement('canvas');
+            canvas.width = $("#camFeed").innerWidth();
+            canvas.height = $("#camFeed").innerHeight();
+            canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
+
+            var fs = require("fs");            
+            img = canvas.toDataURL('image/jpg');
+            var data = img.replace(/^data:image\/\w+;base64,/, "");
+            var buf = new Buffer(data, 'base64');
+            fs.writeFileSync(imageName, buf);            
+            canvas = null;
+        }
+        function saveIPToImage(imageName){
+            var c = document.getElementById('photo');
+            var v = document.getElementById('ipcamFeed');
+            c.getContext('2d').drawImage(v, 0, 0, 210, 161);
+
+            var canvas = document.createElement('canvas');
+            canvas.width = $("#ipcamFeed").width();
+            canvas.height = $("#ipcamFeed").height();
+            canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);                
+
+            var fs = require("fs");            
+            img = canvas.toDataURL('image/jpg');
+            var data = img.replace(/^data:image\/\w+;base64,/, "");
+            var buf = new Buffer(data, 'base64');
+            fs.writeFileSync(imageName, buf);            
+            canvas = null;
+        }
         //Server calls
         function takePhoto()
         {
@@ -188,52 +266,21 @@
             var fetchAdURI = uri + fetchAd;
             var viewAdURI = uri + viewAd;
             
-            
+            var fileName = 'image.png';
             if(ipcam==false){ //What to do when you are on local camera
-                var c = document.getElementById('photo');
-                var v = document.getElementById('camFeed');
-                c.getContext('2d').drawImage(v, 0, 0, 210, 161);
-
-                var canvas = document.createElement('canvas');
-                canvas.width = $("#camFeed").innerWidth();
-                canvas.height = $("#camFeed").innerHeight();
-                canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
-
-                console.log("Submitting post request");
-
-                var fs = require("fs");            
-                img = canvas.toDataURL('image/jpg');
-                var data = img.replace(/^data:image\/\w+;base64,/, "");
-                var buf = new Buffer(data, 'base64');
-                fs.writeFileSync('image.jpg', buf);            
-                canvas = null;
-                
+                saveCamToImage(fileName);                
             }else{ //if you are using IP camera with MJPEG stream
-                var c = document.getElementById('photo');
-                var v = document.getElementById('ipcamFeed');
-                c.getContext('2d').drawImage(v, 0, 0, 210, 161);
-
-                var canvas = document.createElement('canvas');
-                canvas.width = $("#ipcamFeed").width();
-                canvas.height = $("#ipcamFeed").height();
-                canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
-
-                console.log("Submitting post request");
-
-                var fs = require("fs");            
-                img = canvas.toDataURL('image/jpg');
-                var data = img.replace(/^data:image\/\w+;base64,/, "");
-                var buf = new Buffer(data, 'base64');
-                fs.writeFileSync('image.jpg', buf);            
-                canvas = null;
+                saveIPToImage(fileName);
             }
 
             var request = require("request");
-            var path = require('path');            
+            var path = require('path'); 
+            var fs = require("fs"); 
             
             var formData = {
-                crowdPic: fs.createReadStream('image.jpg')
+                crowdPic: fs.createReadStream(fileName)
             }
+            console.log("Submitting Post Request");
             request.post({url:fetchAdURI, formData: formData}, function optionalCallback(err, httpResponse, body) {
                 if (err) {
                     console.log(err);
