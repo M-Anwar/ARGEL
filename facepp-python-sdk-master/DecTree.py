@@ -6,6 +6,9 @@ from sklearn import tree
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction import DictVectorizer
 import csv
+from matplotlib.colors import ListedColormap
+from sklearn import neighbors, datasets
+
 
 def overlap(a,b):
     return a[0] <= b[0] <= a[1] or b[0] <= a[0] <= b[1]
@@ -75,6 +78,7 @@ def learn_tree_and_predict(Train, X_Test):
     feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
     features = len(feature_names)
     age_features = features-1
+    mean_gender = np.mean(X_Test[:,0],0)
 
     train_data = Train
     X= np.zeros((len(train_data),features))
@@ -91,6 +95,19 @@ def learn_tree_and_predict(Train, X_Test):
         X[i,:] = np.concatenate((gender_ar,age_ar),axis=1)
         Y[i,0] = int(row[3])
 
+    if mean_gender>=0.5:
+        Y = Y[X[:,0]>=0.5]
+        X = X[X[:,0]>=0.5]
+    elif mean_gender<=-0.5:
+        Y = Y[X[:,0]<=-0.5]
+        X = X[X[:,0]<=-0.5]
+    # else:
+    #     Y = Y[X[:,0]>-0.5]
+    #     X = X[X[:,0]>-0.5]
+    #     Y = Y[X[:,0]<0.5]
+    #     X = X[X[:,0]<0.5]
+
+    print "Print X and Y:.."
     print X
     print Y
     clf = create_tree(X,Y)
@@ -112,7 +129,8 @@ def learn_tree_and_predict(Train, X_Test):
     i = 0
     predictions = []
 
-    while (len(predictions)==0 or X[int(predictions[i-1]-1),int(max_age_groups[i-1])]==0):
+    #while (len(predictions)==0 or X[int(predictions[i-1]-1),int(max_age_groups[i-1])]==0):
+    while (i<1):
         to_predict_with[0,1:] = np.zeros((1,len(to_predict_with[0,1:])))
         to_predict_with[0,max_age_groups[i]] = 1
         predictions.append(predict(clf, to_predict_with))
@@ -120,11 +138,109 @@ def learn_tree_and_predict(Train, X_Test):
         print to_predict_with
         print predictions
         i += 1
-        print X[int(predictions[i-1]-1),:]
+        #print X[int(predictions[i-1]-1),:]
         if (i == age_features):
             return predictions[0]
 
     return predictions[i-1]
+
+def K_near_age(train_data, X_Test, N):
+    n_neighbors = N
+
+    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
+    features = len(feature_names)
+    age_features = features-1
+
+    #Test Array:
+    mean_gender = np.mean(X_Test[:,0],0)
+    to_predict_with = np.zeros((1,features))
+    to_predict_with[0,0] = mean_gender
+
+    #Finding age to predict
+    age_hist = np.zeros((np.shape(X_Test)[0],age_features))
+    for i in range(0,np.shape(X_Test)[0]):
+        person = X_Test[i,:]
+        age_hist[i,:] = convert_age_to_bin_array(person[1],person[2])
+
+    age_test_groups = age_hist.sum(0)/np.shape(X_Test)[0] #Array of how many people fall into the age group specified by index
+    to_predict_with[0,1:] = age_test_groups
+    print "Predicting with:"
+    print to_predict_with
+    X= np.zeros((len(train_data),features))
+    y= np.zeros((len(train_data),1))
+
+    for i in range(0,len(train_data)):
+        row = train_data[i]
+        gender = float(row[0])
+        age = int(row[1])
+        range_of_age = int(row[2])
+
+        gender_ar = np.zeros((1,1)) + gender
+        age_ar = convert_age_to_bin_array(age,range_of_age)
+        X[i,:] = np.concatenate((gender_ar,age_ar),axis=1)
+        y[i,0] = int(row[3])
+
+    if mean_gender>=0.5:
+        y = y[X[:,0]>=0.5]
+        X = X[X[:,0]>=0.5]
+    elif mean_gender<=-0.5:
+        y = y[X[:,0]<=-0.5]
+        X = X[X[:,0]<=-0.5]
+    # else:
+    #     y = y[X[:,0]>-0.5]
+    #     X = X[X[:,0]>-0.5]
+    #     y = y[X[:,0]<0.5]
+    #     X = X[X[:,0]<0.5]
+    y = y.ravel()
+    print "Print X and Y:.."
+    print X
+    print y
+
+    clf = neighbors.KNeighborsClassifier(n_neighbors, weights='distance')
+    clf.fit(X, y)
+    Z = clf.predict(to_predict_with)
+    return Z
+
+    # import some data to play with
+    # iris = datasets.load_iris()
+    # X = iris.data[:, :2]  # we only take the first two features. We could
+    #                       # avoid this ugly slicing by using a two-dim dataset
+    # y = iris.target
+    # print X
+    # print y
+
+    h = .02  # step size in the mesh
+
+    # Create color maps
+    # cmap_light = ListedColormap(['#FFAAAA', '#AAFFAA', '#AAAAFF','#FFFFAA', '#AFFFAA', '#AAAAFF','#FFAAFA', '#AAFEFA', '#ACEAFF'])
+    # cmap_bold = ListedColormap(['#FF0000', '#00FF00', '#0000FF', '#FF0EA0', '#00FFEA', '#0EA0FF','#FF2300', '#00FF23', '#0023FF'])
+
+    # for weights in ['uniform', 'distance']:
+    #     # we create an instance of Neighbours Classifier and fit the data.
+    #     clf = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
+    #     clf.fit(X, y)
+    #
+    #     # Plot the decision boundary. For that, we will assign a color to each
+    #     # point in the mesh [x_min, m_max]x[y_min, y_max].
+    #     x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    #     y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+    #     xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+    #                          np.arange(y_min, y_max, h))
+    #     Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+    #
+    #     # Put the result into a color plot
+    #     Z = Z.reshape(xx.shape)
+    #     plt.figure()
+    #     plt.pcolormesh(xx, yy, Z, cmap=cmap_light)
+    #
+    #     # Plot also the training points
+    #     plt.scatter(X[:, 0], X[:, 1], c=y, cmap=cmap_bold)
+    #     plt.xlim(xx.min(), xx.max())
+    #     plt.ylim(yy.min(), yy.max())
+    #     plt.title("9-Class classification (k = %i, weights = '%s')"
+    #               % (n_neighbors, weights))
+    #
+    # plt.show()
 
 
 '''

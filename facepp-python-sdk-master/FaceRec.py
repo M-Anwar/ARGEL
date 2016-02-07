@@ -102,8 +102,8 @@ def FaceRecog(session):
         #         X = list(reader)
 
         ids, X = get_ads()
-        pred = learn_tree_and_predict(X, test_x)
-
+        #pred = learn_tree_and_predict(X, test_x)
+        pred = K_near_age(X, test_x, 1)
         feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
 
         image = cv2.imread(new_im)
