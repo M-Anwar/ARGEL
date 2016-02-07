@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="css/argel.css">
     <link rel="stylesheet" href="css/simple-sidebar.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>        
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body onload="init();">   
@@ -25,12 +25,21 @@
                 </li>
                 <li>
                     <input type="button" class="btn btn-primary" value="Take Photo" onclick="takePhoto();">
+                    <button data-toggle="collapse" data-target="#uploadPic" class="btn btn-primary">Choose Photo</button>
+                    <form id="uploadPic" action="" method="post" enctype="multipart/form-data" class = "form-group collapse">
+                        <input type="file" name="crowdPic" id ="crowdPic" class = "form-control"/>       
+                        <input class = "btn btn-success" type="submit" value="Upload!" id ="upload"/>
+                    </form>
                 </li>        
                 <li>
-                    <a href="#"> IP Camera </a>                                   
-                    <input type="text" class="form-control" value="" onclick="">                 
-                    <input type="button" class="btn btn-primary" value="IP Camera" onclick="">                    
-                    
+                    <a href="#"> IP Camera (MJPEG Only) </a>                                   
+                    <input type="text" class="form-control" value="http://192.168.2.15:8080/video" id="ipCamAddress">                 
+                    <input type="button" id = "ipcamera" class="btn btn-primary" value="Switch to IP" onclick="setupIPCamera();">   
+                    <input type="button" id = "webcamera" class="btn btn-primary" value="Switch to Local" onclick="setupWebcam();">   
+                </li>
+                <li>
+                    <a href="#"> Server Address </a>                                   
+                    <input type="text" class="form-control" value="" id="serverAddress" >                             
                 </li>
             </ul>
         </div>
@@ -50,25 +59,35 @@
                         <a class="btn btn-default" id="menu-toggle">Show Menu</a>
                         <a class="btn btn-default" id="refresh">Refresh Page</a>
                         <button class="btn btn-default" onclick="toggleFeed();";>View Video Feed</button>
-                        <div id="timestats">0:00 - 0:00</div>                        
+                        <button data-toggle="collapse" data-target="#pythonDebug" class="btn btn-primary">Debug Ouput</button>
+                        <p id="timestats">0:00 - 0:00</p>                        
                     </div>
                 </div>
                 
                 <div class = "row">
                     <div class="col-lg-12">                        
-                        <video style="display:none" id="camFeed" autoplay></video>
+                        <video style="display:none" id="camFeed" autoplay></video>                        
+                        <img style = "display:none" id="ipcamFeed" src=""></img>
+                        
                     </div>
                 </div>
+                <div class = "row collapse" id ="pythonDebug" style = "white-space:pre"> </div>
             </div>
         </div>
         <!-- /#page-content-wrapper -->
 
     </div>             
         
-        
 
     
     <script>
+        var defaultAddress = "http://localhost:3000";
+        var fetchAd = "/api/fetchad";
+        var viewAd = "/view/";
+        
+        var ipcam = false;
+
+        //UI toggles and updates
         $("#refresh").click(function(e){
             if(location)
                 location.reload();
@@ -77,23 +96,53 @@
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
+        $("#serverAddress").focusout(function(e){
+            var uri = $("#serverAddress").val();
+            if(uri=="") {               
+                $("#serverAddress").val(defaultAddress);
+            }
+        });
+
+
+        //Video Statistics and camera
         $(document).ready(function(){
           $("#display").on(
             "timeupdate", 
             function(event){
               onTrackedVideoFrame(this.currentTime, this.duration);
             });
-        });
-        
+        });        
         function onTrackedVideoFrame(currentTime, duration){
             $("#timestats").text(currentTime + " - " + duration);
            
         }
         function toggleFeed(){
-            $("#camFeed").toggle();
+            if(ipcam ==false){
+                $("#camFeed").toggle();
+                $("#ipcamFeed").hide();
+                
+            }else{
+                $("#ipcamFeed").toggle();
+                $("#camFeed").hide();
+            }
         }
+
+        
         function init()
         {
+            $("#serverAddress").attr("value",defaultAddress);
+            setupWebcam();
+            
+        }
+        
+        //Webcam INIT
+        function setupWebcam(){       
+            ipcam = false;
+            toggleFeed();
+            if($("#ipcamera").hasClass("btn-danger")){
+                $("#ipcamera").removeClass("btn-danger").addClass("btn-primary");
+            }
+            $("#webcamera").addClass("btn-danger");
             if(navigator.webkitGetUserMedia)
             {
                 navigator.webkitGetUserMedia({video:true}, onSuccess, onFail);
@@ -102,8 +151,8 @@
             {
                 alert('webRTC not available');
             }
+            
         }
-
         function onSuccess(stream)
         {
             $("#camFeed").attr("src",URL.createObjectURL(stream));
@@ -114,75 +163,124 @@
             alert('could not connect stream');
         }
 
+        //IP camera Init
+        function setupIPCamera(){
+            ipcam = true;
+            toggleFeed();
+            if($("#webcamera").hasClass("btn-danger")){
+                $("#webcamera").removeClass("btn-danger").addClass("btn-primary");
+            }
+            $("#ipcamera").addClass("btn-danger");            
+            var uri = $("#ipCamAddress").val();
+            $("#ipcamFeed").attr("src", uri)
+            
+           
+        }
+
+        
+        //Server calls
         function takePhoto()
         {
-            var c = document.getElementById('photo');
-            var v = document.getElementById('camFeed');
-            c.getContext('2d').drawImage(v, 0, 0, 210, 161);
-            
-                 
-            var canvas = document.createElement('canvas');
-            canvas.width = $("#camFeed").innerWidth();
-            canvas.height = $("#camFeed").innerHeight();
-            canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
-            
-            console.log("Submitting post request");
-            
-            var fs = require("fs");            
-            img = canvas.toDataURL('image/jpg');
-            var data = img.replace(/^data:image\/\w+;base64,/, "");
-            var buf = new Buffer(data, 'base64');
-            fs.writeFileSync('image.jpg', buf);
-            
-            canvas = null;
-            
-//            
-//            console.log($("#crowdPic").prop("files")[0]);
+            var uri = $("#serverAddress").val();
+            if(uri==""){
+                uri = defaultAddress;
+            }
+            var fetchAdURI = uri + fetchAd;
+            var viewAdURI = uri + viewAd;
             
             
+            if(ipcam==false){ //What to do when you are on local camera
+                var c = document.getElementById('photo');
+                var v = document.getElementById('camFeed');
+                c.getContext('2d').drawImage(v, 0, 0, 210, 161);
+
+                var canvas = document.createElement('canvas');
+                canvas.width = $("#camFeed").innerWidth();
+                canvas.height = $("#camFeed").innerHeight();
+                canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
+
+                console.log("Submitting post request");
+
+                var fs = require("fs");            
+                img = canvas.toDataURL('image/jpg');
+                var data = img.replace(/^data:image\/\w+;base64,/, "");
+                var buf = new Buffer(data, 'base64');
+                fs.writeFileSync('image.jpg', buf);            
+                canvas = null;
+                
+            }else{ //if you are using IP camera with MJPEG stream
+                var c = document.getElementById('photo');
+                var v = document.getElementById('ipcamFeed');
+                c.getContext('2d').drawImage(v, 0, 0, 210, 161);
+
+                var canvas = document.createElement('canvas');
+                canvas.width = $("#ipcamFeed").width();
+                canvas.height = $("#ipcamFeed").height();
+                canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
+
+                console.log("Submitting post request");
+
+                var fs = require("fs");            
+                img = canvas.toDataURL('image/jpg');
+                var data = img.replace(/^data:image\/\w+;base64,/, "");
+                var buf = new Buffer(data, 'base64');
+                fs.writeFileSync('image.jpg', buf);            
+                canvas = null;
+            }
+
             var request = require("request");
             var path = require('path');            
             
             var formData = {
                 crowdPic: fs.createReadStream('image.jpg')
             }
-            request.post({url:'http://localhost:3000/api/fetchad', formData: formData}, function optionalCallback(err, httpResponse, body) {
+            request.post({url:fetchAdURI, formData: formData}, function optionalCallback(err, httpResponse, body) {
                 if (err) {
                     console.log(err);
                     return console.error('upload failed:', err);
                 }
                 console.log('Upload successful!  Server responded with:', body);
                 var jsonBody = JSON.parse(body);
-                $('#display').attr('src',"http://localhost:3000/view/"+jsonBody.filelink);
+                $('#display').attr('src',viewAdURI+jsonBody.filelink);
+                $('#pythonDebug').html(jsonBody.pythonDebug);
                 
             });
             
             fs.unlink('image.jpg', function(err){
                 if(err)console.log(err);
-            });
-            
-//            var myFormData = new FormData();
-//            myFormData.append('crowdPic', $("#crowdPic").prop("files")[0]);            
-//            console.log(myFormData);
-//            $.ajax({ // create an AJAX call...     
-//                dataType: "JSON",
-//                data: myFormData,
-//                processData: false,
-//                contentType: false,                
-//                type: 'POST', // GET or POST
-//                url: "http://localhost:3000/api/fetchad", // the file to call                
-//                success: function(data, status) { // on success..                
-//                    $('#display').attr('src',"http://localhost:3000/view/"+data.filelink);
-//                    console.log(data);
-//                },
-//                error: function(xhr, desc, err) { // on success..                    
-//                    console.log(desc);
-//                }
-//            });
-//            return false; // cancel original event to prevent form submitting
-            
+            });            
             
         }
+
+        //User Selected upload
+        $('#uploadPic').submit(function() { // catch the form's submit event
+            
+            var uri = $("#serverAddress").val();
+            if(uri==""){
+                uri = defaultAddress;
+            }
+            var fetchAdURI = uri + fetchAd;
+            var viewAdURI = uri + viewAd;
+            
+            
+           var myFormData = new FormData(this);          
+            $.ajax({ // create an AJAX call...     
+                dataType: "JSON",
+                data: myFormData,
+                processData: false,
+                contentType: false,                
+                type: $(this).attr('method'), // GET or POST
+                url: fetchAdURI, // the file to call
+                enctype: $(this).attr('enctype'),
+                success: function(data, status) { // on success..                    
+                    $('#display').attr('src',viewAdURI+data.filelink);                    
+                },
+                error: function(xhr, desc, err) { // on success..                    
+                    console.log(desc);
+                }
+            });
+            return false; // cancel original event to prevent form submitting
+        });
     </script>
 </body>
 </html>

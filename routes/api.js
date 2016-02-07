@@ -87,7 +87,7 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
         //After saving, spawn python process and pass the session ID to the process
         var python = require('child_process').spawn('python',["./facepp-python-sdk-master/process.py", sess.id]);
         var output = "";
-        python.stdout.on('data', function(data){ output += data });
+        python.stdout.on('data', function(data){ output += data + "\n" });
         python.stderr.on('data', function(err){console.log("Error: " + err); output+=err})
         python.on('close', function(code){ 
             if (code !== 0) { res.send(500, output); }
@@ -97,7 +97,9 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
             Session.findOne({"_id" : sess._id}, {"bestAd": true}).populate('bestAd')
                 .exec(function(err, session){
                     if(err){res.send(err); return;}                                        
-                    res.json({"filelink": session.bestAd.videoad.filename}); //Send back the best ad file name
+                    res.json({"filelink": session.bestAd.videoad.filename,
+                              "pythonDebug":output
+                             }); //Send back the best ad file name
                 
                      //After the python program has closed - remove the session from data base;
                     sess.remove(function (err, result){
