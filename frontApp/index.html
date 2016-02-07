@@ -274,6 +274,7 @@
                 enctype: $(this).attr('enctype'),
                 success: function(data, status) { // on success..                    
                     $('#display').attr('src',viewAdURI+data.filelink);                    
+                    $('#pythonDebug').html(data.pythonDebug);
                 },
                 error: function(xhr, desc, err) { // on success..                    
                     console.log(desc);
