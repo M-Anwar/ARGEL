@@ -118,4 +118,6 @@ def FaceRecog(session):
         return ids[int(pred[0])-1]
     else:
         print 'No one detected!'
+        ids, X = get_ads()
+        return ids[0]
 

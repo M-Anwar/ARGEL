@@ -29,26 +29,26 @@ def create_tree(X, Y):
     clf = tree.DecisionTreeClassifier(criterion='entropy')
     clf = clf.fit(X, Y)
 
-    from IPython.display import Image
-    import pydotplus
-    dot_data = StringIO()
-    #tree.export_graphviz(clf, out_file=dot_data)
-    #feature_names = ['Gender', 'Age']
-    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
-    target_names = []
+    # from IPython.display import Image
+    # import pydotplus
+    # dot_data = StringIO()
+    # #tree.export_graphviz(clf, out_file=dot_data)
+    # #feature_names = ['Gender', 'Age']
+    # feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
+    # target_names = []
 
-    for i in range(1,len(Y)+1):
-        target_names.append('Ad #' + str(i))
+    # for i in range(1,len(Y)+1):
+        # target_names.append('Ad #' + str(i))
 
 
-    tree.export_graphviz(clf, out_file=dot_data,
-                         feature_names=feature_names,
-                         class_names=target_names,
-                         filled=True, rounded=True,
-                         special_characters=True)
+    # tree.export_graphviz(clf, out_file=dot_data,
+                         # feature_names=feature_names,
+                         # class_names=target_names,
+                         # filled=True, rounded=True,
+                         # special_characters=True)
 
-    graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
-    graph.write_pdf("Tree.pdf")
+    # graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
+    # graph.write_pdf("Tree.pdf")
 
     return clf
 
