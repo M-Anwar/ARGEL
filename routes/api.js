@@ -85,7 +85,7 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
         if(err) throw err;        
         
         //After saving, spawn python process and pass the session ID to the process
-        var python = require('child_process').spawn('python',["./Python/process.py", sess.id]);
+        var python = require('child_process').spawn('python',["./facepp-python-sdk-master/process.py", sess.id]);
         var output = "";
         python.stdout.on('data', function(data){ output += data });
         python.stderr.on('data', function(err){console.log("Error: " + err); output+=err})
@@ -103,8 +103,7 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
                         if(err) throw err;
                         console.log("Session Removed!");
                     }) 
-                });
-            
+                });           
                            
         });   
         
