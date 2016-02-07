@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 cv2.namedWindow("preview")
 vc = cv2.VideoCapture(0)

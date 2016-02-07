@@ -7,8 +7,6 @@ import matplotlib.image as img
 from DecTree import *
 import urllib
 from sklearn.feature_extraction import DictVectorizer
-from HelperFxn import *
-from facepp import *
 
 '''
 # Camera 0 is the integrated web cam on my netbook
@@ -65,7 +63,39 @@ del(camera)
 API_KEY = '28fbdbef3093f25ff6771286febc5e81'
 API_SECRET = 'mHX0i1CGvQRGI6Cd6D_SYiuw2g6ZIKSe'
 
+# Import system libraries and define helper functions
 
+from pprint import pformat
+def print_result(hint, result):
+    def encode(obj):
+        if type(obj) is unicode:
+            return obj.encode('utf-8')
+        if type(obj) is dict:
+            return {encode(k): encode(v) for (k, v) in obj.iteritems()}
+        if type(obj) is list:
+            return [encode(i) for i in obj]
+        return obj
+    print hint
+    result = encode(result)
+    print '\n'.join(['  ' + i for i in pformat(result, width = 75).split('\n')])
+
+def mode(list):
+    d = {}
+    for i in list:
+        try:
+            d[i] += 1
+        except(KeyError):
+            d[i] = 1
+
+    max = d.keys()[0]
+    for key in d.keys()[1:]:
+        if d[key] > max:
+            max = key
+
+    return max
+
+# First import the API class from the SDK
+from facepp import *
 
 api = API(API_KEY, API_SECRET)
 
@@ -128,14 +158,6 @@ if len(genders) > 0:
     print 'Glasses?:' + str(glasses)
     print 'Smiling?' + str(smilings)
 
-    '''
-    test_x shape = (amount of people, geatures)
-    ex.
-    gender, age, range
-    [ 1 10 4
-     -1 19 10]
-    '''
-
     for i in range(0,amount_of_people):
         if (genders[i]['value'] == 'Male'):
             test_x[i,0] = 1*genders[i]['confidence']/100
@@ -145,19 +167,16 @@ if len(genders) > 0:
         test_x[i,2] = ages[i]['range']
 
     print str(test_x)
-
-
     file = 'train_data.csv'
+    clf = learn_tree(file)
+
+    prediction = predict(clf, test_x)
+    print prediction
+    pred = mode(prediction)
+    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
     with open(file, 'rb') as f:
             reader = csv.reader(f)
             X = list(reader)
-
-    prediction = learn_tree_and_predict(X, test_x)
-
-    print prediction
-    pred = prediction
-    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
-
 
     image = cv2.imread(new_im)
     image = cv2.putText(image, str(X[0]),(10, int(0.1*image.shape[0])),font,3,(0,255,0),2,cv2.LINE_AA)
@@ -169,3 +188,135 @@ if len(genders) > 0:
 
 else:
     print 'No one detected!'
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.externals.six import StringIO
+from sklearn import tree
+from sklearn.preprocessing import LabelEncoder
+from sklearn.feature_extraction import DictVectorizer
+import csv
+
+def overlap(a,b):
+    return a[0] <= b[0] <= a[1] or b[0] <= a[0] <= b[1]
+
+def convert_age_to_bin_array(age, range_of_age):
+    bins = [(0,5),(6,12),(13,19),(20,27),(28,35),(36,50), (50,150)]
+    bin_count = np.zeros((1,len(bins)))
+    min = age-range_of_age
+    max = age+range_of_age
+    total_range = (min,max)
+
+    for i in range(0,len(bins)):
+        if overlap(total_range,bins[i]):
+            bin_count[0,i] = 1
+
+
+
+    return bin_count
+
+def create_tree(X, Y):
+    clf = tree.DecisionTreeClassifier(criterion='entropy')
+    clf = clf.fit(X, Y)
+
+    from IPython.display import Image
+    import pydotplus
+    dot_data = StringIO()
+    #tree.export_graphviz(clf, out_file=dot_data)
+    #feature_names = ['Gender', 'Age']
+    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
+    target_names = []
+
+    for i in range(1,len(Y)+1):
+        target_names.append('Ad #' + str(i))
+
+
+    tree.export_graphviz(clf, out_file=dot_data,
+                         feature_names=feature_names,
+                         class_names=target_names,
+                         filled=True, rounded=True,
+                         special_characters=True)
+
+    graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
+    graph.write_pdf("Tree.pdf")
+
+    return clf
+
+def predict(clf, test_data):
+    features = 8
+    X_test = np.zeros((np.shape(test_data)[0],features))
+    for i in range(0,np.shape(test_data)[0]):
+        person = test_data[i,:]
+        gender_ar = np.zeros((1,1)) + person[0]
+        age_ar = convert_age_to_bin_array(person[1],person[2])
+        X_test[i,:] = np.concatenate((gender_ar,age_ar),axis=1)
+
+
+    print X_test.shape
+    prediction = clf.predict(X_test)
+    return prediction
+
+def learn_tree(file):
+    '''
+    X_dict = [{'0-5': 'yes',
+               '6-12': 'yes',
+               '13-19': 'yes',
+               '20-27': 'yes',
+               '28-35': 'yes',
+               '36-50': 'yes',
+               '55+': 'yes'}]
+
+    vect = DictVectorizer(sparse=False)
+    X_vector = vect.fit_transform(X_dict)
+    '''
+    features = 8
+    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
+    with open(file, 'rb') as f:
+            reader = csv.reader(f)
+            train_data = list(reader)
+
+    train_data = train_data[1:]
+    X= np.zeros((len(train_data),features))
+    Y= np.zeros((len(train_data),1))
+
+    for i in range(0,len(train_data)):
+        row = train_data[i]
+
+        gender = float(row[0])
+        age = int(row[1])
+        range_of_age = int(row[2])
+
+        gender_ar = np.zeros((1,1)) + gender
+        age_ar = convert_age_to_bin_array(age,range_of_age)
+        X[i,:] = np.concatenate((gender_ar,age_ar),axis=1)
+        Y[i,0] = int(row[3])
+
+    clf = create_tree(X,Y)
+    return clf
+
+
+'''
+
+    test_x = np.zeros((len(genders),3))
+
+    print 'Genders:' + str(genders)
+    print 'Ages:' + str(ages)
+    print 'Glasses?:' + str(glasses)
+    print 'Smiling?' + str(smilings)
+
+    for i in genders:
+        if (i['value'] == 'Male'):
+            test_x[0] += 1*i['confidence']/100
+        elif (i['value'] == 'Female'):
+            test_x[0] += -1*i['confidence']/100
+
+    for i in ages:
+        test_x[1] += i['value']
+        test_x[2] += i['range']
+
+    test_x[1] = test_x[1]/len(ages)
+    test_x[0] = test_x[0]/len(genders)
+    print str(test_x)
+
+'''
