@@ -19,16 +19,19 @@
                     <a href="#">
                         Menu
                     </a>
-                </li>
-                <li>
-                    <video style="display:none" id="camFeed" autoplay></video>
-                </li>
+                </li>             
                 <li>
                     <canvas id="photo" width="210" height="161"></canvas>
                 </li>
                 <li>
                     <input type="button" class="btn btn-primary" value="Take Photo" onclick="takePhoto();">
-                </li>                         
+                </li>        
+                <li>
+                    <a href="#"> IP Camera </a>                                   
+                    <input type="text" class="form-control" value="" onclick="">                 
+                    <input type="button" class="btn btn-primary" value="IP Camera" onclick="">                    
+                    
+                </li>
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -46,6 +49,14 @@
                     <div class="col-lg-12">
                         <a class="btn btn-default" id="menu-toggle">Show Menu</a>
                         <a class="btn btn-default" id="refresh">Refresh Page</a>
+                        <button class="btn btn-default" onclick="toggleFeed();";>View Video Feed</button>
+                        <div id="timestats">0:00 - 0:00</div>                        
+                    </div>
+                </div>
+                
+                <div class = "row">
+                    <div class="col-lg-12">                        
+                        <video style="display:none" id="camFeed" autoplay></video>
                     </div>
                 </div>
             </div>
@@ -66,9 +77,23 @@
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
+        $(document).ready(function(){
+          $("#display").on(
+            "timeupdate", 
+            function(event){
+              onTrackedVideoFrame(this.currentTime, this.duration);
+            });
+        });
+        
+        function onTrackedVideoFrame(currentTime, duration){
+            $("#timestats").text(currentTime + " - " + duration);
+           
+        }
+        function toggleFeed(){
+            $("#camFeed").toggle();
+        }
         function init()
         {
-            document.documentElement.style.overflow = 'hidden';
             if(navigator.webkitGetUserMedia)
             {
                 navigator.webkitGetUserMedia({video:true}, onSuccess, onFail);
