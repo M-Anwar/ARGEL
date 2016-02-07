@@ -11,7 +11,7 @@ from HelperFxn import *
 from facepp import *
 from ApiCalls import *
 
-def FaceRecog():
+def FaceRecog(session):
     # You need to register your App first, and enter you API key/secret.
     API_KEY = '28fbdbef3093f25ff6771286febc5e81'
     API_SECRET = 'mHX0i1CGvQRGI6Cd6D_SYiuw2g6ZIKSe'
@@ -20,7 +20,7 @@ def FaceRecog():
 
     #urllib.urlretrieve("http://192.168.1.115:8080/photo.jpg", "test_im.jpg")
 
-    url = 'test_im.jpg'
+    url = session+'.jpg'
     #url = 'test_image.png'
     FACES = {'Shaham': api.detection.detect(img = File(url), attribute = ('glass','pose','gender','age','race','smiling'))}
 
@@ -96,10 +96,10 @@ def FaceRecog():
         print str(test_x)
 
 
-        file = 'train_data.csv'
-        with open(file, 'rb') as f:
-                reader = csv.reader(f)
-                X = list(reader)
+        # file = 'train_data.csv'
+        # with open(file, 'rb') as f:
+        #         reader = csv.reader(f)
+        #         X = list(reader)
 
         ids, X = get_ads()
         pred = learn_tree_and_predict(X, test_x)
@@ -107,7 +107,7 @@ def FaceRecog():
         feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
 
         image = cv2.imread(new_im)
-        image = cv2.putText(image, str(X[0]),(10, int(0.1*image.shape[0])),font,3,(0,255,0),2,cv2.LINE_AA)
+        #image = cv2.putText(image, str(X[0]),(10, int(0.1*image.shape[0])),font,3,(0,255,0),2,cv2.LINE_AA)
         image = cv2.putText(image, 'Ad Selected = Ad#' + str(pred) + ' with data as: ' + str(X[int(pred)-1]),(10, int(0.1*image.shape[0]+100)),font,2,(0,255,0),2,cv2.LINE_AA)
         #image = cv2.putText(image, 'Gender = ' + str(test_x[0,0]) + ' ' + 'Age = ' + str(test_x[0,1]),(10, int(0.5*image.shape[0])),font,3,(0,0,255),2,cv2.LINE_AA)
         #image = cv2.putText(image, 'Ad Selected = Ad#' + str(prediction[0]) + ' with data as: ' + str(X[prediction[0]-1]),(10, int(0.5*image.shape[0]+50)),font,2,(0,0,255),2,cv2.LINE_AA)
@@ -115,6 +115,7 @@ def FaceRecog():
         cv2.imwrite(new_im,image)
         print pred
         print "ID Predicted:" + str(ids[int(pred[0])-1])
+        return ids[int(pred[0])-1]
     else:
         print 'No one detected!'
 

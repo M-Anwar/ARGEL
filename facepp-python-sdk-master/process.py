@@ -12,7 +12,7 @@ print "Session ID: " + session
 #Get the Session image (i.e the crowd image captured)
 url = "http://localhost:3000/api/getsessionimage/" + session
 resource = urllib.urlopen(url)
-output = open("Python\\"+session+".jpg","wb")
+output = open(session+".jpg","wb")
 output.write(resource.read())
 output.close()
    
@@ -36,12 +36,12 @@ if(myResponse.ok):
 #     recAdID= jData[0]["_id"] #Print the ID of the Ad
 #     print recAdID
 
-FaceRecog()
+recAdID = FaceRecog(session)
 
 #Post the recommended ad to the session
 url = "http://localhost:3000/api/postrecommendation"
 
-postData = {'sessionID':session, 'adID':recAdID};
-myResponse = requests.post(url, data = postData);
+postData = {'sessionID':session, 'adID':recAdID}
+myResponse = requests.post(url, data = postData)
 print ("Response: {0}".format(myResponse.status_code))
 print myResponse.text
