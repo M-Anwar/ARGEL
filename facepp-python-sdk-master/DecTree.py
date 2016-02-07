@@ -76,13 +76,12 @@ def learn_tree_and_predict(Train, X_Test):
     features = len(feature_names)
     age_features = features-1
 
-    train_data = Train[1:]
+    train_data = Train
     X= np.zeros((len(train_data),features))
     Y= np.zeros((len(train_data),1))
 
     for i in range(0,len(train_data)):
         row = train_data[i]
-
         gender = float(row[0])
         age = int(row[1])
         range_of_age = int(row[2])

@@ -1,14 +1,19 @@
 __author__ = 'Shaham'
 import csv
 from DecTree import *
+from ApiCalls import *
 
-test_x = np.array([[1, 50, 8],[1, 29, 5],[1,52,5]])
+ids, tags = get_ads()
+#print ids
+#print tags
 
-file = 'train_data.csv'
-with open(file, 'rb') as f:
-        reader = csv.reader(f)
-        X = list(reader)
+test_x = np.array([[-1, 25, 8],[-1, 23, 5],[-1,52,5]])
 
-prediction = learn_tree_and_predict(X, test_x)
+# file = 'train_data.csv'
+# with open(file, 'rb') as f:
+#         reader = csv.reader(f)
+#         X = list(reader)
 
-print prediction
+pred = learn_tree_and_predict(tags, test_x)
+print pred[0]
+print "ID Predicted:" + str(ids[int(pred[0])-1])

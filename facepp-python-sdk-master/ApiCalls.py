@@ -4,6 +4,8 @@ import sys
 import requests
 import json
 import urllib
+import numpy as np
+import re
 
 def get_ads():
     url = "http://localhost:3000/api/getads/"
@@ -12,5 +14,15 @@ def get_ads():
     if(myResponse.ok):
         print myResponse.content
         jData = json.loads(myResponse.content)
-        recAdID= jData[0]["_id"] #Print the ID of the Ad
-        print recAdID
+
+    ids = []
+    tags = np.zeros((len(jData),4))
+    for i in range(0,len(jData)):
+        ids.append(jData[i]["_id"])
+        tag_input = re.search('(-*\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*', jData[i]["tags"][0])
+        tags[i,0] = int(tag_input.group(1))
+        tags[i,1] = int(tag_input.group(2))
+        tags[i,2] = int(tag_input.group(3))
+        tags[i,3] = i+1
+
+    return ids, tags
