@@ -18,9 +18,8 @@ def FaceRecog(session):
 
     api = API(API_KEY, API_SECRET)
 
-    #urllib.urlretrieve("http://192.168.1.115:8080/photo.jpg", "test_im.jpg")
-
     url = session+'.jpg'
+    #urllib.urlretrieve("http://192.168.1.115:8080/photo.jpg", "test_im.jpg")
     #url = 'test_image.png'
     FACES = {'Shaham': api.detection.detect(img = File(url), attribute = ('glass','pose','gender','age','race','smiling'))}
 

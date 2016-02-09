@@ -32,26 +32,26 @@ def create_tree(X, Y):
     clf = tree.DecisionTreeClassifier(criterion='entropy')
     clf = clf.fit(X, Y)
 
-    # from IPython.display import Image
-    # import pydotplus
-    # dot_data = StringIO()
-    # #tree.export_graphviz(clf, out_file=dot_data)
-    # #feature_names = ['Gender', 'Age']
-    # feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
-    # target_names = []
+    from IPython.display import Image
+    import pydotplus
+    dot_data = StringIO()
+    #tree.export_graphviz(clf, out_file=dot_data)
+    #feature_names = ['Gender', 'Age']
+    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
+    target_names = []
 
-    # for i in range(1,len(Y)+1):
-        # target_names.append('Ad #' + str(i))
+    for i in range(1,len(Y)+1):
+        target_names.append('Ad #' + str(i))
 
 
-    # tree.export_graphviz(clf, out_file=dot_data,
-                         # feature_names=feature_names,
-                         # class_names=target_names,
-                         # filled=True, rounded=True,
-                         # special_characters=True)
+    tree.export_graphviz(clf, out_file=dot_data,
+                         feature_names=feature_names,
+                         class_names=target_names,
+                         filled=True, rounded=True,
+                         special_characters=True)
 
-    # graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
-    # graph.write_pdf("Tree.pdf")
+    graph = pydotplus.graph_from_dot_data(dot_data.getvalue())
+    graph.write_pdf("Tree.pdf")
 
     return clf
 
@@ -180,6 +180,15 @@ def K_near_age(train_data, X_Test, N):
         X[i,:] = np.concatenate((gender_ar,age_ar),axis=1)
         y[i,0] = int(row[3])
 
+    # X= np.zeros((len(train_data),2))
+    # y= np.zeros((len(train_data),1))
+    #
+    # for i in range(0,len(train_data)):
+    #     row = train_data[i]
+    #     X[i,0] = float(row[0])
+    #     X[i,1] = int(row[1])
+    #     y[i,0] = int(row[3])
+
     if mean_gender>=0.5:
         y = y[X[:,0]>=0.5]
         X = X[X[:,0]>=0.5]
@@ -209,12 +218,12 @@ def K_near_age(train_data, X_Test, N):
     # print X
     # print y
 
-    h = .02  # step size in the mesh
-
-    # Create color maps
+    # h = .02  # step size in the mesh
+    #
+    # # Create color maps
     # cmap_light = ListedColormap(['#FFAAAA', '#AAFFAA', '#AAAAFF','#FFFFAA', '#AFFFAA', '#AAAAFF','#FFAAFA', '#AAFEFA', '#ACEAFF'])
     # cmap_bold = ListedColormap(['#FF0000', '#00FF00', '#0000FF', '#FF0EA0', '#00FFEA', '#0EA0FF','#FF2300', '#00FF23', '#0023FF'])
-
+    #
     # for weights in ['uniform', 'distance']:
     #     # we create an instance of Neighbours Classifier and fit the data.
     #     clf = neighbors.KNeighborsClassifier(n_neighbors, weights=weights)
