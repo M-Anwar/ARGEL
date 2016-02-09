@@ -38,7 +38,7 @@ def FaceRecog(session):
 
 
     for name, face in FACES.iteritems():
-        print_result(name, face)
+        #print_result(name, face)
         width = face['img_width']
         height = face['img_height']
         print len(face['face'])
@@ -92,7 +92,7 @@ def FaceRecog(session):
             test_x[i,1] = ages[i]['value']
             test_x[i,2] = ages[i]['range']
 
-        print str(test_x)
+        print "Crowd Test Array: " + str(test_x)
 
 
         # file = 'train_data.csv'
@@ -104,16 +104,16 @@ def FaceRecog(session):
         #pred = learn_tree_and_predict(X, test_x)
         pred = K_near_age(X, test_x, 1)
         feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
-
+        print feature_names
         image = cv2.imread(new_im)
         #image = cv2.putText(image, str(X[0]),(10, int(0.1*image.shape[0])),font,3,(0,255,0),2,cv2.LINE_AA)
-        image = cv2.putText(image, 'Ad Selected = Ad#' + str(pred) + ' with data as: ' + str(X[int(pred)-1]),(10, int(0.1*image.shape[0]+100)),font,2,(0,255,0),2,cv2.LINE_AA)
+        #image = cv2.putText(image, 'Ad Selected = Ad#' + str(pred) + ' with data as: ' + str(X[int(pred)-1]),(10, int(0.1*image.shape[0]+100)),font,1,(0,255,0),2,cv2.LINE_AA)
         #image = cv2.putText(image, 'Gender = ' + str(test_x[0,0]) + ' ' + 'Age = ' + str(test_x[0,1]),(10, int(0.5*image.shape[0])),font,3,(0,0,255),2,cv2.LINE_AA)
         #image = cv2.putText(image, 'Ad Selected = Ad#' + str(prediction[0]) + ' with data as: ' + str(X[prediction[0]-1]),(10, int(0.5*image.shape[0]+50)),font,2,(0,0,255),2,cv2.LINE_AA)
 
         cv2.imwrite(new_im,image)
-        print pred
-        print "ID Predicted:" + str(ids[int(pred[0])-1])
+        print "Ad# Predicted:" + str(pred)
+        #print "ID Predicted:" + str(ids[int(pred[0])-1])
         return ids[int(pred[0])-1]
     else:
         print 'No one detected!'

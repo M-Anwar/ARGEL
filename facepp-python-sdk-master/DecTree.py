@@ -107,9 +107,13 @@ def learn_tree_and_predict(Train, X_Test):
     #     Y = Y[X[:,0]<0.5]
     #     X = X[X[:,0]<0.5]
 
-    print "Print X and Y:.."
+    print "Train Data: (X)..."
     print X
+    print "Train Data: (Y)..."
     print Y
+
+
+    
     clf = create_tree(X,Y)
 
     #Testing
@@ -201,7 +205,7 @@ def K_near_age(train_data, X_Test, N):
     #     y = y[X[:,0]<0.5]
     #     X = X[X[:,0]<0.5]
     y = y.ravel()
-    print "Print X and Y:.."
+    print "Print Training: X and Y:.."
     print X
     print y
 
