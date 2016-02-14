@@ -3468,7 +3468,7 @@ fieldset[disabled] .btn-info.active {
 .btn-warning {
   border-color: #f9a527;
   color: #ffffff;
-  background-color: #faaf40;
+  background-color: #f99a0e;/*#faaf40;*/
   border-color: #faaf40;
 }
 .btn-warning:hover,
@@ -3554,7 +3554,7 @@ fieldset[disabled] .btn-warning.active {
 .btn-danger {
   border-color: #f85f39;
   color: #ffffff;
-  background-color: #f97352;
+  background-color: #f74b21;/*#f97352;*/
   border-color: #f97352;
 }
 .btn-danger:hover,

@@ -97,7 +97,7 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
             Session.findOne({"_id" : sess._id}, {"bestAd": true}).populate('bestAd')
                 .exec(function(err, session){
                     if(err){res.send(err); return;}                                        
-                    res.json({"filelink": session.bestAd.videoad.filename,
+                    res.json({"bestAd": session.bestAd, 
                               "pythonDebug":output
                              }); //Send back the best ad file name
                 

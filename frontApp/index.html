@@ -64,9 +64,11 @@
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <video id= "display" src="" width = "720" height ="480" controls autoplay = "true" </video>                       
-                        
+                    <div class="col-lg-12" style="display:block" id = "videoDisplay">
+                        <video class= "display" id = "display" src="" width = "720" height ="480" controls autoplay = "true" </video>                          
+                    </div>
+                    <div class ="col-lg-12" style = "display:none" id = "imageDisplay">
+                        <img class="display" id = "displayImg" src="title.png"></img>                            
                     </div>
                 </div>
                 <div class="row">
@@ -98,7 +100,8 @@
     <script>
         var defaultAddress = "http://localhost:3000";
         var fetchAd = "/api/fetchad";
-        var viewAd = "/view/";        
+        var viewAd = "/viewad/";   
+        
         var ipcam = false;
         var interval;
         var recording = false;
@@ -147,8 +150,21 @@
         function init()
         {
             $("#serverAddress").attr("value",defaultAddress);
-            setupWebcam();
-            
+            setupWebcam();                  
+        }
+
+        //Fullscreen controls
+        document.addEventListener("keydown", function(e) {                
+                if (e.keyCode == 27) {  //Escape key to quit fullscreen
+                  exitFullscreen();
+                }
+            }, false);
+        function exitFullscreen(){
+            document.webkitCancelFullScreen();
+        }
+        function requestFullscreen(displayID){
+            var display = document.getElementById(displayID);
+            display.webkitRequestFullscreen();
         }
         
         //Webcam INIT
@@ -257,6 +273,31 @@
             fs.writeFileSync(imageName, buf);            
             canvas = null;
         }
+        
+        //Advertisement Display
+        function showAd(curAdd, viewAdURI){
+            
+            //Copied from server validation - check to see if the ad is an image or video
+            var mime = curAdd.videoad.contentType   
+            var video = true;
+            if(mime.indexOf("jpeg")> -1 || mime.indexOf("png")>-1){
+                video = false;
+            }
+            if(video){
+                $('#display').attr('src',viewAdURI+curAdd._id);
+                $('#displayImg').attr('src','');
+                $('#videoDisplay').show();
+                $('#imageDisplay').hide();
+            }
+            else{
+                $('#displayImg').attr('src',viewAdURI+curAdd._id);
+                $('#display').attr('src','');
+                $('#videoDisplay').hide();
+                $('#imageDisplay').show();                
+            }
+        }
+
+
         //Server calls
         function takePhoto()
         {
@@ -287,9 +328,11 @@
                     console.log(err);
                     return console.error('upload failed:', err);
                 }
-                console.log('Upload successful!  Server responded with:', body);
-                var jsonBody = JSON.parse(body);
-                $('#display').attr('src',viewAdURI+jsonBody.filelink);
+                //console.log('Upload successful!  Server responded with:', body);
+                var jsonBody = JSON.parse(body);                
+                //$('#display').attr('src',viewAdURI+jsonBody.bestAd._id);
+                console.log(jsonBody.bestAd);
+                showAd(jsonBody.bestAd, viewAdURI);
                 $('#pythonDebug').html(jsonBody.pythonDebug);
                 
             });
@@ -321,7 +364,7 @@
                 url: fetchAdURI, // the file to call
                 enctype: $(this).attr('enctype'),
                 success: function(data, status) { // on success..                    
-                    $('#display').attr('src',viewAdURI+data.filelink);                    
+                    $('#display').attr('src',viewAdURI+data.bestAd._id);                    
                     $('#pythonDebug').html(data.pythonDebug);
                 },
                 error: function(xhr, desc, err) { // on success..                    

@@ -5,8 +5,12 @@ block content
       .mbr-section__container.container      
         .row.animated.fadeInUp   
             .col-sm-12.text-white
-                h1 Ads Database
-                    a.mbr-buttons__link.btn.text-white(href='/aduploadpage') Upload Ad (MOVE this to the right)
+                .row
+                    .col-sm-6
+                        h1.btn-inverse Advertisement Database  
+                    .col-sm-6
+                        a.mbr-navbar__items--right.mbr-buttons__btn.btn.btn-warning(href='/aduploadpage') Upload
+                        a.mbr-navbar__items--right.mbr-buttons__btn.btn.btn-warning(href='#') Analytics
                 .alert.alert-success(role='alert') Here, you can find the list of ads and corresponding descriptions
                 #displayusers.container
                     table.table
@@ -14,20 +18,18 @@ block content
                             tr
                                 th Ad name
                                 th Descriptions
-                                th Tags
-                                th Upload User ID
+                                th Tags                                
                                 th View Ad
                                 th Delete Ad
                         tbody
                             each adslist, index in adscollection
-                                tr
-                                    td= adslist.adname
-                                    td= adslist.description
-                                    td= adslist.tags
-                                    td= adslist.userid
-                                    td
-                                        a.text-white(href="/adprofile/#{adslist._id}")="view"
-                                    td
-                                        a.text-white(href="/deleteadprofile/#{adslist._id}")="delete"
+                                tr.btn-inverse
+                                    td.col-md-2= adslist.adname
+                                    td.col-md-4= adslist.description
+                                    td.col-md-4= adslist.tags                                    
+                                    td.col-md-1
+                                        a.mbr-buttons__btn.btn.btn-md.btn-default(href="/adprofile/#{adslist._id}")="view"
+                                    td.col-md-1
+                                        a.mbr-buttons__btn.btn.btn-md.btn-danger(href="/deleteadprofile/#{adslist._id}")="delete"
                                     
 

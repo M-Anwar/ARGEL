@@ -48,9 +48,13 @@ router.get('/ads', isAuthenticated,function(req, res, next) {
 //  profile Page for current viewer  GET
 router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
 	Ad.findOne({ "_id" : req.params.ad_id }, function(err, viewthisad) {
-        res.render('adprofile', { user: req.user , ad: viewthisad}); 
+        var mime = viewthisad.videoad.contentType   
+        var video = true;
+        if(mime.indexOf("jpeg")> -1 || mime.indexOf("png")>-1){
+            video = false;
+        }
+        res.render('adprofile', { user: req.user , ad: viewthisad, isVideo: video}); 
 	});
-
 });
 
 router.get('/aduploadpage', isAuthenticated,function(req, res, next) {
@@ -135,7 +139,63 @@ router.get('/view/:id',function(req,res){
 			
 	});
 });
+router.get('/viewad/:id',function(req,res,next){
+	var pic_id = req.param('id');
+	var conn = mongoose.connection;	
+	var Grid = require('gridfs-stream');
+	Grid.mongo = mongoose.mongo; 
+	var gfs = Grid(conn.db); 
+    
+    
+    Ad.findOne({ "_id" : req.params.id }, function(err, thisAd) {        
+        try{
+            var imageType = thisAd.videoad.contentType        
+            if(imageType.indexOf("jpeg")> -1 || imageType.indexOf("png")>-1){
+                //The content is an image
+                var stream = gfs.createReadStream({filename: thisAd.videoad.filename})
+                    .on("open", function() {           
+                        stream.pipe(res);
+                    }).on("error", function(err) {
+                        res.end(err);
+                    });
+            }
+            else{ //Assume it is a video and stream the content            
+                var range = req.headers.range;	
+                var positions = range.replace(/bytes=/, "").split("-");
+                var start = parseInt(positions[0], 10);
 
+                gfs.files.findOne({filename: thisAd.videoad.filename}, function (err, files) {
+                    if (err) {
+                        res.json(err);
+                    }		
+                    var total = files.length;
+                    var end = positions[1] ? parseInt(positions[1], 10) : total - 1;        
+                    var chunksize = (end - start) + 1;        
+                    res.writeHead(206, {
+                        "Content-Range": "bytes " + start + "-" + end + "/" + total,
+                        "Accept-Ranges": "bytes",
+                        "Content-Length": chunksize,
+                        "Content-Type": "video/mp4"
+                    });
+
+                    var stream = gfs.createReadStream({filename: thisAd.videoad.filename, range:{startPos: start, endPos:end}})
+                    .on("open", function() {           
+                        stream.pipe(res);
+                    }).on("error", function(err) {
+                        res.end(err);
+                    });	        
+
+                });
+
+            }
+        }catch(e){
+            next(e);
+        }
+        
+       
+			
+	});
+});
 
 /** Video Streaming Tests -- Remove When Necessary **/
 /*
