@@ -64,10 +64,10 @@
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12" style="display:block" id = "videoDisplay">
+                    <div class="col-lg-12" style="display:none" id = "videoDisplay">
                         <video class= "display" id = "display" src="" width = "720" height ="480" controls autoplay = "true" </video>                          
                     </div>
-                    <div class ="col-lg-12" style = "display:none" id = "imageDisplay">
+                    <div class ="col-lg-12" style = "display:block" id = "imageDisplay">
                         <img class="display" id = "displayImg" src="title.png"></img>                            
                     </div>
                 </div>
@@ -363,8 +363,9 @@
                 type: $(this).attr('method'), // GET or POST
                 url: fetchAdURI, // the file to call
                 enctype: $(this).attr('enctype'),
-                success: function(data, status) { // on success..                    
-                    $('#display').attr('src',viewAdURI+data.bestAd._id);                    
+                success: function(data, status) { // on success..  
+                    showAd(data.bestAd, viewAdURI);
+//                    $('#display').attr('src',viewAdURI+data.bestAd._id);                    
                     $('#pythonDebug').html(data.pythonDebug);
                 },
                 error: function(xhr, desc, err) { // on success..                    

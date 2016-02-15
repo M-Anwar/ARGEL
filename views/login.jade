@@ -2,21 +2,20 @@ extends layout
 
 block content
     section.content.content-2      
-      .mbr-section__container.container      
-        .row.animated.fadeInUp                                                 
-          .col-sm-3.col-sm-offset-4
-            if (info != "")
-              .alert.alert-danger           
-                p.leftside #{info}
-            h1.text-white Login
-            form(role='form', action="/login",method="post", style='max-width: 300px;')
-              .form-group
-                  input.form-control(type='text', name="username", id="username", placeholder='Enter Email')
-              .form-group
-                input.form-control(type='password', name="password", id="password", placeholder='Password')
-              a(href='/')
-                button.btn.btn-default(type="button") Cancel
-              &nbsp;
-              button.btn.btn-success(type='submit' id='loginsubmit') Submit
+        .mbr-section__container.container      
+            .row.animated.fadeInUp                                                 
+                .col-sm-3.col-sm-offset-4
+                    if (info != "")
+                        .alert.alert-danger           
+                            p.leftside #{info}
+                    h1.text-white Login
+                    form(role='form', action="/login",method="post", style='max-width: 300px;').btn-inverse
+                        .form-group
+                            input.form-control(type='text', name="username", id="username", placeholder='Enter Email')
+                        .form-group
+                             input.form-control(type='password', name="password", id="password", placeholder='Password')
+                        a(href='/').button.btn.btn-default(type="button") Cancel
+                        &nbsp;
+                        button.btn.btn-success(type='submit' id='loginsubmit') Submit
   
 

@@ -1,41 +1,3 @@
-//extends layout
-//
-//block content
-//    section.content.content-2      
-//      .mbr-section__container.container      
-//        .row 
-//            .col-sm-12.text-white
-//                h1 #{ad.adname}
-//                //.alert.alert-success(role='alert') Here, you can view details of an ad
-//                .container
-//                    .row
-//                        .col-sm-6.text-white.animated.fadeInRight  
-//                            .row
-//                                .panel.panel-primary 
-//                                    .panel-heading Ad Profile                                        
-//                                    .panel-body
-//                                        ul.user-details.text-black
-//                                            li <b>Ad Name: </b>#{ad.adname}                                            
-//                                            li <b>Description: </b>#{ad.description}
-//                                            li <b>Tags: </b>#{ad.tags}
-//                                            li <b>Video ID: </b>#{ad.videoad.filename}  
-//                                            li <b>Content Type: </b>#{ad.videoad.contentType}  
-//                                            li <b>Metadata: </b>#{ad.metaData}  
-//                                            li <b>Statistics: </b>#{ad.statistics}  
-//                                         a.mbr-buttons__btn.btn.btn-md.btn-default(href="/editadprofile/#{ad._id}", role='button') Edit
-//                                         a.mbr-buttons__btn.btn.btn-md.btn-danger(href="#", role='button') Delete                       
-//                            
-//
-//                        .col-sm-6.text-white
-//                            .panel.panel-primary 
-//                                .panel-heading Advertisement                             
-//                                .panel-body
-//                                    if(isVideo)
-//                                        video.adpreview(src='/viewad/#{ad._id}', type="video/mp4", controls='')
-//                                    else
-//                                        img.adpreview(src ="/viewad/#{ad._id}")
-//                   
-
 extends layout
 
 block content 
@@ -54,13 +16,14 @@ block content
                                         .row
                                           .col-sm-5.col-sm-offset-4
                                             #errorbox
-                                              if (info!="")
-                                                .alert.alert-danger                                                  
+                                              if (info)
+                                                .alert.alert-danger
+                                                  p.leftside Error! 
                                                   p.leftside #{info}        
                                             .spacer 
                                             h1 Upload New Ad
 
-                                            form(role='form', action="/adupload",method="post", enctype="multipart/form-data", style='max-width: 100%;' id="adupload")
+                                            form(role='form', action="/adupload",method="post", enctype="multipart/form-data", style='max-width: 400px;' id="adupload")
                                               .form-group(style='display:none;')
                                                 input.form-control(type='text', id="userid", name="userid", value='#{user._id}')
                                               .form-group

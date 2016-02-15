@@ -58,12 +58,25 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
 });
 
 router.get('/aduploadpage', isAuthenticated,function(req, res, next) {
-	res.render('aduploadpage', {user: req.user});
+	res.render('aduploadpage', {user: req.user, info: req.flash('aderror')});
 });
 
 
 router.post('/adupload', upload.single('videoAd'), function(req,res){
 	var dirname = require('path').dirname(__dirname);
+    console.log(req.user);
+    //Server side error checks - ideally handle all these on client side, this is backup
+    if(!req.file){
+        req.flash('aderror','Please upload an advertisement');
+        res.redirect('aduploadpage');
+        return;
+    }
+    if(req.body.adname=="" || req.body.description==""){
+        req.flash('aderror','Please fill in the required fields');
+        res.redirect('aduploadpage');
+        return;
+    }
+    
 	var filename = req.file.filename;
 	var path = req.file.path;
 	var type = req.file.mimetype;
@@ -105,6 +118,7 @@ router.post('/adupload', upload.single('videoAd'), function(req,res){
 	
 });
 
+/* Deprecated - do not use anymore, only supports video streaming and no imges */
 router.get('/view/:id',function(req,res){
 	var pic_id = req.param('id');
 	var conn = mongoose.connection;	
@@ -189,7 +203,7 @@ router.get('/viewad/:id',function(req,res,next){
 
             }
         }catch(e){
-            next(e);
+            next(e); //Throw stack trace error on webpage
         }
         
        
