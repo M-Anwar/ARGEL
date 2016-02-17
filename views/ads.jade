@@ -11,6 +11,7 @@ block content
                     .col-sm-6
                         a.mbr-navbar__items--right.mbr-buttons__btn.btn.btn-warning(href='/aduploadpage') Upload
                         a.mbr-navbar__items--right.mbr-buttons__btn.btn.btn-warning(href='#') Analytics
+                
                 .alert.alert-success(role='alert') Here, you can find the list of ads and corresponding descriptions
                 #displayusers.container
                     table.table
@@ -26,7 +27,7 @@ block content
                                 tr.btn-inverse
                                     td.col-md-2= adslist.adname
                                     td.col-md-4= adslist.description
-                                    td.col-md-4= adslist.tags                                    
+                                    td.col-md-4= adslist.tags[0]                                    
                                     td.col-md-1
                                         a.mbr-buttons__btn.btn.btn-md.btn-default(href="/adprofile/#{adslist._id}")="view"
                                     td.col-md-1

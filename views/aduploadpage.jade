@@ -1,83 +1,99 @@
-//extends layout
-//
-//block content
-//    section.content.content-2      
-//      .mbr-section__container.container      
-//        .row 
-//            .col-sm-12.text-white
-//                h1 #{ad.adname}
-//                //.alert.alert-success(role='alert') Here, you can view details of an ad
-//                .container
-//                    .row
-//                        .col-sm-6.text-white.animated.fadeInRight  
-//                            .row
-//                                .panel.panel-primary 
-//                                    .panel-heading Ad Profile                                        
-//                                    .panel-body
-//                                        ul.user-details.text-black
-//                                            li <b>Ad Name: </b>#{ad.adname}                                            
-//                                            li <b>Description: </b>#{ad.description}
-//                                            li <b>Tags: </b>#{ad.tags}
-//                                            li <b>Video ID: </b>#{ad.videoad.filename}  
-//                                            li <b>Content Type: </b>#{ad.videoad.contentType}  
-//                                            li <b>Metadata: </b>#{ad.metaData}  
-//                                            li <b>Statistics: </b>#{ad.statistics}  
-//                                         a.mbr-buttons__btn.btn.btn-md.btn-default(href="/editadprofile/#{ad._id}", role='button') Edit
-//                                         a.mbr-buttons__btn.btn.btn-md.btn-danger(href="#", role='button') Delete                       
-//                            
-//
-//                        .col-sm-6.text-white
-//                            .panel.panel-primary 
-//                                .panel-heading Advertisement                             
-//                                .panel-body
-//                                    if(isVideo)
-//                                        video.adpreview(src='/viewad/#{ad._id}', type="video/mp4", controls='')
-//                                    else
-//                                        img.adpreview(src ="/viewad/#{ad._id}")
-//                   
-
 extends layout
 
-block content 
-    script(src='/javascripts/aduploadpage.js')
-    section#header1-73.mbr-box.mbr-section.mbr-section--relative.mbr-section--fixed-size.mbr-section--full-height.mbr-section--bg-adapted.mbr-parallax-background.mbr-after-navbar    
-        .mbr-box__magnet.mbr-box__magnet--sm-padding.mbr-box__magnet--center-left
-            .mbr-overlay(style='opacity: 0.8; background-color: rgb(76, 105, 114);')
-            .mbr-box__container.mbr-section__container.container
-                .mbr-box.mbr-box--stretched
-                    .mbr-box__magnet.mbr-box__magnet--center-left
-                        .row
-                            .col-sm-6
-                                .mbr-hero.animated.fadeInUp
+block content            
+    script(src='/javascripts/aduploadpage.js') 
+    script(src='/javascripts/adMap.js')    
+    script(src='/javascripts/tag-it.js')
+   
+    section.content.content-2      
+      .mbr-section__container.container      
+        .row 
+            .col-sm-12.text-white
+                h1 Upload New Ad
+                hr
+                #errorbox
+                    if (info!="")
+                        .alert.alert-danger                                                  
+                            p.leftside #{info}        
+                .spacer 
+                .alert.alert-success(role='alert') Follow the steps outlined below to get your Ad campaign up and running. Upload your content and then select the audience you wish to target.
+                .container.col-sm-offset-1.text-white
+                    .row
+                        .col-sm-10.animated.fadeInUp
+                            h1 1. Content 
+                        .col-sm-5.animated.fadeInUp                                                                                            
+                            form(role='form', action="#",method="post", enctype="multipart/form-data", style='max-width: 100%;' id="contentUpload")
+                              .form-group(style='display:none;')
+                                input.form-control(type='text', id="userid", name="userid", value='#{user._id}')
+                              .form-group
+                                span.h4 Ad Name
+                                input.form-control(type='text', id="adname", name="adname", placeholder='Name of the Ad')
+                              .form-group
+                                span.h4 Description
+                                span.label (A brief description of your advertisement)
+                                input.form-control(type = 'text', id="description", name="description", placeholder='Ad Description')                            
+                              .form-group
+                                span.h4 Upload File
+                                span.label (Choose a video or a picture to upload)
+                                input(type="file", name="videoAd", id = "fileChoose", accept=".png,.jpg, .jpeg,.ogg,.ogv,.mp4,.mov")
+                        .col-sm-5            
+                            span.h4 Preview
+                            .panel.panel-primary.panel-body                                                                       
+                                img.preview(src ="assets/images/adplaceholder.png", id="preview")
+                                video.preview(controls='', style = "display:none", id = "videoPreview")                             
+                    
+                    .row.animated.fadeInUp                  
+                        .col-sm-10        
+                            hr
+                            h1 2. Audience 
+                            .row
+                                .col-sm-6
+                                    .col-sm-12.span.h4 Age Range                            
+                                    .col-sm-5.formgroup
+                                        select.form-control.input-sm(id="ageBottomRange")   
+                                    .col-sm-1.formgroup
+                                        h4 to
+                                    .col-sm-5.formgroup
+                                        select.form-control.input-sm(id="ageTopRange")
+                                .col-sm-6
+                                    .col-sm-12.span.h4 Gender                            
+                                    .col-sm-12                                          
+                                        .btn-group(data-toggle = "buttons", style = "width:100%;")
+                                            label.btn.btn-primary.active.col-sm-4
+                                                input(type="radio" name="genderOptions" id="allGender" value = "0" autocomplete="off" checked)
+                                                |All
+                                            label.btn.btn-primary.col-sm-4
+                                                input(type="radio" name="genderOptions" id="maleGender" value = "1" autocomplete="off")
+                                                |Male
+                                            label.btn.btn-primary.col-sm-4
+                                                input(type="radio" name="genderOptions" id="femaleGender" value = "-1" autocomplete="off")
+                                                |Female                            
+                            .row
+                                .col-sm-12
+                                    .col-sm-12.span.h4 Location
+                                    .col-sm-12.span.p 
+                                        |Click on the map to add a marker for where your advertisment should be shown. 
+                                        |You can resize the radius of the inclusion zone by clicking and dragging the handles. 
+                                        |You can also move the location by dragging the center handle. 
+                                        |If you wish to delete a marker, click on it and press the delete button. 
+                                        |A maximum of 5 locations can be chosen with a maximum radius of 25km. 
+                                        |Not all locations need to be assigned, but you should include atleast one or else your advertisement will not be shown at all. 
+                                    #googleMap.col-sm-12(style="height:600px;")    
+                            .row
+                                .col-sm-12
+                                    .col-sm-12.span.h4 Descriptive Tags 
+                                    .col-sm-12
+                                        form(role='form', action="#",method="post", enctype="multipart/form-data", style='max-width: 100%;' id="tagsUpload")
+                                            p 
+                                                |Add some descriptive tags to your advertisement to help us understand what its about. 
+                                                |The more specific you are, the better we can use them to help target your product.
+                                            input.form-control(id="descTags", name="metaData")                                      
                                     
-                                    .container.container-position
-                                        .row
-                                          .col-sm-5.col-sm-offset-4
-                                            #errorbox
-                                              if (info!="")
-                                                .alert.alert-danger                                                  
-                                                  p.leftside #{info}        
-                                            .spacer 
-                                            h1 Upload New Ad
-
-                                            form(role='form', action="/adupload",method="post", enctype="multipart/form-data", style='max-width: 100%;' id="adupload")
-                                              .form-group(style='display:none;')
-                                                input.form-control(type='text', id="userid", name="userid", value='#{user._id}')
-                                              .form-group
-                                                span.label Ad Name
-                                                input.form-control(type='text', id="adname", name="adname", placeholder='Name of the Ad')
-                                              .form-group
-                                                span.label Description
-                                                input.form-control(type='text', id="description", name="description", placeholder='Ad Description')
-                                              .form-group
-                                                span.label Tags
-                                                input.form-control(type='text', id="tags", name="tags", placeholder='Tag 1') 
-                                              NOTE You need to use jquery to have a small button here to add a new input text box for more tags.
-                                              .form-group
-                                                span.label Upload File
-                                                input(type="file", name="videoAd")
-                                              a(href='/adupload')
-                                                button.btn.btn-default(type="button") Cancel
-                                              &nbsp;
-                                              button.btn.btn-success(type='submit' id='submitbutton') Upload
-
+                                
+                        
+                &nbsp;
+                hr
+                .row.animated.fadeInUp
+                    .col-sm-12.btn-inverse                   
+                        button.mbr-navbar__items--right.mbr-buttons__btn.btn.btn-success(type='submit' id='submitbutton') Upload 
+                        a.button.mbr-navbar__items--right.mbr-buttons__btn.btn.btn-default(href = '/ads', type="button") Cancel                        

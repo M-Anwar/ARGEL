@@ -1,37 +1,49 @@
 extends layout
 
 block content
+    script(src='/javascripts/adMap.js') 
     section.content.content-2      
       .mbr-section__container.container      
         .row 
             .col-sm-12.text-white
                 h1 #{ad.adname}
+                hr
                 //.alert.alert-success(role='alert') Here, you can view details of an ad
                 .container
                     .row
                         .col-sm-6.text-white.animated.fadeInRight  
                             .row
-                                .panel.panel-primary 
-                                    .panel-heading Ad Profile                                        
-                                    .panel-body
-                                        ul.user-details.text-black
-                                            li <b>Ad Name: </b>#{ad.adname}                                            
-                                            li <b>Description: </b>#{ad.description}
-                                            li <b>Tags: </b>#{ad.tags}
-                                            li <b>Video ID: </b>#{ad.videoad.filename}  
-                                            li <b>Content Type: </b>#{ad.videoad.contentType}  
-                                            li <b>Metadata: </b>#{ad.metaData}  
-                                            li <b>Statistics: </b>#{ad.statistics}  
-                                         a.mbr-buttons__btn.btn.btn-md.btn-default(href="/editadprofile/#{ad._id}", role='button') Edit
-                                         a.mbr-buttons__btn.btn.btn-md.btn-danger(href="#", role='button') Delete                       
+                                .col-sm-12
+                                    .panel.panel-primary 
+                                        .panel-heading Ad Profile                                        
+                                        .panel-body
+                                            ul.user-details.text-black
+                                                li <b>Ad Name: </b>#{ad.adname}                                            
+                                                li <b>Description: </b>#{ad.description}
+                                                li <b>Tags: </b>#{ad.tags[0]}
+                                                li <b>Video ID: </b>#{ad.videoad.filename}  
+                                                li <b>Content Type: </b>#{ad.videoad.contentType}  
+                                                li <b>Metadata: </b>#{ad.metaData}  
+                                                li <b>Statistics: </b>#{ad.statistics}  
+                                             a.mbr-buttons__btn.btn.btn-md.btn-default(href="/editadprofile/#{ad._id}", role='button') Edit
+                                             a.mbr-buttons__btn.btn.btn-md.btn-danger(href="#", role='button') Delete              
                             
-
                         .col-sm-6.text-white
                             .panel.panel-primary 
                                 .panel-heading Advertisement                             
                                 .panel-body
                                     if(isVideo)
-                                        video.adpreview(src='/viewad/#{ad._id}', type="video/mp4", controls='')
+                                        video.preview(src='/view/#{ad._id}', type="video/mp4", controls='')
                                     else
-                                        img.adpreview(src ="/viewad/#{ad._id}")
+                                        img.preview(src ="/view/#{ad._id}")
+                    .row
+                        .col-sm-12.text-white.animated.fadeInUp                              
+                            .panel-heading Location Targets                             
+                            .panel-body
+                                #googleMap.col-sm-12(style="height:600px;") 
                    
+                   script.
+                    editable = false;
+                    preload = !{ad.tags[1]};
+                    
+                    

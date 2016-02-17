@@ -90,7 +90,7 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
         python.stdout.on('data', function(data){ output += data + "\n" });
         python.stderr.on('data', function(err){console.log("Error: " + err); output+=err})
         python.on('close', function(code){ 
-            if (code !== 0) { res.send(500, output); }
+//            if (code !== 0) { res.send(500, output); }
             console.log(output);
             //res.send(200, output); //Un-comment to view pythons script output            
             

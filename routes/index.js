@@ -37,7 +37,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/ads', isAuthenticated,function(req, res, next) {
 	Ad.find({}, function(err, adsobjects) {
-		console.log("adsobjects:" + adsobjects);
+		//console.log("adsobjects:" + adsobjects);
 		res.render('ads',
 				{adscollection : adsobjects,
 				user: req.user
@@ -47,12 +47,15 @@ router.get('/ads', isAuthenticated,function(req, res, next) {
 });
 //  profile Page for current viewer  GET
 router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
-	Ad.findOne({ "_id" : req.params.ad_id }, function(err, viewthisad) {
-        var mime = viewthisad.videoad.contentType   
-        var video = true;
-        if(mime.indexOf("jpeg")> -1 || mime.indexOf("png")>-1){
-            video = false;
+	Ad.findOne({ "_id" : req.params.ad_id }, function(err, viewthisad) {        
+        var mime = viewthisad.videoad.contentType          
+        var video = true;        
+        if(mime){
+            if(mime.indexOf("jpeg")> -1 || mime.indexOf("png")>-1){
+                video = false;
+            }
         }
+        console.log(viewthisad.tags[1]);
         res.render('adprofile', { user: req.user , ad: viewthisad, isVideo: video}); 
 	});
 });
@@ -61,10 +64,38 @@ router.get('/aduploadpage', isAuthenticated,function(req, res, next) {
 	res.render('aduploadpage', {user: req.user, info: req.flash('aderror')});
 });
 
-
-router.post('/adupload', upload.single('videoAd'), function(req,res){
+//Test route for uploading ads
+router.post('/adtestupload',isAuthenticated,upload.single('videoAd'),function(req,res){
+    console.log('File: ' + req.file.filename + " : " + req.file.path);
+    console.log('Adname: ' + req.body.adname);
+    console.log('Userid: ' + req.body.userid);
+    console.log('Description: ' + req.body.description);
+    console.log('Tags: ' + req.body.tags);
+    console.log('metaData: ' + req.body.metaData);
+    console.log('Locations: ' + req.body.locations);
+    var tagArray = [req.body.tags, req.body.locations];
+    console.log(tagArray);
+    
+    var ad = new Ad();
+	ad.adname = req.body.adname;
+	ad.userid = req.body.userid;
+	ad.description = req.body.description;
+	// ad.videoad._id = id;	
+	ad.tags = tagArray;
+    ad.metaData = req.body.metaData;
+	
+	//save the ad to the db
+    ad.save(function(err,a){
+        if(err) throw err;                   
+    });
+    
+    
+    res.json({redirect:'/ads'});
+    res.end();    
+});
+router.post('/adupload', isAuthenticated,upload.single('videoAd'), function(req,res){
 	var dirname = require('path').dirname(__dirname);
-    console.log(req.user);
+    
     //Server side error checks - ideally handle all these on client side, this is backup
     if(!req.file){
         req.flash('aderror','Please upload an advertisement');
@@ -103,11 +134,12 @@ router.post('/adupload', upload.single('videoAd'), function(req,res){
 	var ad = new Ad();
 	ad.adname = req.body.adname;
 	ad.userid = req.body.userid;
-	ad.description = req.body.description;
-	// ad.videoad._id = id;
+	ad.description = req.body.description;	
 	ad.videoad.filename = filename;
-	ad.videoad.contentType = type;
-	ad.tags = req.body.tags;
+	ad.videoad.contentType = type;	
+    var tagArray = [req.body.tags, req.body.locations];
+    ad.tags = tagArray;
+    ad.metaData = req.body.metaData;
 	
 	//save the ad to the db
     ad.save(function(err,a){
@@ -119,7 +151,7 @@ router.post('/adupload', upload.single('videoAd'), function(req,res){
 });
 
 /* Deprecated - do not use anymore, only supports video streaming and no imges */
-router.get('/view/:id',function(req,res){
+router.get('/viewad/:id',function(req,res){
 	var pic_id = req.param('id');
 	var conn = mongoose.connection;	
 	var Grid = require('gridfs-stream');
@@ -153,7 +185,7 @@ router.get('/view/:id',function(req,res){
 			
 	});
 });
-router.get('/viewad/:id',function(req,res,next){
+router.get('/view/:id',function(req,res,next){
 	var pic_id = req.param('id');
 	var conn = mongoose.connection;	
 	var Grid = require('gridfs-stream');
