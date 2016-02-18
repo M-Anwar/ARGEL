@@ -36,12 +36,13 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/ads', isAuthenticated,function(req, res, next) {
-	Ad.find({}, function(err, adsobjects) {
-		//console.log("adsobjects:" + adsobjects);
+    //Show the ads the USER has uploaded
+	Ad.find({userid: req.user._id}, function(err, adsobjects) {
+        if(err) {console.log(err); return;}
 		res.render('ads',
-				{adscollection : adsobjects,
-				user: req.user
-			});
+            {adscollection : adsobjects,
+            user: req.user
+        });
 
 	});
 });
