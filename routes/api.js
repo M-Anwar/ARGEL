@@ -51,10 +51,69 @@ router.get('/getsessionimage/:id',function(req,res,next){
 });
 router.get('/getads', function(req,res,next){
     Ad.find({}, function(err,ads){
-        if(err){console.log(err);res.send(err); return;}        
+        if(err){console.log(err);res.send(err); return;} 
+        for(var ad in ads){
+            var marks = JSON.parse(ads[ad].tags[1]);      
+            for(var mark in marks){
+                var lat = marks[mark].lat;
+                var lng = marks[mark].lng;
+                var radius = marks[mark].radius;
+                
+            }
+        }
         res.json(ads);
     });
 });
+
+router.get('/getadsloc/:lat/:lng', function(req,res,next){
+    Ad.find({}, function(err,ads){
+        if(err){console.log(err);res.send(err); return;} 
+        var err = false;
+        if(!req.params.lat || isNaN(parseFloat(req.params.lat))) err = true;
+        if(!req.params.lng || isNaN(parseFloat(req.params.lng))) err = true;
+        if(err){
+            res.json({error: "Missing or illegal arguments"});
+            res.send();
+            return;
+        }
+        var R = 6373; //Radius of the idealized spherical Earth.       
+        var sendAd = [];
+        for(var ad in ads){
+            var marks = JSON.parse(ads[ad].tags[1]);      
+            for(var mark in marks){
+                var lat1 = deg2rad(marks[mark].lat);
+                var lng1 = deg2rad(marks[mark].lng);
+                var lat2 = deg2rad(parseFloat(req.params.lat));
+                var lng2 = deg2rad(parseFloat(req.params.lng));
+                var radius = parseFloat(marks[mark].radius);             
+                var dlon = lng2 - lng1; 
+                var dlat = lat2 - lat1;                  
+                var a  = Math.pow(Math.sin(dlat/2),2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dlon/2),2);
+		        var c  = 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); 
+                var dist = R * c;
+                
+                console.log("");
+                console.log("-- Distance --");
+                console.log(marks[mark].lat + "," + marks[mark].lng);
+                console.log(parseFloat(req.params.lat) + "," +parseFloat(req.params.lng));              
+                console.log(dist);
+                console.log("radius: " + radius);
+                console.log(dist>radius/1000? "outside":"inside");
+                
+                if(dist<radius/1000){
+                    sendAd.push(ads[ad]);
+                    break;
+                }
+            }
+        }
+        res.json(sendAd);
+        res.end();
+    });
+});
+function deg2rad(deg) {
+    rad = deg * Math.PI/180; // radians = degrees * pi/180
+    return rad;
+}
 router.post('/postrecommendation', function(req,res,next){
     var sessionID = req.body.sessionID;
     var adID = req.body.adID;

@@ -36,15 +36,49 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/ads', isAuthenticated,function(req, res, next) {
-	Ad.find({}, function(err, adsobjects) {
-		//console.log("adsobjects:" + adsobjects);
+    //Show the ads the USER has uploaded
+	Ad.find({userid: req.user._id}, function(err, adsobjects) {
+        if(err) {console.log(err); return;}
 		res.render('ads',
-				{adscollection : adsobjects,
-				user: req.user
-			});
+            {adscollection : adsobjects,
+            user: req.user
+        });
 
 	});
 });
+
+router.get('/deleteadprofile/:ad_id', isAuthenticated, function(req, res){
+	console.log(req.params.ad_id);
+        
+    var conn = mongoose.connection;	
+	var Grid = require('gridfs-stream');
+	Grid.mongo = mongoose.mongo; 
+	var gfs = Grid(conn.db); 
+    
+    Ad.findOne({"_id" : req.params.ad_id}, function(err,deletethisad){
+        //Remove the file chunks first
+        gfs.findOne({filename: deletethisad.videoad.filename}, function(err,fileAd){
+            gfs.db.collection('fs.chunks').remove({files_id:fileAd._id}, function(err){
+                if(err) console.log("Error removing chunks");
+            });
+            
+            //While the chunks are being removed, we can now delete the file holder
+            gfs.remove({filename: deletethisad.videoad.filename}, function(err){
+                if(err) console.log("Error during deletion");
+                console.log("File Removed");
+                
+                //After the file holder is removed, remove the ad from our ad database
+                deletethisad.remove(function(err,result){
+                    if(err) console.log("Error");
+                    res.redirect('/ads');
+                });
+            });
+        });
+       
+       
+    });
+});
+
 //  profile Page for current viewer  GET
 router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
 	Ad.findOne({ "_id" : req.params.ad_id }, function(err, viewthisad) {        
@@ -146,6 +180,7 @@ router.post('/adupload', isAuthenticated,upload.single('videoAd'), function(req,
         if(err) throw err;                   
     });
 
+    res.json({redirect:'/ads'});
 	res.redirect('/ads');
 	
 });

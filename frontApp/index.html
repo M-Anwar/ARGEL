@@ -105,7 +105,58 @@
         var ipcam = false;
         var interval;
         var recording = false;
-
+		var dataJSONlocal={ "position" :{
+													"lon": null,
+													"lat": null
+												},
+							"Weather":{
+								"main": null,
+								"temp": null
+							}
+	}
+		
+		
+		var weatherUpdateInterval=600000; // variable controls how often weather information is updated
+        // set weather interval
+		weatherInterval=setInterval(function(){weatherReport()},weatherUpdateInterval);
+		
+		
+		// The following function updates weather parameters
+		function weatherReport(){
+			var weatherData;
+			$.ajax({ // create an AJAX call...     
+						dataType: "JSON",
+						contentType: false, 
+						method:"GET",		
+						url: "http://api.openweathermap.org/data/2.5/weather?lat="+dataJSONlocal.position.lat+"&lon="+dataJSONlocal.position.lon+"&APPID=51c76b1d6a9852911afc15336113be79" ,
+						success: function(data, status) { // on success..   
+						   dataJSONlocal.Weather.main=data.weather[0].main;
+						   dataJSONlocal.Weather.temp=data.main.temp;
+						},
+						error: function(xhr, desc, err) { // on success..                    
+							console.log(desc);
+						}
+					});
+		}
+		
+		// The following function updates location information
+		function getLocation() {
+			$.ajax({ // create an AJAX call...     
+						dataType: "JSON",
+						contentType: false,   
+						method:"GET",		
+						url: "https://maps.googleapis.com/maps/api/browserlocation/json?browser=chromium&sensor=false" ,
+						success: function(data, status) { // on success.. 
+						   dataJSONlocal.position.lat=data.location.lat;
+						   dataJSONlocal.position.lon=data.location.lng;
+						   weatherReport();
+						   //alert(dataJSONlocal.position.lat);
+						},
+						error: function(xhr, desc, err) { // on success..                    
+							console.log(desc);
+						}
+					});
+		}	
         //UI toggles and updates
         $("#refresh").click(function(e){
             if(location)
@@ -150,7 +201,9 @@
         function init()
         {
             $("#serverAddress").attr("value",defaultAddress);
-            setupWebcam();                  
+            setupWebcam();  
+			getLocation();			
+				
         }
 
         //Fullscreen controls
@@ -323,7 +376,7 @@
                 crowdPic: fs.createReadStream(fileName)
             }
             console.log("Submitting Post Request");
-            request.post({url:fetchAdURI, formData: formData}, function optionalCallback(err, httpResponse, body) {
+            request.post({url:fetchAdURI, formData: formData, metaData: dataJSONlocal}, function optionalCallback(err, httpResponse, body) {
                 if (err) {
                     console.log(err);
                     return console.error('upload failed:', err);
