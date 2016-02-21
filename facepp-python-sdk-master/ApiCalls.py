@@ -24,11 +24,7 @@ def get_ads():
 
         #print t
         tags[i,:3] = [int(t[p]) for p in range(0,3)]
-        # tags[i,:] = [int(t[j]) for j in range(0,3)] #Get this error with this line: ValueError: cannot copy sequence with size 3 to array axis with dimension 4
-        #Did it manually...
-        tags[i,0] = int(t[0]);
-        tags[i,1] = int(t[1]);
-        tags[i,2] = int(t[2]);
+
         # tags[i,0] = int(tag_input.group(1))
         # tags[i,1] = int(tag_input.group(2))
         # tags[i,2] = int(tag_input.group(3))
