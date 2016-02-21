@@ -12,7 +12,7 @@ def get_ads():
     myResponse = requests.get(url)
 
     if(myResponse.ok):
-        print myResponse.content
+        #print myResponse.content
         jData = json.loads(myResponse.content)
 
     ids = []
@@ -21,7 +21,8 @@ def get_ads():
         ids.append(jData[i]["_id"])
         # tag_input = re.search('(-*\d+)\s*,\s*(\d+)\s*,\s*(\d+).*', jData[i]["tags"][0])
         t = jData[i]["tags"][0].split(",")
-        tags[i,:] = [int(t[i]) for i in range(0,3)]
+        #print t
+        tags[i,:3] = [int(t[p]) for p in range(0,3)]
         # tags[i,0] = int(tag_input.group(1))
         # tags[i,1] = int(tag_input.group(2))
         # tags[i,2] = int(tag_input.group(3))
