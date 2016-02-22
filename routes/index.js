@@ -395,8 +395,8 @@ router.get('/profile/:profile_id', isAuthenticated, function(req, res){
 
 });
 
-router.get('/dashboard',isAuthenticated, function(req, res) {
-  res.render('dashboard',{ user : req.user });
+router.get('/dashboard',isAuthenticated, function(req, res) {    
+    res.render('dashboard',{ user : req.user });
 });
 
 router.get('/register', function(req, res) {
@@ -462,3 +462,5 @@ router.get('/logout', function(req, res) {
 
 
 module.exports = router;
+module.exports.isAuthenticated = isAuthenticated;
+

@@ -5,6 +5,7 @@ var Session = require('../models/session');
 var Ad = require('../models/ad');
 var fs = require('fs');
 var multer = require('multer');
+
 var upload = multer({
     dest:'./uploads/',
     limits: { fileSize: 16* 1024 * 1024} //Max file size for upload multer is 16Mb
@@ -26,14 +27,27 @@ router.use(function(req,res,next){
     // to the API (e.g. in case you use sessions)
     res.setHeader('Access-Control-Allow-Credentials', true);
 
-     console.log("API call made");
+    console.log("API call made");
     // Pass to next layer of middleware
     next();   
    
 });
 
-router.get('/helloworld', function(req, res, next) {
+//Client Authentication 
+var isAuthenticated = function (req, res, next) {
+	if (req.isAuthenticated())
+		return next();
+	//redirecto to the following if not authenticated 
+	res.json({error:"Not authorized"})
+}
+
+
+router.get('/helloworld',function(req, res, next) {
+    //console.log(req.user);
     res.json({message: 'Hello World and Welcome to our API'});
+});
+router.get('/authenticated', isAuthenticated,function(req,res,next){
+    res.json({message: 'Authorized'});
 });
 
 router.get('/getsessioninfo/:id',function(req,res,next){
@@ -51,16 +65,7 @@ router.get('/getsessionimage/:id',function(req,res,next){
 });
 router.get('/getads', function(req,res,next){
     Ad.find({}, function(err,ads){
-        if(err){console.log(err);res.send(err); return;} 
-        for(var ad in ads){
-            var marks = JSON.parse(ads[ad].tags[1]);      
-            for(var mark in marks){
-                var lat = marks[mark].lat;
-                var lng = marks[mark].lng;
-                var radius = marks[mark].radius;
-                
-            }
-        }
+        if(err){console.log(err);res.send(err); return;}         
         res.json(ads);
     });
 });
