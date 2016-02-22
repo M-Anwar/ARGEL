@@ -73,8 +73,8 @@ def divide_im (img,wr,hr,pocx,pocy, faces):
     return divided_imgs
 
 def detect_image (img_url):
-    face_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_alt.xml')
-    eye_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_eye.xml')
+    face_cascade = cv2.CascadeClassifier('facepp-python-sdk-master/haarcascades/haarcascade_frontalface_alt.xml')
+    #eye_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_eye.xml')
 
     #img_url = 'test_pic/test_face.jpg'
     #img_url = 'test_pic/test_face_fullwide.jpg'
@@ -92,8 +92,7 @@ def detect_image (img_url):
     avgh = 0.0
     pocx = [wmid,wmid]
     pocy = [hmid,hmid]
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=1, minSize=(16, 16),
-                                         flags=cv2.CASCADE_SCALE_IMAGE)
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=1, minSize=(16, 16),flags=cv2.CASCADE_SCALE_IMAGE)
 
     total_found = len(faces)
     print "OpenCV faces found: " + str(total_found)

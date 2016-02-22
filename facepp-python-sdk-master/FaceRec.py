@@ -68,7 +68,7 @@ def FaceRecog(session):
                     # image = cv2.circle(image,(int(each_face['position']['nose']['x']*width/100),int(each_face['position']['nose']['y']*height/100)),3,(0,255,0),-1)
                     # image = cv2.circle(image,(int(each_face['position']['mouth_left']['x']*width/100),int(each_face['position']['mouth_left']['y']*height/100)),3,(0,255,0),-1)
                     # image = cv2.circle(image,(int(each_face['position']['mouth_right']['x']*width/100),int(each_face['position']['mouth_right']['y']*height/100)),3,(0,255,0),-1)
-                    image = cv2.putText(image, str(attribute['gender']['value']) + ' ' + str(attribute['gender']['confidence']),(int(pt1[0]+(pt2[0]-pt1[0])/2),int(pt2[1]*0.95)),font,1, (0,255,0),1,cv2.LINE_AA)
+                    #image = cv2.putText(image, str(attribute['gender']['value']) + ' ' + str(attribute['gender']['confidence']),(int(pt1[0]+(pt2[0]-pt1[0])/2),int(pt2[1]*0.95)),font,1, (0,255,0),1,cv2.LINE_AA)
                     #image = cv2.putText(image, 'Age: ' + str(attribute['age']['value']) + ' Range: ' + str(attribute['age']['range']),(int(pt1[0]+(pt2[0]-pt1[0])/2),int(pt1[1]*1.05)),font,1,(0,255,0),1,cv2.LINE_AA)
                     #cv2.imshow('preview',image)
                     #cv2.waitKey(0)
