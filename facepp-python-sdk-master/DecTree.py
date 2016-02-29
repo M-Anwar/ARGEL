@@ -212,7 +212,15 @@ def K_near_age(train_data, X_Test, N):
     clf = neighbors.KNeighborsClassifier(n_neighbors, weights='distance')
     clf.fit(X, y)
     Z = clf.predict(to_predict_with)
-    return Z
+    print "pred:"
+    print Z
+    print "NNs"
+    #To get closes predictions
+    Z=clf.kneighbors(to_predict_with,3,return_distance=False)
+    print Z
+    print y[Z[0]]
+
+    return y[Z[0]]
 
     # import some data to play with
     # iris = datasets.load_iris()

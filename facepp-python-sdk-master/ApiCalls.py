@@ -17,10 +17,12 @@ def get_ads():
 
     ids = []
     tags = np.zeros((len(jData),4))
+    #print jData
     for i in range(0,len(jData)):
         ids.append(jData[i]["_id"])
         # tag_input = re.search('(-*\d+)\s*,\s*(\d+)\s*,\s*(\d+).*', jData[i]["tags"][0])
         t = jData[i]["tags"][0].split(",")
+
 
         #print t
         tags[i,:3] = [int(t[p]) for p in range(0,3)]
