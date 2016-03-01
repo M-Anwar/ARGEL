@@ -108,9 +108,10 @@ def FaceRecog(session):
         #         X = list(reader)
 
         ids, X = get_ads()
+        other_data = [get_weather('sunny'), get_temp('-10C')]
         #pred = learn_tree_and_predict(X, test_x)
-        pred = K_near_age(X, test_x, 1)
-        feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
+        pred = K_near_age(X, test_x, 1, other_data)
+        feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+', 'Weather']
         print feature_names
         #image = cv2.imread(new_im)
         #image = cv2.putText(image, str(X[0]),(10, int(0.1*image.shape[0])),font,3,(0,255,0),2,cv2.LINE_AA)

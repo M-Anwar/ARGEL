@@ -148,16 +148,17 @@ def learn_tree_and_predict(Train, X_Test):
 
     return predictions[i-1]
 
-def K_near_age(train_data, X_Test, N):
+def K_near_age(train_data, X_Test, N, other_data):
     n_neighbors = N
 
-    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
+    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+', 'Weather', 'Temperature']
     features = len(feature_names)
-    age_features = features-1
+    age_features = 7
 
     #Test Array:
-    mean_gender = np.mean(X_Test[:,0],0)
     to_predict_with = np.zeros((1,features))
+
+    mean_gender = np.mean(X_Test[:,0],0)
     to_predict_with[0,0] = mean_gender
 
     #Finding age to predict
@@ -167,9 +168,12 @@ def K_near_age(train_data, X_Test, N):
         age_hist[i,:] = convert_age_to_bin_array(person[1],person[2])
 
     age_test_groups = age_hist.sum(0)/np.shape(X_Test)[0] #Array of how many people fall into the age group specified by index
-    to_predict_with[0,1:] = age_test_groups
+    to_predict_with[0,1:age_features+1] = age_test_groups
+    to_predict_with[0,age_features+1:] = other_data
+
     print "Predicting with:"
     print to_predict_with
+
     X= np.zeros((len(train_data),features))
     y= np.zeros((len(train_data),1))
 
@@ -178,11 +182,15 @@ def K_near_age(train_data, X_Test, N):
         gender = float(row[0])
         age = int(row[1])
         range_of_age = int(row[2])
+        weather = float(row[3])
+        temp = float(row[4])
 
         gender_ar = np.zeros((1,1)) + gender
         age_ar = convert_age_to_bin_array(age,range_of_age)
-        X[i,:] = np.concatenate((gender_ar,age_ar),axis=1)
-        y[i,0] = int(row[3])
+        w_ar = np.zeros((1,1)) + weather
+        t_ar = np.zeros((1,1)) + temp
+        X[i,:] = np.concatenate((gender_ar,age_ar,w_ar,t_ar),axis=1)
+        y[i,0] = int(row[-1])
 
     # X= np.zeros((len(train_data),2))
     # y= np.zeros((len(train_data),1))
@@ -211,13 +219,13 @@ def K_near_age(train_data, X_Test, N):
 
     clf = neighbors.KNeighborsClassifier(n_neighbors, weights='distance')
     clf.fit(X, y)
-    Z = clf.predict(to_predict_with)
-    print "pred:"
-    print Z
-    print "NNs"
+    #Z = clf.predict(to_predict_with)
+    #print "pred:"
+    #print Z
+    print "Top Preds:"
     #To get closes predictions
-    Z=clf.kneighbors(to_predict_with,3,return_distance=False)
-    print Z
+    dist, Z=clf.kneighbors(to_predict_with,3,return_distance=True)
+    print dist
     print y[Z[0]]
 
     return y[Z[0]]
