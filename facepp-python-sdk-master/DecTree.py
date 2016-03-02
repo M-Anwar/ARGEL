@@ -180,8 +180,8 @@ def K_near_age(train_data, X_Test, N, other_data):
     for i in range(0,len(train_data)):
         row = train_data[i]
         gender = float(row[0])
-        age = int(row[1])
-        range_of_age = int(row[2])
+        age = float(row[1])
+        range_of_age = float(row[2])
         weather = float(row[3])
         temp = float(row[4])
 
@@ -224,7 +224,10 @@ def K_near_age(train_data, X_Test, N, other_data):
     #print Z
     print "Top Preds:"
     #To get closes predictions
-    dist, Z=clf.kneighbors(to_predict_with,3,return_distance=True)
+    if X.shape[0]>=3:
+        dist, Z=clf.kneighbors(to_predict_with,3,return_distance=True)
+    else:
+        dist, Z=clf.kneighbors(to_predict_with,1,return_distance=True)
     print dist
     print y[Z[0]]
 
