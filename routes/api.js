@@ -38,16 +38,21 @@ var isAuthenticated = function (req, res, next) {
 	if (req.isAuthenticated())
 		return next();
 	//redirecto to the following if not authenticated 
-	res.json({error:"Not authorized"})
+	res.json({error:"not authorized"})
 }
 
+router.post('/login', function(req,res){
+    passport.authenticate('local')(req, res, function () {
+        res.json({message:'success'});        
+    });
+});
 
 router.get('/helloworld',function(req, res, next) {
     //console.log(req.user);
     res.json({message: 'Hello World and Welcome to our API'});
 });
 router.get('/authenticated', isAuthenticated,function(req,res,next){
-    res.json({message: 'Authorized'});
+    res.json({message: 'authorized'});
 });
 
 router.get('/getsessioninfo/:id',function(req,res,next){
