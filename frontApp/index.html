@@ -1,432 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ARGEL Marketing Solutions</title>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/argel.css">
-    <link rel="stylesheet" href="css/simple-sidebar.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>        
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Mobirise Free Bootstrap Template, https://mobirise.com -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Mobirise v2.6.1, mobirise.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="assets/images/discover-mobile-350x350-16.png" type="image/x-icon">
+  <meta name="description" content="">
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:700,400&amp;subset=cyrillic,latin,greek,vietnamese">
+  <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/animate.css/animate.min.css">
+  <link rel="stylesheet" href="assets/socicon/css/socicon.min.css">
+  <link rel="stylesheet" href="assets/mobirise/css/style.css">
+  <link rel="stylesheet" href="assets/mobirise-slider/style.css">
+  <link rel="stylesheet" href="assets/mobirise-gallery/style.css">
+  <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
+  
+  
 </head>
-<body onload="init();">   
-      
-    <div id="wrapper">
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
-                <li class="sidebar-brand">
-                    <a href="#">
-                        Menu
-                    </a>
-                </li>             
-                <li>
-                    <canvas id="photo" width="210" height="161"></canvas>
-                </li>
-                <li>
-                    <input type="button" class="btn btn-primary" value="Take Photo" onclick="takePhoto();">
-                    <button data-toggle="collapse" data-target="#uploadPic" class="btn btn-primary">Choose Photo</button>
-                    <form id="uploadPic" action="" method="post" enctype="multipart/form-data" class = "form-group collapse">
-                        <input type="file" name="crowdPic" id ="crowdPic" class = "form-control"/>       
-                        <input class = "btn btn-success" type="submit" value="Upload!" id ="upload"/>
-                    </form>
-                </li>        
-                <li>
-                    <a href="#"> IP Camera (MJPEG Only) </a>                                   
-                    <input type="text" class="form-control" value="http://192.168.2.15:8080/video" id="ipCamAddress">                 
-                    <input type="button" id = "ipcamera" class="btn btn-primary" value="Switch to IP" onclick="setupIPCamera();">   
-                    <input type="button" id = "webcamera" class="btn btn-primary" value="Switch to Local" onclick="setupWebcam();">   
-                </li>
-                <li>
-                    <a href="#"> Server Address </a>                                   
-                    <input type="text" class="form-control" value="" id="serverAddress" >                             
-                </li>
-                <li>
-                    <a href="#" data-toggle="collapse" data-target="#dataRecorderDiv"> Data Recorder </a>                    
-                    <div id= "dataRecorderDiv" class ="collapse">
-                        <select class="form-control" id = "timeSelection">
-                            <option value="1000">1 Second</option>
-                            <option value="2000">2 Seconds</option>
-                            <option value="5000">5 Seconds</option>
-                            <option value="7000">7 Seconds</option>
-                            <option value="10000">10 Seconds</option>
-                            <option value="15000">15 Seconds</option>
-                        </select>  
-                        <button class="btn btn-primary" id = "btnRecord" onclick = "record()">Record</button>
-                    </div>
-                    
-                </li>
-            </ul>
-        </div>
-        <!-- /#sidebar-wrapper -->
+<body>
 
-        <!-- Page Content -->
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12" style="display:none" id = "videoDisplay">
-                        <video class= "display" id = "display" src="" width = "720" height ="480" controls autoplay = "true" </video>                          
-                    </div>
-                    <div class ="col-lg-12" style = "display:block" id = "imageDisplay">
-                        <img class="display" id = "displayImg" src="title.png"></img>                            
-                    </div>
+<section class="mbr-navbar mbr-navbar--freeze mbr-navbar--absolute mbr-navbar--transparent mbr-navbar--sticky mbr-navbar--auto-collapse" id="menu-74">
+    <div class="mbr-navbar__section mbr-section">
+        <div class="mbr-section__container container">
+            <div class="mbr-navbar__container">
+                <div class="mbr-navbar__column mbr-navbar__column--s mbr-navbar__brand">
+                    <span class="mbr-navbar__brand-link mbr-brand mbr-brand--inline">
+                        <span class="mbr-brand__logo"><a href="index.html"><img class="mbr-navbar__brand-img mbr-brand__img" src="assets/images/discover-mobile-350x350-53.png" alt="Mobirise"></a></span>
+                        <span class="mbr-brand__name"><a class="mbr-brand__name text-white" href="index.html">ARGEL</a></span>
+                    </span>
                 </div>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <a class="btn btn-default" id="menu-toggle">Show Menu</a>
-                        <a class="btn btn-default" id="refresh">Refresh Page</a>
-                        <button class="btn btn-default" onclick="toggleFeed();";>View Video Feed</button>
-                        <button data-toggle="collapse" data-target="#pythonDebug" class="btn btn-primary">Debug Ouput</button>
-                        <p id="timestats">0:00 - 0:00</p>                        
-                    </div>
-                </div>
-                
-                <div class = "row">
-                    <div class="col-lg-12">                        
-                        <video style="display:none" id="camFeed" autoplay></video>                        
-                        <img style = "display:none" id="ipcamFeed" src=""></img>
-                        
-                    </div>
-                </div>
-                <div class = "row collapse" id ="pythonDebug" style = "white-space:pre"> </div>
             </div>
         </div>
-        <!-- /#page-content-wrapper -->
+    </div>
+</section>
 
-    </div>             
-        
-
-    
-    <script>
-        var defaultAddress = "http://localhost:3000";
-        var fetchAd = "/api/fetchad";
-        var viewAd = "/view/";   
-        
-        var ipcam = false;
-        var interval;
-        var recording = false;
-		var dataJSONlocal={ "position" :{
-													"lon": null,
-													"lat": null
-												},
-							"Weather":{
-								"main": null,
-								"temp": null
-							}
-	}
-		
-		
-		var weatherUpdateInterval=600000; // variable controls how often weather information is updated
-        // set weather interval
-		weatherInterval=setInterval(function(){weatherReport()},weatherUpdateInterval);
-		
-		
-		// The following function updates weather parameters
-		function weatherReport(){
-			var weatherData;
-			$.ajax({ // create an AJAX call...     
-						dataType: "JSON",
-						contentType: false, 
-						method:"GET",		
-						url: "http://api.openweathermap.org/data/2.5/weather?lat="+dataJSONlocal.position.lat+"&lon="+dataJSONlocal.position.lon+"&APPID=51c76b1d6a9852911afc15336113be79" ,
-						success: function(data, status) { // on success..   
-						   dataJSONlocal.Weather.main=data.weather[0].main;
-						   dataJSONlocal.Weather.temp=data.main.temp;
-						},
-						error: function(xhr, desc, err) { // on success..                    
-							console.log(desc);
-						}
-					});
-		}
-		
-		// The following function updates location information
-		function getLocation() {
-			$.ajax({ // create an AJAX call...     
-						dataType: "JSON",
-						contentType: false,   
-						method:"GET",		
-						url: "https://maps.googleapis.com/maps/api/browserlocation/json?browser=chromium&sensor=false" ,
-						success: function(data, status) { // on success.. 
-						   dataJSONlocal.position.lat=data.location.lat;
-						   dataJSONlocal.position.lon=data.location.lng;
-						   weatherReport();
-						   //alert(dataJSONlocal.position.lat);
-						},
-						error: function(xhr, desc, err) { // on success..                    
-							console.log(desc);
-						}
-					});
-		}	
-        //UI toggles and updates
-        $("#refresh").click(function(e){
-            if(location)
-                location.reload();
-        });
-        $("#menu-toggle").click(function(e) {
-            e.preventDefault();
-            $("#wrapper").toggleClass("toggled");
-        });
-        $("#serverAddress").focusout(function(e){
-            var uri = $("#serverAddress").val();
-            if(uri=="") {               
-                $("#serverAddress").val(defaultAddress);
-            }
-        });
+<section class="mbr-box mbr-section mbr-section--relative mbr-section--fixed-size mbr-section--full-height mbr-section--bg-adapted mbr-parallax-background mbr-after-navbar" id="header1-73" style="background-image: url(assets/images/macbook-926425-1920-1920x1279-92.jpg);">
+    <div class="mbr-box__magnet mbr-box__magnet--sm-padding mbr-box__magnet--center-left">
+        <div class="mbr-overlay" style="opacity: 0.6; background-color: rgb(76, 105, 114);"></div>
+        <div class="mbr-box__container mbr-section__container container">
+            <div class="mbr-box mbr-box--stretched"><div class="mbr-box__magnet mbr-box__magnet--center-left">
+                <div class="row"><div class=" col-sm-6">
+                    <div class="mbr-hero animated fadeInUp">
+                        <h1 class="mbr-hero__text">ARGEL Maketing Solutions</h1>
+                        <p class="mbr-hero__subtext">Targeted Advertisements for Physical Media.</p>
+                    </div>
+                    <div class="mbr-buttons btn-inverse mbr-buttons--left"><a class="mbr-buttons__btn btn btn-lg animated fadeInUp delay btn-warning" href="register.html">REGISTER</a> <a class="mbr-buttons__btn btn btn-lg btn-default animated fadeInUp delay" href="sign_in.html">LOGIN</a><a class="mbr-buttons__btn btn btn-lg btn-default animated fadeInUp delay" href="main.html">SKIP</a></div>
+                </div></div>
+            </div></div>
+        </div>
+        <div class="mbr-arrow mbr-arrow--floating text-center">
+            <div class="mbr-section__container container">
+                <a class="mbr-arrow__link" href="#features1-75"><i class="glyphicon glyphicon-menu-down"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
 
 
-        //Video Statistics and camera
-        $(document).ready(function(){
-          $("#display").on(
-            "timeupdate", 
-            function(event){
-              onTrackedVideoFrame(this.currentTime, this.duration);
-            });
-        });        
-        function onTrackedVideoFrame(currentTime, duration){
-            $("#timestats").text(currentTime + " - " + duration);
-           
-        }
-        function toggleFeed(){
-            if(ipcam ==false){
-                $("#camFeed").toggle();
-                $("#ipcamFeed").hide();
+
+<section class="mbr-section mbr-section--relative mbr-parallax-background" id="msg-box5-79" >
+    <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(0, 168, 133);"></div>
+    <div class="mbr-section__container mbr-section__container--isolated container">
+        <div class="row">
+            <div class="mbr-box mbr-box--fixed mbr-box--adapted">
+                <div class="mbr-box__magnet mbr-box__magnet--top-right mbr-section__left col-sm-6">
+                    <div id="myCarousel" class="mbr-slider mbr-section mbr-section--no-padding carousel slide"  data-ride="carousel"  data-wrap="true" data-interval="5000">
+						  <!-- Indicators -->
+						  <ol class="carousel-indicators">
+							<li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+							<li data-target="#myCarousel" data-slide-to="1"></li>
+						  </ol>
+
+						  <!-- Wrapper for slides -->
+						  <div class="carousel-inner" role="listbox">
+							<div class="item active">
+							  <img src="assets/images/TargettingAdvertising2.png" height="1000" width="1200">
+							</div>
+
+							<div class="item">
+							  <img src="assets/images/SystemDiagram.png" height="1000" width="1200">
+							</div>
+						  </div>
+
+						  <!-- Left and right controls -->
+						  <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+							<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+							<span class="sr-only">Previous</span>
+						  </a>
+						  <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+							<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+							<span class="sr-only">Next</span>
+						  </a>
+						</div>
+                </div>
+                <div class="mbr-box__magnet mbr-class-mbr-box__magnet--center-left col-sm-6 mbr-section__right">
+                    <div class="mbr-section__container mbr-section__container--middle">
+                        <div class="mbr-header mbr-header--auto-align mbr-header--wysiwyg">
+                            <h3 class="mbr-header__text">ARGEL MARKETING</h3>
+                            
+                        </div>
+                    </div>
+                    <div class="mbr-section__container mbr-section__container--middle">
+                        <div class="mbr-article mbr-article--auto-align mbr-article--wysiwyg"><p>ARGEL takes advantage of the current rise in crowd analytics to create a convenient but effective platform for targeting ads towards the audience present in a given public space. ARGEL is a distribution infrastructure for advertisements in physical media using machine learning and data mining techniques. The system displays ads targeted towards the crowd in real time by extracting visual features and applying learning algorithms to the data.</p></div>
+                    </div>
+                </div>
                 
-            }else{
-                $("#ipcamFeed").toggle();
-                $("#camFeed").hide();
-            }
-        }
-
-        
-        function init()
-        {
-            $("#serverAddress").attr("value",defaultAddress);
-            setupWebcam();  
-			getLocation();			
-				
-        }
-
-        //Fullscreen controls
-        document.addEventListener("keydown", function(e) {                
-                if (e.keyCode == 27) {  //Escape key to quit fullscreen
-                  exitFullscreen();
-                }
-            }, false);
-        function exitFullscreen(){
-            document.webkitCancelFullScreen();
-        }
-        function requestFullscreen(displayID){
-            var display = document.getElementById(displayID);
-            display.webkitRequestFullscreen();
-        }
-        
-        //Webcam INIT
-        function setupWebcam(){       
-            ipcam = false;
-            toggleFeed();
-            if($("#ipcamera").hasClass("btn-danger")){
-                $("#ipcamera").removeClass("btn-danger").addClass("btn-primary");
-            }
-            $("#webcamera").addClass("btn-danger");
-            if(navigator.webkitGetUserMedia)
-            {
-                navigator.webkitGetUserMedia({video:true}, onSuccess, onFail);
-            }
-            else
-            {
-                alert('webRTC not available');
-            }
-            
-        }
-        function onSuccess(stream)
-        {
-            $("#camFeed").attr("src",URL.createObjectURL(stream));
-        }
-
-        function onFail()
-        {
-            alert('could not connect stream');
-        }
-
-        //IP camera Init
-        function setupIPCamera(){
-            ipcam = true;
-            toggleFeed();
-            if($("#webcamera").hasClass("btn-danger")){
-                $("#webcamera").removeClass("btn-danger").addClass("btn-primary");
-            }
-            $("#ipcamera").addClass("btn-danger");            
-            var uri = $("#ipCamAddress").val();
-            $("#ipcamFeed").attr("src", uri)
-            
-           
-        }
-
-        //Recording
-        function record(){
-            var value = parseInt($("#timeSelection").val());
-            if(recording==false){
-                $("#btnRecord").removeClass("btn-primary").addClass("btn-danger");
-                recording = true;
-                interval = setInterval(captureAndStoreImage,value);
-            }
-            else{               
-                $("#btnRecord").removeClass("btn-danger").addClass("btn-primary"); 
-                recording = false;
-                clearInterval(interval);
-                alert("Capture Stopped");
-            }
-        }
-        function captureAndStoreImage(){         
-            var date = new Date().getTime();            
-            
-            var fs = require("fs");
-            if (!fs.existsSync('captures')){
-                fs.mkdirSync('captures');
-            }
-            if(ipcam==false){
-                saveCamToImage('captures/'+date +".jpg");
-            }
-            else{
-                saveIPToImage('captures/'+date +".jpg");
-            }
-        }
-
-        function saveCamToImage(imageName){
-            var c = document.getElementById('photo');
-            var v = document.getElementById('camFeed');
-            c.getContext('2d').drawImage(v, 0, 0, 210, 161);
-
-            var canvas = document.createElement('canvas');
-            canvas.width = $("#camFeed").innerWidth();
-            canvas.height = $("#camFeed").innerHeight();
-            canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
-
-            var fs = require("fs");            
-            img = canvas.toDataURL('image/jpg');
-            var data = img.replace(/^data:image\/\w+;base64,/, "");
-            var buf = new Buffer(data, 'base64');
-            fs.writeFileSync(imageName, buf);            
-            canvas = null;
-        }
-        function saveIPToImage(imageName){
-            var c = document.getElementById('photo');
-            var v = document.getElementById('ipcamFeed');
-            c.getContext('2d').drawImage(v, 0, 0, 210, 161);
-
-            var canvas = document.createElement('canvas');
-            canvas.width = $("#ipcamFeed").width();
-            canvas.height = $("#ipcamFeed").height();
-            canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);                
-
-            var fs = require("fs");            
-            img = canvas.toDataURL('image/jpg');
-            var data = img.replace(/^data:image\/\w+;base64,/, "");
-            var buf = new Buffer(data, 'base64');
-            fs.writeFileSync(imageName, buf);            
-            canvas = null;
-        }
-        
-        //Advertisement Display
-        function showAd(curAdd, viewAdURI){
-            
-            //Copied from server validation - check to see if the ad is an image or video
-            var mime = curAdd.videoad.contentType   
-            var video = true;
-            if(mime.indexOf("jpeg")> -1 || mime.indexOf("png")>-1){
-                video = false;
-            }
-            if(video){
-                $('#display').attr('src',viewAdURI+curAdd._id);
-                $('#displayImg').attr('src','');
-                $('#videoDisplay').show();
-                $('#imageDisplay').hide();
-            }
-            else{
-                $('#displayImg').attr('src',viewAdURI+curAdd._id);
-                $('#display').attr('src','');
-                $('#videoDisplay').hide();
-                $('#imageDisplay').show();                
-            }
-        }
+            </div>
+        </div>
+    </div>
+</section>
 
 
-        //Server calls
-        function takePhoto()
-        {
-            var uri = $("#serverAddress").val();
-            if(uri==""){
-                uri = defaultAddress;
-            }
-            var fetchAdURI = uri + fetchAd;
-            var viewAdURI = uri + viewAd;
-            
-            var fileName = 'image.png';
-            if(ipcam==false){ //What to do when you are on local camera
-                saveCamToImage(fileName);                
-            }else{ //if you are using IP camera with MJPEG stream
-                saveIPToImage(fileName);
-            }
-
-            var request = require("request");
-            var path = require('path'); 
-            var fs = require("fs"); 
-            
-            var formData = {
-                crowdPic: fs.createReadStream(fileName)
-            }
-            console.log("Submitting Post Request");
-            request.post({url:fetchAdURI, formData: formData, metaData: dataJSONlocal}, function optionalCallback(err, httpResponse, body) {
-                if (err) {
-                    console.log(err);
-                    return console.error('upload failed:', err);
-                }
-                //console.log('Upload successful!  Server responded with:', body);
-                var jsonBody = JSON.parse(body);                
-                //$('#display').attr('src',viewAdURI+jsonBody.bestAd._id);
-                console.log(jsonBody.bestAd);
-                showAd(jsonBody.bestAd, viewAdURI);
-                $('#pythonDebug').html(jsonBody.pythonDebug);
-                
-            });
-            
-            fs.unlink(fileName, function(err){
-                if(err)console.log(err);
-            });            
-            
-        }
-
-        //User Selected upload
-        $('#uploadPic').submit(function() { // catch the form's submit event
-            
-            var uri = $("#serverAddress").val();
-            if(uri==""){
-                uri = defaultAddress;
-            }
-            var fetchAdURI = uri + fetchAd;
-            var viewAdURI = uri + viewAd;
-            
-            
-           var myFormData = new FormData(this);          
-            $.ajax({ // create an AJAX call...     
-                dataType: "JSON",
-                data: myFormData,
-                processData: false,
-                contentType: false,                
-                type: $(this).attr('method'), // GET or POST
-                url: fetchAdURI, // the file to call
-                enctype: $(this).attr('enctype'),
-                success: function(data, status) { // on success..  
-                    showAd(data.bestAd, viewAdURI);
-//                    $('#display').attr('src',viewAdURI+data.bestAd._id);                    
-                    $('#pythonDebug').html(data.pythonDebug);
-                },
-                error: function(xhr, desc, err) { // on success..                    
-                    console.log(desc);
-                }
-            });
-            return false; // cancel original event to prevent form submitting
-        });
-    </script>
+  <script src="assets/jquery/jquery.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js"></script>
+  <script src="assets/smooth-scroll/SmoothScroll.js"></script>
+  <script src="assets/jarallax/jarallax.js"></script>
+  <script src="assets/bootstrap-carousel-swipe/bootstrap-carousel-swipe.js"></script>
+  <script src="assets/masonry/masonry.pkgd.min.js"></script>
+  <script src="assets/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/social-likes/social-likes.js"></script>
+  <script src="assets/mobirise/js/script.js"></script>
+  <script src="assets/mobirise-gallery/script.js"></script>
+  
+  
 </body>
 </html>
