@@ -411,6 +411,10 @@ router.get('/register', function(req, res) {
 //    res.render('error');
 //});
 
+/**
+    User registration and Login Logic
+**/
+
 router.post('/register', function(req, res) {
 	var isSuperadmin=false;
 	var isAdmin = false;
@@ -420,10 +424,15 @@ router.post('/register', function(req, res) {
 			isSuperadmin=true;
 			isAdmin = true;
 		}
+        
+        if(!req.body.password || !req.body.username){
+            return res.render("register", {info: 'Sorry. Please include both a username and password. Try again.'});
+        }
 		
         if (req.body.password != req.body.confirmpassword) {
-			  return res.render("register", {info: "Sorry. Password does not match Confirm Password. Try again."});
-			}
+            return res.render("register", {info: "Sorry. Password does not match Confirm Password. Try again."});
+            
+        }
         
 		//username should be email, as it is required  for passport
 		Account.register(new Account({ username : req.body.username,  email : req.body.username,
@@ -462,5 +471,4 @@ router.get('/logout', function(req, res) {
 
 
 module.exports = router;
-module.exports.isAuthenticated = isAuthenticated;
 
