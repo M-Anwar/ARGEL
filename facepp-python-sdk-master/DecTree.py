@@ -191,7 +191,7 @@ def K_near_age(train_data, X_Test, N, other_data):
         w_ar = np.zeros((1,1)) + weather
         t_ar = np.zeros((1,1)) + temp
         time_arr = np.zeros((1,1)) + time_val
-        X[i,:] = np.concatenate((gender_ar,age_ar,w_ar,t_ar),axis=1)
+        X[i,:] = np.concatenate((gender_ar,age_ar,w_ar,t_ar, time_arr),axis=1)
         y[i,0] = int(row[-1])
 
     # X= np.zeros((len(train_data),2))
