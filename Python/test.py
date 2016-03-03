@@ -23,9 +23,14 @@ url = "http://localhost:3000/api/authenticated"
 myResponse = s.get(url)
 print myResponse.content
 
+url = "http://localhost:3000/api/logout"
+myResponse = s.get(url)
+print myResponse.content
+
 #Get all the ads in the data base
 url = "http://localhost:3000/api/getads/"+session
 myResponse = requests.get(url)
+recAdID = []
 if(myResponse.ok):   #Print the first add details
     jData = json.loads(myResponse.content)
     for ad in jData:
@@ -36,9 +41,17 @@ if(myResponse.ok):   #Print the first add details
         for element in ad["tags"]:
             print "\t" +element
         
-        recAdID= ad["_id"] #Print the ID of the Ad
-        print "AD ID: " +recAdID
+        recAdID.append(ad["_id"] )#Print the ID of the Ad
+        print "AD ID: " +ad["_id"]
         print "\n"
 else:
     print "ERROR: "
     print myResponse.content
+    
+#Post the recommended ad to the session
+url = "http://localhost:3000/api/postrecommendation"
+
+postData = {'sessionID':session, 'adID':recAdID};
+myResponse = requests.post(url, data = postData);
+print ("Response: {0}".format(myResponse.status_code))
+print myResponse.text

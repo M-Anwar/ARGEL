@@ -231,7 +231,7 @@ router.post('/postrecommendation', function(req,res,next){
     var sessionID = req.body.sessionID;
     var adID = req.body.adID;
     Session.findOne({"_id" : sessionID}, function(err, session){
-        if (err){res.send(err); return;}
+        if (err){res.send(err); return;}        
         session.bestAd = adID;
         session.save(function(err){
             if (err){res.send(err); return;}            
@@ -359,7 +359,7 @@ router.post('/fetchadtest', function(req, res, next) {
             Session.findOne({"_id" : sess._id}, {"bestAd": true}).populate('bestAd')
                 .exec(function(err, session){
                     if(err){res.send(err); return;}                                        
-                    res.json({"bestAd": session.bestAd, 
+                    res.json({"bestAd": session.bestAd[0], //Send one back for now, until front end catches up 
                               "pythonDebug":output
                              }); //Send back the best ad file name
                 
