@@ -295,7 +295,7 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
             Session.findOne({"_id" : sess._id}, {"bestAd": true}).populate('bestAd')
                 .exec(function(err, session){
                     if(err){res.send(err); return;}                                        
-                    res.json({"bestAd": session.bestAd, 
+                    res.json({"bestAd": session.bestAd[0], //Send one back for now, until front end catches up , 
                               "pythonDebug":output
                              }); //Send back the best ad file name
                 
