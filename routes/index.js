@@ -89,7 +89,7 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
                 video = false;
             }
         }
-        console.log(viewthisad.tags[1]);
+        //console.log(viewthisad.tags[1]);
         res.render('adprofile', { user: req.user , ad: viewthisad, isVideo: video}); 
 	});
 });
@@ -221,7 +221,7 @@ router.get('/viewad/:id',function(req,res){
 	});
 });
 router.get('/view/:id',function(req,res,next){
-	var pic_id = req.param('id');
+	var pic_id = req.params.id;
 	var conn = mongoose.connection;	
 	var Grid = require('gridfs-stream');
 	Grid.mongo = mongoose.mongo; 
@@ -238,7 +238,7 @@ router.get('/view/:id',function(req,res,next){
                         stream.pipe(res);
                     }).on("error", function(err) {
                         res.end(err);
-                    });
+                    });                 
             }
             else{ //Assume it is a video and stream the content            
                 var range = req.headers.range;	
@@ -269,6 +269,17 @@ router.get('/view/:id',function(req,res,next){
                 });
 
             }
+            
+            //Update view statistics - Move to update statistics API
+//            if(thisAd.statistics[0]==null){
+//                thisAd.statistics[0] = {};                                     
+//            }
+//            if(thisAd.statistics[0].views==null){
+//                thisAd.statistics[0].views =0;
+//            }
+//            thisAd.statistics[0].views ++;
+//            thisAd.markModified('statistics');
+//            thisAd.save();
         }catch(e){
             next(e); //Throw stack trace error on webpage
         }
