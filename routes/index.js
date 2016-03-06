@@ -89,7 +89,7 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
                 video = false;
             }
         }
-        console.log(viewthisad.tags[1]);
+        //console.log(viewthisad.tags[1]);
         res.render('adprofile', { user: req.user , ad: viewthisad, isVideo: video}); 
 	});
 });
@@ -221,7 +221,7 @@ router.get('/viewad/:id',function(req,res){
 	});
 });
 router.get('/view/:id',function(req,res,next){
-	var pic_id = req.param('id');
+	var pic_id = req.params.id;
 	var conn = mongoose.connection;	
 	var Grid = require('gridfs-stream');
 	Grid.mongo = mongoose.mongo; 
@@ -238,7 +238,7 @@ router.get('/view/:id',function(req,res,next){
                         stream.pipe(res);
                     }).on("error", function(err) {
                         res.end(err);
-                    });
+                    });                 
             }
             else{ //Assume it is a video and stream the content            
                 var range = req.headers.range;	
@@ -269,6 +269,17 @@ router.get('/view/:id',function(req,res,next){
                 });
 
             }
+            
+            //Update view statistics - Move to update statistics API
+//            if(thisAd.statistics[0]==null){
+//                thisAd.statistics[0] = {};                                     
+//            }
+//            if(thisAd.statistics[0].views==null){
+//                thisAd.statistics[0].views =0;
+//            }
+//            thisAd.statistics[0].views ++;
+//            thisAd.markModified('statistics');
+//            thisAd.save();
         }catch(e){
             next(e); //Throw stack trace error on webpage
         }
@@ -411,6 +422,10 @@ router.get('/register', function(req, res) {
 //    res.render('error');
 //});
 
+/**
+    User registration and Login Logic
+**/
+
 router.post('/register', function(req, res) {
 	var isSuperadmin=false;
 	var isAdmin = false;
@@ -420,10 +435,15 @@ router.post('/register', function(req, res) {
 			isSuperadmin=true;
 			isAdmin = true;
 		}
+        
+        if(!req.body.password || !req.body.username){
+            return res.render("register", {info: 'Sorry. Please include both a username and password. Try again.'});
+        }
 		
         if (req.body.password != req.body.confirmpassword) {
-			  return res.render("register", {info: "Sorry. Password does not match Confirm Password. Try again."});
-			}
+            return res.render("register", {info: "Sorry. Password does not match Confirm Password. Try again."});
+            
+        }
         
 		//username should be email, as it is required  for passport
 		Account.register(new Account({ username : req.body.username,  email : req.body.username,
@@ -462,5 +482,4 @@ router.get('/logout', function(req, res) {
 
 
 module.exports = router;
-module.exports.isAuthenticated = isAuthenticated;
 

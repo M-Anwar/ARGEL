@@ -151,7 +151,7 @@ def learn_tree_and_predict(Train, X_Test):
 def K_near_age(train_data, X_Test, N, other_data):
     n_neighbors = N
 
-    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+', 'Weather', 'Temperature']
+    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+', 'Weather', 'Temperature', 'Time']
     features = len(feature_names)
     age_features = 7
 
@@ -184,12 +184,14 @@ def K_near_age(train_data, X_Test, N, other_data):
         range_of_age = float(row[2])
         weather = float(row[3])
         temp = float(row[4])
+        time_val = float(row[5])
 
         gender_ar = np.zeros((1,1)) + gender
         age_ar = convert_age_to_bin_array(age,range_of_age)
         w_ar = np.zeros((1,1)) + weather
         t_ar = np.zeros((1,1)) + temp
-        X[i,:] = np.concatenate((gender_ar,age_ar,w_ar,t_ar),axis=1)
+        time_arr = np.zeros((1,1)) + time_val
+        X[i,:] = np.concatenate((gender_ar,age_ar,w_ar,t_ar, time_arr),axis=1)
         y[i,0] = int(row[-1])
 
     # X= np.zeros((len(train_data),2))
