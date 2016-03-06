@@ -403,10 +403,11 @@ platforms, the loading time of the scripts is significant so lets keep the impor
             var fs = require("fs"); 
             
             var formData = {
-                crowdPic: fs.createReadStream(fileName)
+                crowdPic: fs.createReadStream(fileName),
+                metaData: dataJSONlocal
             }
             console.log("Submitting Post Request");
-            request.post({url:fetchAdURI, formData: formData, metaData: dataJSONlocal}, function optionalCallback(err, httpResponse, body) {
+            request.post({url:fetchAdURI, formData: formData}, function optionalCallback(err, httpResponse, body) {
 
                 if (err) {
                     console.log(err);
