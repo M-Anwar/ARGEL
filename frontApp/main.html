@@ -1,16 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- This main.html does not nees all the javascripts and css stylings of the other pages, bootstrap and jquery is enough
-to achieve the visual styling. If later you wish you add different looks or behaviours, add them ONE BY ONE here. On slow 
-platforms, the loading time of the scripts is significant so lets keep the imports optimized. 
--->
     <title>ARGEL Marketing Solutions</title>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/argel.css">
     <link rel="stylesheet" href="css/simple-sidebar.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:700,400&amp;subset=cyrillic,latin,greek,vietnamese">
+	  <link rel="stylesheet" href="assets/animate.css/animate.min.css">
+	  <link rel="stylesheet" href="assets/socicon/css/socicon.min.css">
+	  <link rel="stylesheet" href="assets/mobirise/css/style.css">
+	  <link rel="stylesheet" href="assets/mobirise-slider/style.css">
+	  <link rel="stylesheet" href="assets/mobirise-gallery/style.css">
+	  <link rel="stylesheet" href="assets/mobirise/css/mbr-additional.css" type="text/css">
+
+	   <link rel="shortcut icon" href="assets/images/discover-mobile-350x350-16.png" type="image/x-icon">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>   
+	 <script src="assets/smooth-scroll/SmoothScroll.js"></script>
+	<script src="assets/jarallax/jarallax.js"></script>
+	<script src="assets/masonry/masonry.pkgd.min.js"></script>
+	<script src="assets/imagesloaded/imagesloaded.pkgd.min.js"></script>
+	<script src="assets/social-likes/social-likes.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body onload="init();">   
@@ -20,7 +30,7 @@ platforms, the loading time of the scripts is significant so lets keep the impor
     <div id="wrapper">
         <!-- Sidebar -->
 		
-        <div id="sidebar-wrapper" >
+        <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand">
                     <a href="#">
@@ -30,11 +40,11 @@ platforms, the loading time of the scripts is significant so lets keep the impor
                 <li>
                     <canvas id="photo" width="210" height="161" style="background: #0077FF;"></canvas>
                 </li>
-                <li style= "padding-bottom:5px">                    
-					<button onclick="takePhoto();" class="btn btn-primary btn-block" >Begin Capture</button>
+                <li style="padding-bottom:40px;">
+					<button onclick="takePhoto();" class="btn btn-primary" >Begin Capture</button>
 				</li>
 				<li>
-                    <button data-toggle="collapse" data-target="#uploadPic"  class="btn btn-primary btn-block">Choose Photo</button>
+                    <button data-toggle="collapse" data-target="#uploadPic"  class="btn btn-primary">Choose Photo</button>
                     <form id="uploadPic" action="" method="post" enctype="multipart/form-data" class = "form-group collapse">
                         <input type="file" name="crowdPic" id ="crowdPic" class = "form-control"/>       
                         <input class = "btn btn-success" type="submit" value="Upload!" id ="upload"/>
@@ -43,8 +53,8 @@ platforms, the loading time of the scripts is significant so lets keep the impor
                 <li>
                     <a href="#"> IP Camera (MJPEG Only) </a>                                   
                     <input type="text" class="form-control" value="http://192.168.2.15:8080/video" id="ipCamAddress">                 
-                    <input type="button" id = "ipcamera" class="btn btn-primary col-lg-6" value="Switch to IP" onclick="setupIPCamera();">   
-                    <input type="button" id = "webcamera" class="btn btn-primary col-lg-6" value="Switch to Local" onclick="setupWebcam();">   
+                    <input type="button" id = "ipcamera" class="btn btn-primary" value="Switch to IP" onclick="setupIPCamera();">   
+                    <input type="button" id = "webcamera" class="btn btn-primary" value="Switch to Local" onclick="setupWebcam();">   
                 </li>
                 <li>
                     <a href="#"> Server Address </a>                                   
@@ -96,7 +106,8 @@ platforms, the loading time of the scripts is significant so lets keep the impor
                 <div class = "row">
                     <div class="col-lg-12">                        
                         <video style="display:none" id="camFeed" autoplay></video>                        
-                        <img style = "display:none" id="ipcamFeed" src=""></img>                        
+                        <img style = "display:none" id="ipcamFeed" src=""></img>
+                        
                     </div>
                 </div>
                 <div class = "row collapse" id ="pythonDebug" style = "white-space:pre"> </div>
@@ -122,6 +133,8 @@ platforms, the loading time of the scripts is significant so lets keep the impor
         var ipcam = false;
         var interval;
         var recording = false;
+		var adQueue=[];
+		
 		var dataJSONlocal={ "position" :{
 													"lon": null,
 													"lat": null
@@ -249,7 +262,7 @@ platforms, the loading time of the scripts is significant so lets keep the impor
         //Webcam INIT
         function setupWebcam(){       
             ipcam = false;
-            //toggleFeed();
+            toggleFeed();
             if($("#ipcamera").hasClass("btn-danger")){
                 $("#ipcamera").removeClass("btn-danger").addClass("btn-primary");
             }
@@ -277,7 +290,7 @@ platforms, the loading time of the scripts is significant so lets keep the impor
         //IP camera Init
         function setupIPCamera(){
             ipcam = true;
-            //toggleFeed();
+            toggleFeed();
             if($("#webcamera").hasClass("btn-danger")){
                 $("#webcamera").removeClass("btn-danger").addClass("btn-primary");
             }
@@ -404,9 +417,10 @@ platforms, the loading time of the scripts is significant so lets keep the impor
             
             var formData = {
                 crowdPic: fs.createReadStream(fileName)
+				metaData: dataJSONlocal
             }
             console.log("Submitting Post Request");
-            request.post({url:fetchAdURI, formData: formData, metaData: dataJSONlocal}, function optionalCallback(err, httpResponse, body) {
+            request.post({url:fetchAdURI, formData: formData}, function optionalCallback(err, httpResponse, body) {
 
                 if (err) {
                     console.log(err);
@@ -419,6 +433,7 @@ platforms, the loading time of the scripts is significant so lets keep the impor
                 //console.log(jsonBody.bestAd);
 				
 				if (currAd==null){
+					console.log(jsonBody);
 					currAd=jsonBody.bestAd;
 					currAdURI=viewAdURI;
 					showAd();
