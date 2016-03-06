@@ -1,4 +1,4 @@
-import sys
+﻿import sys
 import requests
 import json
 
@@ -34,7 +34,7 @@ def main():
     postData = {'sessionID':session, 'adID':recAdID}; #Submit an array of ads
     myResponse = requests.post(url, data = postData);
     print ("Response: {0}".format(myResponse.status_code))
-    print myResponse.text
+    print myResponse.text # yah some change in the code
 
 def authenticationTest(username, password):    
     # Create a session for our python program. This manages our cookies
