@@ -117,7 +117,6 @@
         var fetchAd = "/api/fetchad";
         var viewAd = "/view/";   
 		// stores the advertisement which is currently being displayed
-		var currAd=null;
 		var currAdURI=null;
 		var imgDisplayTime=10000;
 		
@@ -125,6 +124,7 @@
         var ipcam = false;
         var interval;
         var recording = false;
+		var adQueue=[];
 		var dataJSONlocal={ "position" :{
 													"lon": null,
 													"lat": null
@@ -139,10 +139,43 @@
 		var weatherUpdateInterval=600000; // variable controls how often weather information is updated
         // set weather interval
 		weatherInterval=setInterval(function(){weatherReport()},weatherUpdateInterval);
-	
+	    function searchItem (item){
+			for (y=0;y<adQueue.length;y++){
+				if (adQueue[y]._id==item._id){
+					return true;
+				}
+			}
+			return false;
+		}
 		
 		
 		// The following function updates weather parameters
+		function addQueue(newList){
+			console.log ("Iterating List \n\n");
+			for (i=0;i<newList.length;i++){
+				console.log(i);
+				console.log(newList[i]);
+				// check if the ad is currently in queue
+				if (!searchItem(newList[i])){
+					console.log ("Adding this to this list \n\n");
+					console.log(i);
+					console.log(newList[i]);
+					adQueue.push(newList[i]);
+					if (adQueue.length>3){
+						adQueue.shift();
+					}
+					return 
+				}
+				console.log("Match");
+			}	
+			// if no new ads added then replay the oldest ad
+			if (adQueue.length!=0){
+				oldestAd=adQueue[0];
+				adQueue.shift();
+				adQueue.push(oldestAd);
+			}
+			return
+		}
 		function weatherReport(){
 			var weatherData;
 			$.ajax({ // create an AJAX call...     
@@ -359,44 +392,56 @@
         // The following function sets the timer for next takephoto function call		
         //Advertisement Display
         function showAd(){
-            var curAdd=currAd;
-			var viewAdURI=currAdURI;
-            //Copied from server validation - check to see if the ad is an image or video
-            try{
-                var mime = curAdd.videoad.contentType   
-                var video = true;
-                if(mime.indexOf("jpeg")> -1 || mime.indexOf("png")>-1){
-                    video = false;
-                }
-                if(video){
-                    $('#display').attr('src',viewAdURI+curAdd._id);
-                    $('#displayImg').attr('src','');
-                    $('#videoDisplay').show();
-                    $('#imageDisplay').hide();
-                }
-                else{
-                    $('#displayImg').attr('src',viewAdURI+curAdd._id);
-                    $('#display').attr('src','');
-                    $('#videoDisplay').hide();
-                    $('#imageDisplay').show();  
-                    takePhoto();
-                    setTimeout(function(){showAd();},imgDisplayTime); 
-                }
-            }catch(e){
-                console.log("There was a problem: " + e);
-            }
+			if (!(adQueue.length)==0){
+				console.log("showing ad\n");
+				console.log(adQueue.length);
+				var curAdd=adQueue[adQueue.length-1];
+				var viewAdURI=currAdURI;
+				console.log(curAdd);
+				//Copied from server validation - check to see if the ad is an image or video
+				try{
+					var mime = curAdd.videoad.contentType;
+					var video = true;
+					if(mime.indexOf("jpeg")> -1 || mime.indexOf("png")>-1){
+						video = false;
+					}
+					if(video){
+						$('#display').attr('src',viewAdURI+curAdd._id);
+						$('#displayImg').attr('src','');
+						$('#videoDisplay').show();
+						$('#imageDisplay').hide();
+					}
+					else{
+					console.log("new Photo");
+						$('#displayImg').attr('src',viewAdURI+curAdd._id);
+						$('#display').attr('src','');
+						$('#videoDisplay').hide();
+						$('#imageDisplay').show();  
+						takePhoto();
+						setTimeout(function(){showAd();},imgDisplayTime); 
+					}
+				}catch(e){
+					console.log("There was a problem: " + e);
+				}
+			}
+			else {
+				console.log("No ads Available for display");
+				takePhoto();
+			}
         }
 
 
         //Server calls
         function takePhoto()
         {
+			console.log("taking photo");
             var uri = $("#serverAddress").val();
             if(uri==""){
                 uri = defaultAddress;
             }
             var fetchAdURI = uri + fetchAd;
             var viewAdURI = uri + viewAd;
+			var curAdd;
             
             var fileName = 'image.png';
             if(ipcam==false){ //What to do when you are on local camera
@@ -426,14 +471,17 @@
                 //$('#display').attr('src',viewAdURI+jsonBody.bestAd._id);
                 console.log(jsonBody.bestAd);
 				
-				if (currAd==null){
-					currAd=jsonBody.bestAd[0];
+				if (adQueue.length==0){
+					currAd=jsonBody.bestAd;
 					currAdURI=viewAdURI;
+					addQueue(currAd);
 					showAd();
 				}
 				else {
-					currAd=jsonBody.bestAd[0];
+					currAd=jsonBody.bestAd;
 					currAdURI=viewAdURI;
+					addQueue(currAd);
+					
 				}
 				
                 $('#pythonDebug').html(jsonBody.pythonDebug);
