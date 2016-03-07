@@ -31,7 +31,7 @@
                     <canvas id="photo" width="210" height="161" style="background: #0077FF;"></canvas>
                 </li>
                 <li style= "padding-bottom:5px">                    
-					<button onclick="takePhoto();" class="btn btn-primary btn-block" >Begin Capture</button>
+					<button onclick="beginCapture();" class="btn btn-primary btn-block"  id="capture_button">Begin Capture</button>
 				</li>
 				<li>
                     <button data-toggle="collapse" data-target="#uploadPic"  class="btn btn-primary btn-block">Choose Photo</button>
@@ -129,7 +129,9 @@
 		// stores the advertisement which is currently being displayed
 		var currAdURI=null;
 		var imgDisplayTime=10000;
-		
+		var lag=6000;
+		var adInterval;
+		var captureStatus=false;
         
         var ipcam = false;
         var interval;
@@ -161,22 +163,15 @@
 		
 		// The following function updates weather parameters
 		function addQueue(newList){
-			console.log ("Iterating List \n\n");
 			for (i=0;i<newList.length;i++){
-				console.log(i);
-				console.log(newList[i]);
 				// check if the ad is currently in queue
 				if (!searchItem(newList[i])){
-					console.log ("Adding this to this list \n\n");
-					console.log(i);
-					console.log(newList[i]);
 					adQueue.push(newList[i]);
 					if (adQueue.length>3){
 						adQueue.shift();
 					}
 					return 
 				}
-				console.log("Match");
 			}	
 			// if no new ads added then replay the oldest ad
 			if (adQueue.length!=0){
@@ -243,13 +238,15 @@
               onTrackedVideoFrame(this.currentTime, this.duration);
             });
 		  $("#display").on( "ended",function(event){
-              showAd();
+				showAd();      
+				console.log("Show Ad 240");
             });
-		  $("#display").on( "loadeddata",function(event){
-              var interval=this.duration-10;
-			  if (interval<0){interval=0;}
-			  console.log(interval);
-			  setTimeout(function(){takePhoto();},interval*1000);
+		  $("#display").on( "loadeddata",function(event){              
+			  if (captureStatus){
+				  var interval=this.duration-10;
+				  if (interval<0){interval=0;}
+				  adInterval=setTimeout(function(){takePhoto();},interval*1000);
+			  }
             });	            
 		  
         });  
@@ -408,10 +405,8 @@
 
 			if (!(adQueue.length)==0){
 				console.log("showing ad\n");
-				console.log(adQueue.length);
 				var curAdd=adQueue[adQueue.length-1];
 				var viewAdURI=currAdURI;
-				console.log(curAdd);
 				//Copied from server validation - check to see if the ad is an image or video
 				try{
 					var mime = curAdd.videoad.contentType;
@@ -426,13 +421,15 @@
 						$('#imageDisplay').hide();
 					}
 					else{
-					console.log("new Photo");
 						$('#displayImg').attr('src',viewAdURI+curAdd._id);
 						$('#display').attr('src','');
 						$('#videoDisplay').hide();
 						$('#imageDisplay').show();  
-						takePhoto();
-						setTimeout(function(){showAd();},imgDisplayTime); 
+						
+						if (captureStatus){
+							adInterval=setTimeout(function(){takePhoto();},imgDisplayTime-lag); 
+							adInterval=setTimeout(function(){showAd();},imgDisplayTime); 
+						}
 					}
 				}catch(e){
 					console.log("There was a problem: " + e);
@@ -445,8 +442,25 @@
 
         }
       
-        
-        //Server calls
+        function beginCapture(){
+			if ($('#capture_button').html()=="Begin Capture"){
+				captureStatus=true;
+				$('#capture_button').html("Stop Capture");	
+				if (adQueue.length==0){				
+					takePhoto();
+				}
+				else{
+					showAd();
+				}
+			
+			}
+			else{
+				$('#capture_button').html("Begin Capture");
+				window.clearInterval(adInterval);
+				captureStatus=false;
+			}
+		}
+        //Server calls`
         function takePhoto()
         {
 			console.log("taking photo");
@@ -488,7 +502,6 @@
 				console.log('Fetched a new Ad');
                 var jsonBody = JSON.parse(body);                
                 //$('#display').attr('src',viewAdURI+jsonBody.bestAd._id);
-                console.log(jsonBody.bestAd);
 				
 				if (adQueue.length==0){
 					currAd=jsonBody.bestAd;
@@ -535,6 +548,7 @@
                 enctype: $(this).attr('enctype'),
                 success: function(data, status) { // on success..  
                     showAd(data.bestAd, viewAdURI);
+					console.log("show ad 546");
 //                    $('#display').attr('src',viewAdURI+data.bestAd._id);                    
                     $('#pythonDebug').html(data.pythonDebug);
                 },

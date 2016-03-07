@@ -68,7 +68,7 @@
                     <form id="loginForm" action="" method="post" enctype="multipart/form-data">
                             <h2 class="form-signin-heading text-white">Please sign in</h2>
                             <label for="inputEmail" class="sr-only">Email address</label>
-                            <input type="email"  class="form-control" name="username", id="username" placeholder="Email address" > 
+                            <input type="text"  class="form-control" name="username", id="username" placeholder="Email address" > 
                             <label for="inputPassword" class="sr-only">Password</label>
                             <input type="password" name="password", id="password" class="form-control" placeholder="Password">
                             <div class="btn-inverse">
@@ -94,7 +94,8 @@
             
             console.log("Shit happened");
 			ev.preventDefault();
-			var myFormData = $(this).serialize();    
+			var myFormData = $(this).serialize();   
+			console.log("got errors");			
 			
             $.ajax({ // create an AJAX call...                     
                 data: myFormData,
@@ -108,21 +109,24 @@
                 
                 success: function(data, status) { // on success..  
                     if (data.message=="success"){
-						window.location.href = "main.html";
+						//window.location.href = "main.html";
+						console.log("success");
 					}
 					else{
+						console.log("not success");
 						$('#errorbox').html(data.message);
 					}
 						
                 },
-                error: function(xhr, desc, err) { // on success..                    
-                    alert("error");
+                error: function(xhr, desc, err) { // on success..  
+					console.log("errors");
 					var text = "<div class='alert alert-danger'>" +                       
 					 "<p class='leftside'> Login Failed: Try Again! </p>" +  
 				   "</div>"
 					$('#errorbox').html(text);
                 }
             });
+			console.log("exiting");
             return false; // cancel original event to prevent form submitting
         });
     </script>
