@@ -131,30 +131,34 @@ def detect_image (img_url):
             # for (ex,ey,ew,eh) in eyes:
             #     cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
 
-        avgw =  avgw/total_found
-        avgh =  avgh/total_found
+            avgw =  avgw/total_found
+            avgh =  avgh/total_found
 
 
-        print "ratio of avg width of face to Width of image: " + str(avgw/width)
-        print "ratio of avg height of face to Height of image: " + str(avgh/height)
-        print pocx
-        print pocy
-        to_send = divide_im(img,avgw/width,avgh/height,pocx,pocy,all_faces)
-        print "# of Images to send: " + str(len(to_send))
-        # cv2.imshow('img',img)
-        # cv2.waitKey(0)
-        for i in range(len(to_send)):
-        #    cv2.imshow('img_crop',to_send[i])
-            cv2.waitKey(0)
+            print "ratio of avg width of face to Width of image: " + str(avgw/width)
+            print "ratio of avg height of face to Height of image: " + str(avgh/height)
+            print pocx
+            print pocy
+            to_send = divide_im(img,avgw/width,avgh/height,pocx,pocy,all_faces)
+            print "# of Images to send: " + str(len(to_send))
+            # cv2.imshow('img',img)
+            # cv2.waitKey(0)
+            for i in range(len(to_send)):
+            #    cv2.imshow('img_crop',to_send[i])
+                cv2.waitKey(0)
 
-        cv2.destroyAllWindows()
-        return to_send
+            cv2.destroyAllWindows()
+            return 'valid',to_send
+        else:
+            to_send = [img]
+            return 'valid', to_send
     else:
         to_send = [img]
-        return to_send
+        return 'not_valid', to_send
+
 
 if __name__ == '__main__':
     #img_url = 'test_pic/test_face.jpg'
     img_url = 'test_pic/test_face_fullwide.jpg'
-    s = detect_image(img_url)
+    val, s = detect_image(img_url)
     print len(s)
