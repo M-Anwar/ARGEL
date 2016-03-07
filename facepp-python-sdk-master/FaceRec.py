@@ -141,9 +141,9 @@ def FaceRecog(session):
         else:
             print 'No one detected!'
             ids, X = get_ads(session)
-            return ids[0,1,2]
+            return ids[0:3]
     else:
         print 'No one detected!'
         ids, X = get_ads(session)
-        return ids[0,1,2]
+        return ids[0:3]
 

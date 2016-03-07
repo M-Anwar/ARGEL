@@ -130,7 +130,7 @@ def get_ads(session="none"):
     return ids, tags
 
 if __name__ == '__main__':
-    #ids,tags = get_ads()
-    #print ids
+    ids,tags = get_ads()
+    print ids[0:2]
     #print tags
     print get_temp('-10C')
