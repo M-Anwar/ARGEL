@@ -123,6 +123,7 @@ router.get('/getads', function(req,res,next){
 router.get('/getads/:sessionid', function(req,res,next){
      Session.findOne({"_id" : req.params.sessionid}, function(err, session){
         if (err){res.status(400).json({message:err}); return;}
+        if(session == null){res.status(400).json({message:"Unable to find Session"}); return;}
         console.log("Session authentication: " + session.localUser.authenticated);
          
         if(session.localUser.authenticated){

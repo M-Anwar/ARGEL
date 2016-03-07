@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-<!-- This main.html does not nees all the javascripts and css stylings of the other pages, bootstrap and jquery is enough
-to achieve the visual styling. If later you wish you add different looks or behaviours, add them ONE BY ONE here. On slow 
-platforms, the loading time of the scripts is significant so lets keep the imports optimized. 
--->
+    <!-- This main.html does not nees all the javascripts and css stylings of the other pages, bootstrap and jquery is enough
+    to achieve the visual styling. If later you wish you add different looks or behaviours, add them ONE BY ONE here. On slow 
+    platforms, the loading time of the scripts is significant so lets keep the imports optimized. 
+    -->
     <title>ARGEL Marketing Solutions</title>
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/argel.css">
@@ -86,9 +86,12 @@ platforms, the loading time of the scripts is significant so lets keep the impor
                         <a class="btn btn-default" id="menu-toggle">Show Menu</a>
                         <a class="btn btn-default" id="refresh">Refresh Page</a>
                         <button class="btn btn-default" onclick="toggleFeed();";>View Video Feed</button>
-						
-                        <button data-toggle="collapse" data-target="#pythonDebug" class="btn btn-primary">Debug Ouput</button>
 						<a class="btn btn-default" href="index.html">Back</a>
+                        
+                        <!-- Debug Tools -->
+                        <button data-toggle="collapse" data-target="#pythonDebug" class="btn btn-primary">Debug Ouput</button>						
+                        <button data-toggle="collapse" data-target="#debugMenu" class="btn btn-primary">Debug Tools</button>
+                        
                         <p id="timestats">0:00 - 0:00</p>                        
                     </div>
                 </div>
@@ -130,7 +133,7 @@ platforms, the loading time of the scripts is significant so lets keep the impor
 								"main": null,
 								"temp": null
 							}
-	}
+	    }
 		
 		
 		var weatherUpdateInterval=600000; // variable controls how often weather information is updated
@@ -352,31 +355,35 @@ platforms, the loading time of the scripts is significant so lets keep the impor
             fs.writeFileSync(imageName, buf);            
             canvas = null;
         }
-        // The following function sets the timer for next takephoto function call
-		
+
+        // The following function sets the timer for next takephoto function call		
         //Advertisement Display
         function showAd(){
             var curAdd=currAd;
 			var viewAdURI=currAdURI;
             //Copied from server validation - check to see if the ad is an image or video
-            var mime = curAdd.videoad.contentType   
-            var video = true;
-            if(mime.indexOf("jpeg")> -1 || mime.indexOf("png")>-1){
-                video = false;
-            }
-            if(video){
-                $('#display').attr('src',viewAdURI+curAdd._id);
-                $('#displayImg').attr('src','');
-                $('#videoDisplay').show();
-                $('#imageDisplay').hide();
-            }
-            else{
-                $('#displayImg').attr('src',viewAdURI+curAdd._id);
-                $('#display').attr('src','');
-                $('#videoDisplay').hide();
-                $('#imageDisplay').show();  
-                takePhoto();
-				setTimeout(function(){showAd();},imgDisplayTime); 
+            try{
+                var mime = curAdd.videoad.contentType   
+                var video = true;
+                if(mime.indexOf("jpeg")> -1 || mime.indexOf("png")>-1){
+                    video = false;
+                }
+                if(video){
+                    $('#display').attr('src',viewAdURI+curAdd._id);
+                    $('#displayImg').attr('src','');
+                    $('#videoDisplay').show();
+                    $('#imageDisplay').hide();
+                }
+                else{
+                    $('#displayImg').attr('src',viewAdURI+curAdd._id);
+                    $('#display').attr('src','');
+                    $('#videoDisplay').hide();
+                    $('#imageDisplay').show();  
+                    takePhoto();
+                    setTimeout(function(){showAd();},imgDisplayTime); 
+                }
+            }catch(e){
+                console.log("There was a problem: " + e);
             }
         }
 
@@ -417,15 +424,15 @@ platforms, the loading time of the scripts is significant so lets keep the impor
 				console.log('Fetched a new Ad');
                 var jsonBody = JSON.parse(body);                
                 //$('#display').attr('src',viewAdURI+jsonBody.bestAd._id);
-                //console.log(jsonBody.bestAd);
+                console.log(jsonBody.bestAd);
 				
 				if (currAd==null){
-					currAd=jsonBody.bestAd;
+					currAd=jsonBody.bestAd[0];
 					currAdURI=viewAdURI;
 					showAd();
 				}
 				else {
-					currAd=jsonBody.bestAd;
+					currAd=jsonBody.bestAd[0];
 					currAdURI=viewAdURI;
 				}
 				
