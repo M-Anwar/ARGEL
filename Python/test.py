@@ -35,6 +35,15 @@ def main():
     myResponse = requests.post(url, data = postData);
     print ("Response: {0}".format(myResponse.status_code))
     print myResponse.text # yah some change in the code
+    
+    url = "http://localhost:3000/api/getsessioninfo/" + session
+    myResponse = requests.get(url)
+    if(myResponse.ok):   
+        jData = json.loads(myResponse.content)
+        print jData
+        print("The response contains {0} properties:".format(len(jData)))    
+        print jData["_id"]
+        print "Meta-Data Length: {0}".format(len(jData["metaData"]))
 
 def authenticationTest(username, password):    
     # Create a session for our python program. This manages our cookies

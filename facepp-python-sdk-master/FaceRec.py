@@ -123,7 +123,8 @@ def FaceRecog(session):
         #cv2.imwrite(new_im,image)
         print "Ad# Predicted:" + str(pred)
         #print "ID Predicted:" + str(ids[int(pred[0])-1])
-        return ids[int(pred[0])-1]
+        recommend = [ids[int(i)-1] for i in pred]
+        return recommend
     else:
         print 'No one detected!'
         ids, X = get_ads()

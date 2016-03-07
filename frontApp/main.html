@@ -74,14 +74,19 @@
 		   
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12" style="display:none" id = "videoDisplay">
+                    <div class="col-md-12" style="display:none" id = "videoDisplay">
                         <video class= "display" id = "display" src="" width = "720" height ="480" controls autoplay = "true" </video>                          
                     </div>
-                    <div class ="col-lg-12" style = "display:block" id = "imageDisplay">
+                    <div class ="col-md-12" style = "display:block" id = "imageDisplay">
                         <img class="display" id = "displayImg" src="assets\images\TargettingAdvertising2.png"></img>                            
                     </div>
+                
+                    <div class="col-md-6">                        
+                        <video style="display:none" id="camFeed" class = "display" autoplay controls></video>                        
+                        <img style = "display:none" id="ipcamFeed" src="" class = "img-responsive"></img>                        
+                    </div>
                 </div>
-                <div class="row">
+                <div class="row" style="margin-top:10px">
                     <div class="col-lg-12">
                         <a class="btn btn-default" id="menu-toggle">Show Menu</a>
                         <a class="btn btn-default" id="refresh">Refresh Page</a>
@@ -90,16 +95,21 @@
                         
                         <!-- Debug Tools -->
                         <button data-toggle="collapse" data-target="#pythonDebug" class="btn btn-primary">Debug Ouput</button>						
-                        <button data-toggle="collapse" data-target="#debugMenu" class="btn btn-primary">Debug Tools</button>
+                        <button data-toggle="collapse" data-target="#debugMenu, #adDebug" class="btn btn-primary">Debug Tools</button>
                         
                         <p id="timestats">0:00 - 0:00</p>                        
                     </div>
-                </div>
+                </div>               
                 
-                <div class = "row">
+             
+                <div class = "row collapse" id ="debugMenu">
                     <div class="col-lg-12">                        
-                        <video style="display:none" id="camFeed" autoplay></video>                        
-                        <img style = "display:none" id="ipcamFeed" src=""></img>                        
+                        <h3> Debug Tools </h3>  
+                        <h4>Use Mock Video Capture</h4>
+                        <form id="mockVideo" action="" method="post" enctype="multipart/form-data" class = "form-group">                            
+                            <input type="file" name="userVid" id ="userVid" class = "form-control"/>       
+                            <input class = "btn btn-success" type="submit" value="Begin Video Capture" id ="capture"/>
+                        </form>                       
                     </div>
                 </div>
                 <div class = "row collapse" id ="pythonDebug" style = "white-space:pre"> </div>
@@ -240,8 +250,7 @@
 			  if (interval<0){interval=0;}
 			  console.log(interval);
 			  setTimeout(function(){takePhoto();},interval*1000);
-            });
-		  
+            });	            
 		  
         });  
         function onTrackedVideoFrame(currentTime, duration){
@@ -249,6 +258,8 @@
            
         }
         function toggleFeed(){
+            $('#videoDisplay').toggleClass('col-md-6');
+            $('#imageDisplay').toggleClass('col-md-6');
             if(ipcam ==false){
                 $("#camFeed").toggle();
                 $("#ipcamFeed").hide();
@@ -285,7 +296,7 @@
         //Webcam INIT
         function setupWebcam(){       
             ipcam = false;
-            //toggleFeed();
+            //toggleFeed();            
             if($("#ipcamera").hasClass("btn-danger")){
                 $("#ipcamera").removeClass("btn-danger").addClass("btn-primary");
             }
@@ -313,7 +324,7 @@
         //IP camera Init
         function setupIPCamera(){
             ipcam = true;
-            //toggleFeed();
+            //toggleFeed();            
             if($("#webcamera").hasClass("btn-danger")){
                 $("#webcamera").removeClass("btn-danger").addClass("btn-primary");
             }
@@ -359,9 +370,10 @@
             var v = document.getElementById('camFeed');
             c.getContext('2d').drawImage(v, 0, 0, 210, 161);
 
+            //Display Resolution independant capture to canvas
             var canvas = document.createElement('canvas');
-            canvas.width = $("#camFeed").innerWidth();
-            canvas.height = $("#camFeed").innerHeight();
+            canvas.width = v.videoWidth;
+            canvas.height = v.videoHeight;    
             canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
 
             var fs = require("fs");            
@@ -376,9 +388,10 @@
             var v = document.getElementById('ipcamFeed');
             c.getContext('2d').drawImage(v, 0, 0, 210, 161);
 
+            //Display Resolution independant capture to canvas
             var canvas = document.createElement('canvas');
-            canvas.width = $("#ipcamFeed").width();
-            canvas.height = $("#ipcamFeed").height();
+            canvas.width = v.naturalWidth;
+            canvas.height = v.naturalHeight;
             canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);                
 
             var fs = require("fs");            
@@ -391,7 +404,8 @@
 
         // The following function sets the timer for next takephoto function call		
         //Advertisement Display
-        function showAd(){
+        function showAd{
+
 			if (!(adQueue.length)==0){
 				console.log("showing ad\n");
 				console.log(adQueue.length);
@@ -428,9 +442,10 @@
 				console.log("No ads Available for display");
 				takePhoto();
 			}
+
         }
-
-
+      
+        
         //Server calls
         function takePhoto()
         {
@@ -455,11 +470,15 @@
             var fs = require("fs"); 
             
             var formData = {
-                crowdPic: fs.createReadStream(fileName)
-            }
+                crowdPic: fs.createReadStream(fileName),
+                lat: dataJSONlocal.position.lat,
+                lng: dataJSONlocal.position.lon,
+                weatherDesc: dataJSONlocal.Weather.main,
+                temperature: dataJSONlocal.Weather.temp
+            };
                             
             console.log("Submitting Post Request");
-            request.post({url:fetchAdURI, formData: formData, metaData: dataJSONlocal}, function optionalCallback(err, httpResponse, body) {
+            request.post({url:fetchAdURI, formData: formData}, function optionalCallback(err, httpResponse, body) {
 
                 if (err) {
                     console.log(err);
@@ -525,6 +544,45 @@
             });
             return false; // cancel original event to prevent form submitting
         });
+        $('#mockVideo').submit(function(event){
+            //Loads a mock video into the webcam stream to be captured by the system.
+            try{                
+                var countFiles = $('#userVid')[0].files.length;            
+                var imgPath = $('#userVid')[0].value;
+                var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();   
+
+                console.log(imgPath + " : " + extn);
+                var video_holder = $("#camFeed");
+ 
+                reader2 = window.URL || window.webKitURL; 
+                if (typeof (FileReader) != "undefined") {   //Check to see if we can even do this (HTML5 required)                       
+                    var reader = new FileReader();
+                    if(extn =="mp4" || extn =="mov" || extn=="ogg" || extn=="ogv"){ //For videos
+
+                        if (reader2 && reader2.createObjectURL) {                    
+                            url = reader2.createObjectURL( $('#userVid')[0].files[0]);                
+                            video_holder.attr('src',url);                   
+                            return false;
+                        }
+
+                    }else{ //If the user selects any other file type, then dont allow it, reset
+                        alert("Please select only videos");                    
+                        this.wrap('<form>').parent('form').trigger('reset');
+                        this.unwrap();
+                        return;
+                    }               
+                }
+                else {
+                    console.trace();
+                    console.log("This browser does not support FileReader.");
+                }   
+            }catch(e){
+                console.log("ERROR: " + e);
+            }
+            
+            return false;
+        });
+        
     </script>
 </body>
 </html>
