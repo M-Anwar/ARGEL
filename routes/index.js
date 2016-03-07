@@ -2,8 +2,10 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var Account = require('../models/account');
+var Statistics = require('../models/statistics');
 var Ad = require('../models/ad');
 var fs = require('fs');
+var util = require('util');
 var multer = require('multer');
 var mongoose = require('mongoose');
 var gridfs = require("gridfs");
@@ -11,6 +13,13 @@ var upload = multer({
     dest:'./uploads/',
     limits: { fileSize: 400* 1024 * 1024} //Max file size for upload multer
 });
+
+// Counter for user views
+function adPageViewCount(req, res) {
+  req.session.count = req.session.count || 0;
+  var n = req.session.count++;
+  res.send('viewed ' + n + ' times\n');
+}
 
 // check if the user is authenticated 
 var isAuthenticated = function (req, res, next) {
@@ -36,6 +45,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/ads', isAuthenticated,function(req, res, next) {
+
     //Show the ads the USER has uploaded
 	Ad.find({userid: req.user._id}, function(err, adsobjects) {
         if(err) {console.log(err); return;}
@@ -81,6 +91,37 @@ router.get('/deleteadprofile/:ad_id', isAuthenticated, function(req, res){
 
 //  profile Page for current viewer  GET
 router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
+	console.log('req.cookies: ');
+	console.log(util.inspect(req.cookies, false, null));
+	console.log('req.session: ');
+	console.log(util.inspect(req.session, false, null));
+	console.log('req.cookies[\'connect.sid\']: '+req.cookies['connect.sid']);
+	
+	//update ad page view counter
+	Statistics.findOne({adId:req.params.ad_id},{},function(err,thisStatistics){
+		var found = 0;
+		if(!thisStatistics){
+			found = 1;
+			Statistics.create({adId:req.params.ad_id , sessionCookies: req.cookies['connect.sid'], pageView:0});
+		}
+		
+		for (i = 0; (found==0)&&(i < thisStatistics.sessionCookies.length) ; i++) { 
+			if(thisStatistics.sessionCookies[i] == req.cookies['connect.sid']){
+				found = 1;
+				break;
+			}
+		}
+		
+		if (found == 0){
+		console.log("found=0");
+		//keep only one of the following 2?? TBD
+		Statistics.findOneAndUpdate({adId:req.params.ad_id},{$addToSet: {sessionCookies: req.cookies['connect.sid']}, $inc: {pageView:1} },{},function(err,stat){});
+		Ad.findOneAndUpdate({_id:req.params.ad_id},{$inc: {pageView:1} },{},function(err,ad){});
+		// Statistics.findOneAndUpdate({adId:req.params.ad_id},{$inc: {pageView:1} },{},function(err,stat){});
+		}
+    });
+	
+	//fetch ad
 	Ad.findOne({ "_id" : req.params.ad_id }, function(err, viewthisad) {        
         var mime = viewthisad.videoad.contentType          
         var video = true;        
@@ -174,6 +215,7 @@ router.post('/adupload', isAuthenticated,upload.single('videoAd'), function(req,
     var tagArray = [req.body.tags, req.body.locations];
     ad.tags = tagArray;
     ad.metaData = req.body.metaData;
+	ad.pageView=0;
 	
 	//save the ad to the db
     ad.save(function(err,a){
