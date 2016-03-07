@@ -106,9 +106,9 @@ def FaceRecog(session):
         # with open(file, 'rb') as f:
         #         reader = csv.reader(f)
         #         X = list(reader)
-        ct = "22:06"
-        ids, X = get_ads(ct)
-        other_data = [get_weather('sunny'), get_temp('-10C'), get_time(ct)]
+        #ct = "22:06"
+        ids, X = get_ads(session)
+        other_data = [get_weather('sunny'), get_temp('-10C'), 0.0]
 
         #pred = learn_tree_and_predict(X, test_x)
         pred = K_near_age(X, test_x, 1, other_data)
