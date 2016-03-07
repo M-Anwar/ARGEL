@@ -65,9 +65,9 @@ def get_time2(times):
     return feat/43200.0/tfactor
 
 def get_ads(session="none"):
-    host = "http://localhost:3000/api/getads/"
+    host = "http://localhost:3000/api/getads"
     if session != 'none':
-        url = host + session
+        url = host + '/' + session
     else:
         url = host
 
