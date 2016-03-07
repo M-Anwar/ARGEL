@@ -100,7 +100,7 @@ router.get('/authenticated', isAuthenticated,function(req,res,next){
 
 router.get('/getsessioninfo/:id',function(req,res,next){
     Session.findOne({"_id" : req.params.id}, {"metaData": true}, function(err, session){
-        if(err){res.send(err); return;}
+        if(err){res.send(err); return;}        
         res.json(session);
     });
 });
@@ -269,7 +269,8 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
     }else{
         sess.localUser.authenticated = false;
         sess.localUser.userid = null;
-    }
+    }    
+    
     
     //Parse the geolocation information if any are present
     var err = false;
@@ -280,6 +281,14 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
     }
     else{
         sess.metaData[0] = {lat: parseFloat(req.body.lat), lng: parseFloat(req.body.lng)};
+    }
+        
+    //Parse metaData information
+    if(req.body.weatherDesc!=null){
+        sess.metaData[1]= req.body.weatherDesc;        
+    }
+    if(!req.body.temperature!=null){
+        sess.metaData[2]= req.body.temperature;
     }
     
     sess.save(function(err,a){
@@ -345,6 +354,15 @@ router.post('/fetchadtest', function(req, res, next) {
     else{
         sess.metaData[0] = {lat: parseFloat(req.body.lat), lng: parseFloat(req.body.lng)};
     }
+    
+     //Parse metaData information
+    if(req.body.weatherDesc !=null){
+        sess.metaData[1]= req.body.weatherDesc;        
+    }
+    if(req.body.temperature !=null){       
+        sess.metaData[2]= req.body.temperature;
+    }
+    
     
     sess.save(function(err,a){
         if(err) throw err;        
