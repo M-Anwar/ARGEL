@@ -20,7 +20,7 @@ def get_weather(w):
     return weather_int/wfactor
 
 def get_temp(t):
-    tfactor = 100
+    tfactor = 100.0
 
     t_match = re.match('(-*\d+)(\w)', t)
     if t_match:
@@ -28,6 +28,12 @@ def get_temp(t):
             temp_int = float(t_match.group(1))
         elif t_match.group(2) == 'F':
             temp_int = (float(t_match.group(1))-32)*(5/9)
+        else:
+            temp_int = 23
+    else:
+        t_match = re.match('(-*\d+)', t)
+        if t_match:
+            temp_int = float(t_match.group(1))-273.13
         else:
             temp_int = 23
 
@@ -124,6 +130,7 @@ def get_ads(session="none"):
     return ids, tags
 
 if __name__ == '__main__':
-    ids,tags = get_ads()
-    print ids
-    print tags
+    #ids,tags = get_ads()
+    #print ids
+    #print tags
+    print get_temp('-10C')

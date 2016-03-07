@@ -25,7 +25,7 @@ def FaceRecog(session):
 
 
     font = cv2.FONT_HERSHEY_SIMPLEX
-    ids, X = get_ads(session)
+
 
     if status == 'valid':
         genders = []
@@ -111,9 +111,18 @@ def FaceRecog(session):
             #         reader = csv.reader(f)
             #         X = list(reader)
             #ct = "22:06"
+            #Get any associated meta-data with the session. Returns an array
+            url = "http://localhost:3000/api/getsessioninfo/" + session
+            myResponse = requests.get(url)
+            if(myResponse.ok):
+                jData = json.loads(myResponse.content)
 
-            other_data = [get_weather('sunny'), get_temp('-10C'), 0.0]
+                #print("The response contains {0} properties:".format(len(jData)))
+                #print jData["_id"]
+                print "Meta-Data Length: {0}".format(len(jData["metaData"]))
 
+            other_data = [get_weather(jData["metaData"][1]), get_temp(jData["metaData"][2]), 0.0]
+            ids, X = get_ads(session)
             #pred = learn_tree_and_predict(X, test_x)
             pred = K_near_age(X, test_x, 1, other_data)
             feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+', 'Weather','Temp','Time']
@@ -131,10 +140,10 @@ def FaceRecog(session):
             return recommend
         else:
             print 'No one detected!'
-            ids, X = get_ads()
+            ids, X = get_ads(session)
             return ids[0,1,2]
     else:
         print 'No one detected!'
-        ids, X = get_ads()
+        ids, X = get_ads(session)
         return ids[0,1,2]
 
