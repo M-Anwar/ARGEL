@@ -12,8 +12,8 @@ from facepp import *
 from ApiCalls import *
 from opencv_face_det import *
 
-
 def FaceRecog(session):
+    st = time.time()
 
     # You need to register your App first, and enter you API key/secret.
     API_KEY = '28fbdbef3093f25ff6771286febc5e81'
@@ -23,10 +23,11 @@ def FaceRecog(session):
 
     imurl = session+'.jpg'
     startTime = datetime.now()
-    status, cropped_imgs = detect_image(imurl)
+    #status, cropped_imgs = detect_image(imurl)
+    status = 'valid'
     print "The Time it took for OpenCV:"
     print datetime.now() - startTime
-
+    cropped_imgs = [cv2.imread(imurl)]
 
     font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -70,11 +71,11 @@ def FaceRecog(session):
                         glasses.append(attribute['glass'])
                         smilings.append(attribute['smiling'])
 
-                        image = cv2.imread(new_im)
+                        #image = cv2.imread(new_im)
                         #print image
-                        pt1 = (int(each_face['position']['center']['x']*width/100-each_face['position']['width']*width/100/2),int(each_face['position']['center']['y']*height/100+each_face['position']['height']*height/100/2))
-                        pt2 = (int(each_face['position']['center']['x']*width/100+each_face['position']['width']*width/100/2),int(each_face['position']['center']['y']*height/100-each_face['position']['height']*height/100/2))
-                        image = cv2.rectangle(image,pt1,pt2,(0,255,0))
+                        #pt1 = (int(each_face['position']['center']['x']*width/100-each_face['position']['width']*width/100/2),int(each_face['position']['center']['y']*height/100+each_face['position']['height']*height/100/2))
+                        #pt2 = (int(each_face['position']['center']['x']*width/100+each_face['position']['width']*width/100/2),int(each_face['position']['center']['y']*height/100-each_face['position']['height']*height/100/2))
+                        #image = cv2.rectangle(image,pt1,pt2,(0,255,0))
                         # image = cv2.circle(image,(int(each_face['position']['eye_left']['x']*width/100),int(each_face['position']['eye_left']['y']*height/100)),3,(0,255,0))
                         # image = cv2.circle(image,(int(each_face['position']['eye_right']['x']*width/100),int(each_face['position']['eye_right']['y']*height/100)),3,(0,255,0))
                         # image = cv2.circle(image,(int(each_face['position']['nose']['x']*width/100),int(each_face['position']['nose']['y']*height/100)),3,(0,255,0),-1)
@@ -84,7 +85,7 @@ def FaceRecog(session):
                         #image = cv2.putText(image, 'Age: ' + str(attribute['age']['value']) + ' Range: ' + str(attribute['age']['range']),(int(pt1[0]+(pt2[0]-pt1[0])/2),int(pt1[1]*1.05)),font,1,(0,255,0),1,cv2.LINE_AA)
                         #cv2.imshow('preview',image)
                         #cv2.waitKey(0)
-                        cv2.imwrite(new_im,image)
+                        #cv2.imwrite(new_im,image)
 
         if len(genders) > 0:
             amount_of_people = len(genders)
@@ -150,13 +151,16 @@ def FaceRecog(session):
             print "Ad# Predicted:" + str(pred)
             #print "ID Predicted:" + str(ids[int(pred[0])-1])
             recommend = [ids[int(i)-1] for i in pred]
+            print str(time.time() - st)
             return recommend
         else:
             print 'No one detected!'
             ids, X = get_ads(session)
+            print time.time() - st
             return ids[0:3]
     else:
-        print 'No one detected!'
+        print 'No one detected at all!'
         ids, X = get_ads(session)
+        print time.time() - st
         return ids[0:3]
 
