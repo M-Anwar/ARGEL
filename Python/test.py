@@ -6,6 +6,8 @@ import json
 def main():
     session = sys.argv[1]
     print "SessionID: " + session    
+    
+    #authenticationTest('b','a',logoutTest=False)
 
     #Get all the ads in the data base
     url = "http://localhost:3000/api/getads/"+session
@@ -45,7 +47,7 @@ def main():
         print jData["_id"]
         print "Meta-Data Length: {0}".format(len(jData["metaData"]))
 
-def authenticationTest(username, password):    
+def authenticationTest(username, password, logoutTest = True):    
     # Create a session for our python program. This manages our cookies
     # and keeps us logged in throughout our API usage. Only need a session if you
     # wish to access API endpoints that require authentication. For this test we use 
@@ -62,9 +64,10 @@ def authenticationTest(username, password):
     myResponse = s.get(url)
     print myResponse.content
 
-    url = "http://localhost:3000/api/logout"
-    myResponse = s.get(url)
-    print myResponse.content
+    if(logoutTest):
+        url = "http://localhost:3000/api/logout"
+        myResponse = s.get(url)
+        print myResponse.content
     
 if __name__ == "__main__":
     main()

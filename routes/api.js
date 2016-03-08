@@ -264,9 +264,11 @@ router.post('/fetchad', upload.single('crowdPic'),function(req, res, next) {
     
     //See the the fetchAd request is authenticated, if so we are in LOCAL mode.
     if(req.isAuthenticated()){        
-        sess.localUser.authenticated = req.isAuthenticated();
+        console.log("FetchAdTest AUTHENTICATED: " + req.isAuthenticated());
+        sess.localUser.authenticated = req.isAuthenticated();        
         sess.localUser.userid = req.user._id;
     }else{
+        console.log("FetchAdTest AUTHENTICATED: " + req.isAuthenticated());
         sess.localUser.authenticated = false;
         sess.localUser.userid = null;
     }    
@@ -338,10 +340,12 @@ router.post('/fetchadtest', function(req, res, next) {
     
     //Generate and populate session data
     var sess = new Session();   
-    if(req.isAuthenticated()){        
+    if(req.isAuthenticated()){       
+        console.log("FetchAdTest AUTHENTICATED: " + req.isAuthenticated());
         sess.localUser.authenticated = req.isAuthenticated();
         sess.localUser.userid = req.user._id;
     }else{
+        console.log("FetchAdTest AUTHENTICATED: " + req.isAuthenticated());
         sess.localUser.authenticated = false;
         sess.localUser.userid = null;
     }

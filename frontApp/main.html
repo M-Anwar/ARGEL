@@ -109,7 +109,13 @@
                         <form id="mockVideo" action="" method="post" enctype="multipart/form-data" class = "form-group">                            
                             <input type="file" name="userVid" id ="userVid" class = "form-control"/>       
                             <input class = "btn btn-success" type="submit" value="Begin Video Capture" id ="capture"/>
-                        </form>                       
+                        </form>  
+                        <input class = "btn btn-success" onclick="onAuthenticationClick()" value="Authentication Check" id ="btnAuthentication"/>
+                        <input class = "btn btn-success" onclick="mockFetchAdTest()" value="Mock Fetchadtest" id ="btnAuthentication"/>
+                        <input class = "btn btn-success" onclick="mockFetchAd()" value="Mock Fetchad" id ="btnAuthentication"/>
+                        <input class = "btn btn-success" onclick="mockLogin()" value="Mock Login" id ="btnAuthentication"/>
+                        <input class = "btn btn-success" onclick="mockLogout()" value="Logout" id ="btnAuthentication"/>
+                        
                     </div>
                 </div>
                 <div class = "row collapse" id ="pythonDebug" style = "white-space:pre"> </div>
@@ -123,6 +129,8 @@
 
     
     <script>
+        var request = require("request");
+        var request = request.defaults({jar: true}); //Enable cookies on request
         var defaultAddress = "http://localhost:3000";
         var fetchAd = "/api/fetchad";
         var viewAd = "/view/";   
@@ -404,7 +412,7 @@
         function showAd(){
 
 			if (!(adQueue.length)==0){
-				console.log("showing ad\n");
+				console.log("4. showing ad\n");
 				var curAdd=adQueue[adQueue.length-1];
 				var viewAdURI=currAdURI;
 				//Copied from server validation - check to see if the ad is an image or video
@@ -463,7 +471,7 @@
         //Server calls`
         function takePhoto()
         {
-			console.log("taking photo");
+			console.log("1. taking photo");
             var uri = $("#serverAddress").val();
             if(uri==""){
                 uri = defaultAddress;
@@ -479,7 +487,7 @@
                 saveIPToImage(fileName);
             }
 
-            var request = require("request");
+            
             var path = require('path'); 
             var fs = require("fs"); 
             
@@ -491,7 +499,7 @@
                 temperature: dataJSONlocal.Weather.temp
             };
                             
-            console.log("Submitting Post Request");
+            console.log("2. Submitting Post Request");
             request.post({url:fetchAdURI, formData: formData}, function optionalCallback(err, httpResponse, body) {
 
                 if (err) {
@@ -499,7 +507,7 @@
                     return console.error('upload failed:', err);
                 }
                 //console.log('Upload successful!  Server responded with:', body);
-				console.log('Fetched a new Ad');
+				console.log('3. Fetched a new Ad');
                 var jsonBody = JSON.parse(body);                
                 //$('#display').attr('src',viewAdURI+jsonBody.bestAd._id);
 				
@@ -596,6 +604,113 @@
             
             return false;
         });
+    
+        //Debug Tests
+        function onAuthenticationClick(){
+            request('http://localhost:3000/api/authenticated', function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                    alert(JSON.parse(body).message); // Show the HTML for the Google homepage.
+                }
+            });
+        }
+        function mockFetchAdTest(){
+            var useAJAX = false;                   
+            
+            var formData ={
+                lat: 43.715307,
+                lng: -79.2789297,
+                weatherDesc: 'sunny',
+                temperature: '273'
+            }
+            var start_time = new Date().getTime(); //Time taken for statistics
+            var request_time = 0;            
+            
+            if(useAJAX){
+                $.ajax({ // create an AJAX call...                     
+                    data: formData,
+                    crossDomain:true,
+                    headers :{
+                        "cache-control": "no-cache",					
+                        "content-type": "application/x-www-form-urlencoded"
+                      },				
+                    method:"POST", // GET or POST
+                    url: "http://localhost:3000/api/fetchadtest", // the file to call
+
+                    success: function(data, status) { // on success..  
+                        console.log(data.bestAd);	
+                        request_time = new Date().getTime() - start_time;
+                        console.log("Time taken for test call (AJAX) : " + request_time + " ms");
+                    },
+                    error: function(xhr, desc, err) { // on success..  
+                        console.log(err);
+                    }
+                });  
+            }
+            else{
+                request.post({url:"http://localhost:3000/api/fetchadtest", formData: formData}, function optionalCallback(err, httpResponse, body) {
+
+                    if (err) {
+                        console.log(err);
+                        return console.error('upload failed:', err);
+                    }                
+
+                    var jsonBody = JSON.parse(body);     
+                    console.log(jsonBody.bestAd);  
+                    request_time = new Date().getTime() - start_time;
+                    console.log("Time taken for test call (REQUESTS): " + request_time + " ms");
+                });
+            }        
+        }
+        function mockFetchAd(){                  
+            
+            var fileName = 'test.JPG';            
+            
+            var path = require('path'); 
+            var fs = require("fs"); 
+            
+            var readStream = fs.createReadStream(fileName);          
+            
+            var formData ={
+                crowdPic: readStream,
+                lat: 43.715307,
+                lng: -79.2789297,
+                weatherDesc: 'sunny',
+                temperature: '273'
+            }
+            var start_time = new Date().getTime(); //Time taken for statistics
+            var request_time = 0;        
+            
+            //Remember no AJAX can be used here to upload a file dynamically from a directory. This is a 
+            //security issue in a normal web browser. However in node-webkit, we can use the power of 
+            //node.js and use the requests module to send in a file.
+               
+            request.post({url:"http://localhost:3000/api/fetchad", formData: formData}, function optionalCallback(err, httpResponse, body) {
+
+                if (err) {
+                    console.log(err);
+                    return console.error('upload failed:', err);
+                }                
+
+                var jsonBody = JSON.parse(body);     
+                console.log(jsonBody.bestAd);  
+                request_time = new Date().getTime() - start_time;
+                console.log("Time taken for call (REQUESTS): " + request_time + " ms");
+            });
+                   
+        }
+
+        function mockLogin(){   
+
+            request.post({url:'http://localhost:3000/api/login', form: {username:'b',password:'a'}}, function(err,httpResponse,body){
+                console.log(body);
+            });
+        }
+        function mockLogout(){   
+
+            request({url:'http://localhost:3000/api/logout'}, function(err,httpResponse,body){
+                console.log(body);
+            });
+        }
         
     </script>
 </body>

@@ -88,47 +88,85 @@
 
     
     <script>
-       
-        //User Selected upload
-        $('#loginForm').submit(function(ev) { // catch the form's submit event       
+        
+
+        //Unfortunately this will not work for our login purposes, as later we cannot use AJAX 
+        //to upload a file dynamically from a directory. This is a security flaw in a normal 
+        //web browser (malacious software can just upload any data it wants then!). But we are in 
+        //node webkit and can use the node.js context we have available. As a result, we need to 
+        //utilize the requests library with cookies enabled as a global object to login with our
+        //backend. So...what needs to be done? The current AJAX request to login needs to be
+        //scrapped and replaced with the requests module. 
+    
+
+        //Reading through the source code of node.js, it will cache requests for the same module
+        //accross multiple files. So a required module here, will be the same module returned
+        //in main.js or anywhere else.
+        var request = require("request");
+        var request = request.defaults({jar: true}); //Enable cookies on request
+
+        $('#loginForm').submit(function(ev) {
+            ev.preventDefault();
             
-            console.log("Shit happened");
-			ev.preventDefault();
-			var myFormData = $(this).serialize();   
-			console.log("got errors");			
-			
-            $.ajax({ // create an AJAX call...                     
-                data: myFormData,
-                crossDomain:true,
-				headers :{
-					"cache-control": "no-cache",					
-					"content-type": "application/x-www-form-urlencoded"
-				  },				
-				method:"POST", // GET or POST
-                url: "http://localhost:3000/api/login", // the file to call
-                
-                success: function(data, status) { // on success..  
-                    if (data.message=="success"){
-						//window.location.href = "main.html";
-						console.log("success");
-					}
-					else{
-						console.log("not success");
-						$('#errorbox').html(data.message);
-					}
-						
-                },
-                error: function(xhr, desc, err) { // on success..  
-					console.log("errors");
-					var text = "<div class='alert alert-danger'>" +                       
+            var formData =  $(this).serialize();
+            request.post({url:'http://localhost:3000/api/login', form: formData}, function optionalCallback(err, httpResponse, body) {
+              if (err) {
+                return console.error('upload failed:', err);
+              }
+                if(httpResponse.statusCode!=401 && httpResponse.statusCode!=400){
+                    console.log(body.message);
+                    window.location.href = "main.html"                    
+                }else{                    
+                    var text = "<div class='alert alert-danger'>" +                       
 					 "<p class='leftside'> Login Failed: Try Again! </p>" +  
 				   "</div>"
 					$('#errorbox').html(text);
+                    return console.error(body);
                 }
+              
             });
-			console.log("exiting");
-            return false; // cancel original event to prevent form submitting
         });
+        
+//        //User Selected upload
+//        $('#loginForm').submit(function(ev) { // catch the form's submit event       
+//            
+//            console.log("Shit happened");
+//			ev.preventDefault();
+//			var myFormData = $(this).serialize();   
+//			console.log("got errors");			
+//			
+//            $.ajax({ // create an AJAX call...                     
+//                data: myFormData,
+//                crossDomain:true,
+//				headers :{
+//					"cache-control": "no-cache",					
+//					"content-type": "application/x-www-form-urlencoded"
+//				  },				
+//				method:"POST", // GET or POST
+//                url: "http://localhost:3000/api/login", // the file to call
+//                
+//                success: function(data, status) { // on success..  
+//                    if (data.message=="success"){
+//						window.location.href = "main.html";
+//						console.log("success");
+//					}
+//					else{
+//						console.log("not success");
+//						$('#errorbox').html(data.message);
+//					}
+//						
+//                },
+//                error: function(xhr, desc, err) { // on success..  
+//					console.log("errors");
+//					var text = "<div class='alert alert-danger'>" +                       
+//					 "<p class='leftside'> Login Failed: Try Again! </p>" +  
+//				   "</div>"
+//					$('#errorbox').html(text);
+//                }
+//            });
+//			console.log("exiting");
+//            return false; // cancel original event to prevent form submitting
+//        });
     </script>
 </body>
 </html>
