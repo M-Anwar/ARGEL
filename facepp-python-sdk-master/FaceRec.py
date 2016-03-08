@@ -112,16 +112,16 @@ def FaceRecog(session):
             #         X = list(reader)
             #ct = "22:06"
             #Get any associated meta-data with the session. Returns an array
-            url = "http://localhost:3000/api/getsessioninfo/" + session
-            myResponse = requests.get(url)
+
+            myResponse = requests.get(("http://localhost:3000/api/getsessioninfo/" + session))
             if(myResponse.ok):
-                jData = json.loads(myResponse.content)
+                jData2 = json.loads(myResponse.content)
 
                 #print("The response contains {0} properties:".format(len(jData)))
                 #print jData["_id"]
-                print "Meta-Data Length: {0}".format(len(jData["metaData"]))
+                print "Meta-Data Length: {0}".format(len(jData2["metaData"]))
 
-            other_data = [get_weather(jData["metaData"][1]), get_temp(jData["metaData"][2]), 0.0]
+            other_data = [get_weather(jData2["metaData"][1]), get_temp(jData2["metaData"][2]), 0.0]
             ids, X = get_ads(session)
             #pred = learn_tree_and_predict(X, test_x)
             pred = K_near_age(X, test_x, 1, other_data)

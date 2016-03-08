@@ -121,6 +121,7 @@ def detect_image (img_url):
                 right = width
             if (x-20<0):
                 left = 0
+
             # im_to_send = img[down:up,left:right]
             # # im_to_send = cv2.resize(im_to_send, (200, 100))
             # #
@@ -148,10 +149,12 @@ def detect_image (img_url):
         #    cv2.waitKey(0)
 
         #cv2.destroyAllWindows()
-        return 'valid',to_send
+        state = 'valid'
+        return state,to_send
     else:
         to_send = [img]
-        return 'not_valid', to_send
+        state = 'not_valid'
+        return state, to_send
 
 
 if __name__ == '__main__':
