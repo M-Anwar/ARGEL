@@ -100,7 +100,7 @@ def get_ads(session="none"):
             t = jData[i]["tags"][0].split(",")
 
 
-        print t
+        #print t
 
         #print len(t)
         #print t

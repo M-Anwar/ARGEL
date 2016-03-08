@@ -137,28 +137,25 @@ def detect_image (img_url):
 
             print "ratio of avg width of face to Width of image: " + str(avgw/width)
             print "ratio of avg height of face to Height of image: " + str(avgh/height)
-            print pocx
-            print pocy
+            #print pocx
+            #print pocy
             to_send = divide_im(img,avgw/width,avgh/height,pocx,pocy,all_faces)
             print "# of Images to send: " + str(len(to_send))
             # cv2.imshow('img',img)
             # cv2.waitKey(0)
-            for i in range(len(to_send)):
+            #for i in range(len(to_send)):
             #    cv2.imshow('img_crop',to_send[i])
-                cv2.waitKey(0)
+            #    cv2.waitKey(0)
 
-            cv2.destroyAllWindows()
+            #cv2.destroyAllWindows()
             return 'valid',to_send
-        else:
-            to_send = [img]
-            return 'valid', to_send
     else:
         to_send = [img]
         return 'not_valid', to_send
 
 
 if __name__ == '__main__':
-    #img_url = 'test_pic/test_face.jpg'
-    img_url = 'test_pic/test_face_fullwide.jpg'
+    img_url = 'test_pic/test_face.jpg'
+    #img_url = 'test_pic/test_face_fullwide.jpg'
     val, s = detect_image(img_url)
     print len(s)
