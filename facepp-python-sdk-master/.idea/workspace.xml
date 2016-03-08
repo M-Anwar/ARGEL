@@ -25,7 +25,7 @@
         <entry file="file://$PROJECT_DIR$/FaceRec.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.029010238">
-              <caret line="21" column="26" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
+              <caret line="45" column="12" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
               <folding>
                 <element signature="e#65#75#0" expanded="true" />
               </folding>
@@ -83,8 +83,9 @@
         <entry file="file://$PROJECT_DIR$/opencv_face_det.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="18" selection-start-line="0" selection-start-column="18" selection-end-line="0" selection-end-column="18" />
+              <caret line="160" column="8" selection-start-line="160" selection-start-column="8" selection-end-line="160" selection-end-column="8" />
               <folding>
+                <element signature="e#0#18#0" expanded="true" />
                 <element signature="e#85#1028#0" expanded="false" />
               </folding>
             </state>
@@ -150,8 +151,8 @@
         <option value="$PROJECT_DIR$/tester.py" />
         <option value="$PROJECT_DIR$/DecTree.py" />
         <option value="$PROJECT_DIR$/ApiCalls.py" />
-        <option value="$PROJECT_DIR$/FaceRec.py" />
         <option value="$PROJECT_DIR$/opencv_face_det.py" />
+        <option value="$PROJECT_DIR$/FaceRec.py" />
       </list>
     </option>
   </component>
@@ -920,8 +921,9 @@
     <entry file="file://$PROJECT_DIR$/opencv_face_det.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="18" selection-start-line="0" selection-start-column="18" selection-end-line="0" selection-end-column="18" />
+          <caret line="160" column="8" selection-start-line="160" selection-start-column="8" selection-end-line="160" selection-end-column="8" />
           <folding>
+            <element signature="e#0#18#0" expanded="true" />
             <element signature="e#85#1028#0" expanded="false" />
           </folding>
         </state>
@@ -930,7 +932,7 @@
     <entry file="file://$PROJECT_DIR$/FaceRec.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.029010238">
-          <caret line="21" column="26" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
+          <caret line="45" column="12" selection-start-line="45" selection-start-column="12" selection-end-line="45" selection-end-column="12" />
           <folding>
             <element signature="e#65#75#0" expanded="true" />
           </folding>

@@ -12,7 +12,9 @@ from facepp import *
 from ApiCalls import *
 from opencv_face_det import *
 
+
 def FaceRecog(session):
+
     # You need to register your App first, and enter you API key/secret.
     API_KEY = '28fbdbef3093f25ff6771286febc5e81'
     API_SECRET = 'mHX0i1CGvQRGI6Cd6D_SYiuw2g6ZIKSe'
@@ -20,8 +22,10 @@ def FaceRecog(session):
     api = API(API_KEY, API_SECRET)
 
     imurl = session+'.jpg'
-
+    startTime = datetime.now()
     status, cropped_imgs = detect_image(imurl)
+    print "The Time it took for OpenCV:"
+    print datetime.now() - startTime
 
 
     font = cv2.FONT_HERSHEY_SIMPLEX
@@ -38,7 +42,11 @@ def FaceRecog(session):
 
             #urllib.urlretrieve("http://192.168.1.115:8080/photo.jpg", "test_im.jpg")
             #url = 'test_image.png'
+            startTime = datetime.now()
             FACES = {'Shaham': api.detection.detect(img = File(url), attribute = ('glass','pose','gender','age','race','smiling'))}
+            startTime = datetime.now()
+            print "The Time it took for Face++:"
+            print datetime.now() - startTime
 
             new_im = url
             #cv2.imwrite(new_im, cropped_imgs[i])
@@ -112,7 +120,7 @@ def FaceRecog(session):
             #         X = list(reader)
             #ct = "22:06"
             #Get any associated meta-data with the session. Returns an array
-
+            startTime = datetime.now()
             myResponse = requests.get(("http://localhost:3000/api/getsessioninfo/" + session))
             if(myResponse.ok):
                 jData2 = json.loads(myResponse.content)
@@ -120,11 +128,16 @@ def FaceRecog(session):
                 #print("The response contains {0} properties:".format(len(jData)))
                 #print jData["_id"]
                 print "Meta-Data Length: {0}".format(len(jData2["metaData"]))
+                other_data = [get_weather(jData2["metaData"][1]), get_temp(jData2["metaData"][2]), 0.0]
+            else:
+                other_data = [get_weather('sunny'), get_temp('120'), 0.0]
 
-            other_data = [get_weather(jData2["metaData"][1]), get_temp(jData2["metaData"][2]), 0.0]
             ids, X = get_ads(session)
             #pred = learn_tree_and_predict(X, test_x)
             pred = K_near_age(X, test_x, 1, other_data)
+            print "The Time it took for ML:"
+            print datetime.now() - startTime
+
             feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+', 'Weather','Temp','Time']
             print feature_names
             #image = cv2.imread(new_im)
