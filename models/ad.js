@@ -8,8 +8,7 @@ var Ad = new Schema({
 	tags: {type : Array, "default" : []},
 	videoad: { _id: String, filename: String, contentType: String },
     metaData: {type: Array, "default" : [] },
-    statistics: {type: Array, "default": []},
-	pageView: Number
+    statistics: {type: Array, "default": []}
 });
 
 module.exports = mongoose.model('Ad', Ad);

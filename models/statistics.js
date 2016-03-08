@@ -3,8 +3,8 @@ var Schema = mongoose.Schema;
 
 var Statistics = new Schema({
     adId: String,
-	sessionCookies: [],
-	pageView: Number
+	pageView: Number,
+	viewers: [] //each viewer should include sessionCookie, location, date&time
 });
 
 module.exports = mongoose.model('Statistics', Statistics);
