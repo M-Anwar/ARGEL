@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var Statistics = new Schema({
     adId: String,
-	pageViewCount: Number,
+	uniqueViewCount: Number,
   sessionCookies: {type: Array, "default": []}, //delete?
   revenue: Number,
   adViews: {type: Array, "default": []},

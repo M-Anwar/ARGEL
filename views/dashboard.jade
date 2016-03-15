@@ -20,12 +20,13 @@ block content
       script(src='js/skel.min.js')
       script(src='js/skel-panels.min.js')
       script(src='js/init.js')
-      //link(rel='stylesheet', href='css/dc.css')
+      link(rel='stylesheet', href='css/dc.css')
       link(rel='stylesheet', href='css/stylenew.css')
-      //if lte IE 8
-        link(rel='stylesheet', href='css/ie/v8.css')
-      //if lte IE 9
-        link(rel='stylesheet', href='css/ie/v9.css')
+      //
+        if lte IE 8
+          link(rel='stylesheet', href='css/ie/v8.css')
+        if lte IE 9
+          link(rel='stylesheet', href='css/ie/v9.css')
     body
       section.content.content-2      
         .mbr-section__container.container      
@@ -41,21 +42,18 @@ block content
                           a(href='#') Analytics Dashboard
                       // Nav
                   // /Header
-                  #page //(style='margin-top:-61px;')
+                  #page(style='margin-top:-61px;')
                     .container
                       .row
-                        #menuselect.2u.chart-wrapper(style='background-color: #33CC99; height: 60px;')
+                        #menuselect.2u.chart-wrapper(style='background-color: #FFA500; height: 60px;')
                           .chart-title
-                            strong  State Selector 
+                            strong  Date Selector 
                         .2u
                           div
                             span  &nbsp
-                        #total-projects.2u.chart-wrapper
+                        #total-projects.2u.chart-wrapper(style='background-color: #FFA500; height: 60px;')
                           .chart-title
-                            strong  Total Donation Count 
-                        #net-donations.2u.chart-wrapper
-                          .chart-title
-                            strong  Nett Donations ($) 
+                            strong  Total Record Count  
                         #row-selection.3u.dc-data-count.dc-chart
                           span.filter-count _
                           |  selected out of 
@@ -65,25 +63,28 @@ block content
                             a(href='javascript:dc.filterAll();dc.redrawAll();')
                               font(color='#33CC99') Reset All
                       .row
-                        #date-chart.6u.chart-wrapper
+                        #date-chart.7u.chart-wrapper
                           .chart-title.bold
-                            strong  Number of Donations 
-                        #resource-chart.3u.chart-wrapper
+                            strong  Number of Views by Day 
+                        #spaceholder.1u
+                        #sessionCookie-chart.3u.chart-wrapper
                           .chart-title
-                            strong  Donation Count for Resources 
-                        #funding-chart.3u.chart-wrapper
-                          .chart-title
-                            strong  Funding Status 
+                            strong  Visits by user
+                        //
+                          #funding-chart.3u.chart-wrapper
+                            .chart-title
+                              strong  
                       .row
-                        #grade-chart.4u.chart-wrapper
+                        #revenue-chart.8u.chart-wrapper
                           .chart-title
-                            strong  Donation Count by Grade 
-                        #poverty-chart.4u.chart-wrapper
-                          .chart-title
-                            strong  Donation Count by Poverty Level
-                        #state-donations.4u.chart-wrapper
-                          .chart-title
-                            strong  Donation Amount by State ($) 
+                            strong  Revenue Chart
+                        //
+                          #poverty-chart.4u.chart-wrapper
+                            .chart-title
+                              strong  
+                          #state-donations.4u.chart-wrapper
+                            .chart-title
+                              strong  
       script(src='/js/crossfilter.js', type='text/javascript')
       script(src='/js/d3.js', type='text/javascript')
       script(src='/js/dc.js', type='text/javascript')

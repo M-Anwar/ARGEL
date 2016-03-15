@@ -24,10 +24,11 @@ function adPageViewCount(req, res) {
 
 // check if the user is authenticated 
 var isAuthenticated = function (req, res, next) {
-	if (req.isAuthenticated())
+ 	if (req.isAuthenticated())
 		return next();
 	//redirecto to the following if not authenticated 
-	res.redirect('/login');
+	res.redirect('/login'); 
+
 }
 
 router.get('*', function(req, res, next) {
@@ -109,8 +110,18 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
 	console.log(util.inspect(req.session, false, null));
 	console.log('req.cookies[\'connect.sid\']: '+req.cookies['connect.sid']);
   
-  var datenow = new Date();
+  var datenow = new Date().toISOString().
+    replace(/T/, ' ').      // replace T with a space
+    replace(/\s.+/, '');     // delete the dot and everything after;
+  datenow = datenow.toString();
 	console.log("date " + datenow);
+  
+  //Random seed & Revenue generator for testing purposes!
+  
+  var seed = req.params.ad_id.charAt(0);
+  console.log("seed " + seed);
+    var x = Math.sin(seed) * 10;
+   var thisRevenue = x - Math.floor(x);
 	//update ad page view counter
 	/* Statistics.findOne({adId:req.params.ad_id},{},function(err,thisStatistics){
 		var found = 0;
@@ -126,14 +137,15 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
         found = 1;
         var statistic = new Statistics();
         statistic.adId = req.params.ad_id;
-        statistic.pageViewCount = 1;
+        statistic.uniqueViewCount = 1;
         statistic.revenue = 1;
         statistic.adViews = [{
           "sessionCookies": 0,
           "date": 0}];
         statistic.pageViews = [{
           "sessionCookies": req.cookies['connect.sid'],
-          "date": datenow}];
+          "date": datenow,
+          "revenue": thisRevenue}];
         
         //save the ad to the db
           statistic.save(function(err,a){
@@ -161,13 +173,14 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
       callback();
     });},
       function(callback) {
-        if (found == 0){
-          console.log("found=0");
+        //commented for now to count same user views as well
+        // if (found == 0){
+          console.log("found=0, $push");
           //keep only one of the following 2?? TBD
-          Statistics.findOneAndUpdate({adId:req.params.ad_id},{$addToSet: {"pageViews": {"sessionCookies": req.cookies['connect.sid'],"date": datenow}}, $inc: {pageViewCount:1}},{},function(err,stat){});
+          Statistics.findOneAndUpdate({adId:req.params.ad_id},{$push: {"pageViews": {"sessionCookies": req.cookies['connect.sid'], "date": datenow, "revenue": thisRevenue}}, $inc: {uniqueViewCount:1}},{},function(err,stat){});
           // Ad.findOneAndUpdate({_id:req.params.ad_id},{$inc: {pageView:1} },{},function(err,ad){});
           // Statistics.findOneAndUpdate({adId:req.params.ad_id},{$inc: {pageView:1} },{},function(err,stat){});
-        }
+        // }
         // });
         callback();
     }],
