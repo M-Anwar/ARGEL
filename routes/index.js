@@ -9,6 +9,7 @@ var util = require('util');
 var multer = require('multer');
 var mongoose = require('mongoose');
 var gridfs = require("gridfs");
+var async = require('async');
 var upload = multer({
     dest:'./uploads/',
     limits: { fileSize: 400* 1024 * 1024} //Max file size for upload multer
@@ -57,6 +58,17 @@ router.get('/ads', isAuthenticated,function(req, res, next) {
 	});
 });
 
+//fetch ad statistics for the dashboard data
+router.get('/dashboarddata', isAuthenticated,function(req, res, next) {
+
+    //Show the ads the USER has uploaded
+	Statistics.find({}, function(err, statistics) {
+        if(err) {console.log(err); return;}
+        res.json(statistics);;
+
+	});
+});
+
 router.get('/deleteadprofile/:ad_id', isAuthenticated, function(req, res){
 	console.log(req.params.ad_id);
         
@@ -96,33 +108,76 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
 	console.log('req.session: ');
 	console.log(util.inspect(req.session, false, null));
 	console.log('req.cookies[\'connect.sid\']: '+req.cookies['connect.sid']);
-	
+  
+  var datenow = new Date();
+	console.log("date " + datenow);
 	//update ad page view counter
-	Statistics.findOne({adId:req.params.ad_id},{},function(err,thisStatistics){
+	/* Statistics.findOne({adId:req.params.ad_id},{},function(err,thisStatistics){
 		var found = 0;
 		if(!thisStatistics){
 			found = 1;
-			Statistics.create({adId:req.params.ad_id , sessionCookies: req.cookies['connect.sid'], pageView:0});
-		}
-		
-		for (i = 0; (found==0)&&(i < thisStatistics.sessionCookies.length) ; i++) { 
-			if(thisStatistics.sessionCookies[i] == req.cookies['connect.sid']){
-				found = 1;
-				break;
-			}
-		}
-		
-		if (found == 0){
-		console.log("found=0");
-		//keep only one of the following 2?? TBD
-		Statistics.findOneAndUpdate({adId:req.params.ad_id},{$addToSet: {sessionCookies: req.cookies['connect.sid']}, $inc: {pageView:1} },{},function(err,stat){});
-		Ad.findOneAndUpdate({_id:req.params.ad_id},{$inc: {pageView:1} },{},function(err,ad){});
-		// Statistics.findOneAndUpdate({adId:req.params.ad_id},{$inc: {pageView:1} },{},function(err,stat){});
-		}
-    });
+			Statistics.create({adId:req.params.ad_id, pageViews.sessionCookies: req.cookies['connect.sid'], pageView:0, adViews.sessionCookies:0, revenue:0});
+		} */
+    var found = 0;
+  async.series([
+    function(callback) {
+     Statistics.findOne({adId:req.params.ad_id},{},function(err,thisStatistics){
+      if(!thisStatistics){
+        found = 1;
+        var statistic = new Statistics();
+        statistic.adId = req.params.ad_id;
+        statistic.pageViewCount = 1;
+        statistic.revenue = 1;
+        statistic.adViews = [{
+          "sessionCookies": 0,
+          "date": 0}];
+        statistic.pageViews = [{
+          "sessionCookies": req.cookies['connect.sid'],
+          "date": datenow}];
+        
+        //save the ad to the db
+          statistic.save(function(err,a){
+              if(err) throw err;                   
+          });
+      }
+      // console.log("Date.now " + datenow);
+      // console.log("thisStatistics.sessionCookies ", thisStatistics.sessionCookies[0]);
+      console.log('thisStatistics: ');
+      console.log(util.inspect(thisStatistics, false, null));
+      
+      
+      for (i = 0; (found==0)&&(i < thisStatistics.pageViews.length) ; i++) {
+        console.log("i= " + i);
+                  	console.log('req.cookies[\'connect.sid\']: ');
+            console.log(util.inspect(req.cookies['connect.sid'], false, null));
+            console.log('thisStatistics.pageViews[i]: ');
+            console.log(util.inspect(thisStatistics.pageViews[i], false, null));
+        if(thisStatistics.pageViews[i].sessionCookies == req.cookies['connect.sid']){
+          found = 1;
+          console.log("found = 1");
+          break;
+        }
+      }
+      callback();
+    });},
+      function(callback) {
+        if (found == 0){
+          console.log("found=0");
+          //keep only one of the following 2?? TBD
+          Statistics.findOneAndUpdate({adId:req.params.ad_id},{$addToSet: {"pageViews": {"sessionCookies": req.cookies['connect.sid'],"date": datenow}}, $inc: {pageViewCount:1}},{},function(err,stat){});
+          // Ad.findOneAndUpdate({_id:req.params.ad_id},{$inc: {pageView:1} },{},function(err,ad){});
+          // Statistics.findOneAndUpdate({adId:req.params.ad_id},{$inc: {pageView:1} },{},function(err,stat){});
+        }
+        // });
+        callback();
+    }],
+      function(err) { //This function gets called after the two tasks have called their "task callbacks"
+          if (err) return next(err);
+      }
+    );
 	
 	//fetch ad
-	Ad.findOne({ "_id" : req.params.ad_id }, function(err, viewthisad) {        
+	Ad.findOne({ "_id" : req.params.ad_id }, function(err, viewthisad) {
         var mime = viewthisad.videoad.contentType          
         var video = true;        
         if(mime){
