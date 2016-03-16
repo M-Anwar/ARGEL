@@ -147,7 +147,7 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
           "date": datenow,
           "revenue": thisRevenue}];
         
-        //save the ad to the db
+        //save the stat to the db
           statistic.save(function(err,a){
               if(err) throw err;                   
           });
