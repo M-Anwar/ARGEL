@@ -27,7 +27,7 @@ var isAuthenticated = function (req, res, next) {
  	if (req.isAuthenticated())
 		return next();
 	//redirecto to the following if not authenticated 
-	res.redirect('/login'); 
+	else res.redirect('/login'); 
 
 }
 

@@ -32,7 +32,7 @@ block content
         .mbr-section__container.container      
           .row.animated.fadeInUp   
               .col-sm-12.text-white
-                #wrapper
+                #dashboard
                   // Header
                   #header
                     .container
@@ -42,49 +42,58 @@ block content
                           a(href='#') Analytics Dashboard
                       // Nav
                   // /Header
-                  #page(style='margin-top:-61px;')
-                    .container
-                      .row
-                        #menuselect.2u.chart-wrapper(style='background-color: #FFA500; height: 60px;')
-                          .chart-title
-                            strong  Date Selector 
-                        .2u
-                          div
-                            span  &nbsp
-                        #total-projects.2u.chart-wrapper(style='background-color: #FFA500; height: 60px;')
-                          .chart-title
-                            strong  Total Record Count  
-                        #row-selection.3u.dc-data-count.dc-chart
-                          span.filter-count _
-                          |  selected out of 
-                          span.total-count _
-                          |  records |
-                          span
-                            a(href='javascript:dc.filterAll();dc.redrawAll();')
-                              font(color='#33CC99') Reset All
-                      .row
-                        #date-chart.7u.chart-wrapper
-                          .chart-title.bold
-                            strong  Number of Views by Day 
-                        #spaceholder.1u
-                        #sessionCookie-chart.3u.chart-wrapper
-                          .chart-title
-                            strong  Visits by user
-                        //
-                          #funding-chart.3u.chart-wrapper
+                  #dashboard_nodata(style='display:none;')
+                    #page(style='margin-top:-61px;')
+                      #header
+                        .container
+                          // Logo
+                          #logo
+                            h1
+                              a(href='#') You have no data!
+                  #dashboard_page
+                    #page(style='margin-top:-61px;')
+                      .container
+                        .row
+                          #menuselect.2u.chart-wrapper(style='background-color: #FFA500; height: 60px;')
                             .chart-title
-                              strong  
-                      .row
-                        #revenue-chart.8u.chart-wrapper
-                          .chart-title
-                            strong  Revenue Chart
-                        //
-                          #poverty-chart.4u.chart-wrapper
+                              strong  Date Selector 
+                          .2u
+                            div
+                              span  &nbsp
+                          #total-projects.2u.chart-wrapper(style='background-color: #FFA500; height: 60px;')
                             .chart-title
-                              strong  
-                          #state-donations.4u.chart-wrapper
+                              strong  Total Record Count  
+                          #row-selection.3u.dc-data-count.dc-chart
+                            span.filter-count _
+                            |  selected out of 
+                            span.total-count _
+                            |  records |
+                            span
+                              a(href='javascript:dc.filterAll();dc.redrawAll();')
+                                font(color='#33CC99') Reset All
+                        .row
+                          #date-chart.7u.chart-wrapper
+                            .chart-title.bold
+                              strong  Number of Views by Day 
+                          #spaceholder.1u
+                          #sessionCookie-chart.3u.chart-wrapper
                             .chart-title
-                              strong  
+                              strong  Visits by user
+                          //
+                            #funding-chart.3u.chart-wrapper
+                              .chart-title
+                                strong  
+                        .row
+                          #revenue-chart.8u.chart-wrapper
+                            .chart-title
+                              strong  Revenue Chart
+                          //
+                            #poverty-chart.4u.chart-wrapper
+                              .chart-title
+                                strong  
+                            #state-donations.4u.chart-wrapper
+                              .chart-title
+                                strong
       script(src='/js/crossfilter.js', type='text/javascript')
       script(src='/js/d3.js', type='text/javascript')
       script(src='/js/dc.js', type='text/javascript')

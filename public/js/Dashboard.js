@@ -4,8 +4,8 @@ queue()
 
 function makeGraphs(error, apiData) {
 
-console.log("dashboarddata1 " + JSON.stringify(apiData[0].pageViews));
-console.log("dashboarddata1 " + apiData[0].pageViews);
+// console.log("dashboarddata1 " + JSON.stringify(apiData[0].pageViews));
+// console.log("dashboarddata1 " + apiData[0].pageViews);
 /*     var pageViewData = "";
 
     // For each value in the array
@@ -16,8 +16,25 @@ console.log("dashboarddata1 " + apiData[0].pageViews);
     }
 console.log("dashboarddata2 " + JSON.stringify(pageViewData)); */
 //Start Transformations
-	var dataSet = JSON.stringify(apiData[0].pageViews);
+var dataSet;
+
+  if (apiData.length == 0){
+  //check if the dataset is empty.  If empty, display another page.
+    console.log("apiData.length = 0");
+    $("#dashboard_nodata").show();
+    $("#dashboard_page").hide();
+    
+  }
+  else{
+    // $("#dashboard_nodata").hide();
+    // $("#dashboard").show();
+    console.log("apiData.length == 1");
+    dataSet = JSON.stringify(apiData[0].pageViews);  
   dataSet = JSON.parse(dataSet);
+  
+  
+
+  
 	var dateFormat = d3.time.format("%Y-%m-%d");
   // var dateFormat = d3.time.format("%Y-%m-%d %X");
 	dataSet.forEach(function(d) {
@@ -206,5 +223,5 @@ console.log(maxDate);
 
 
     dc.renderAll();
-
+  }
 };
