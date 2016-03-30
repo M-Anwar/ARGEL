@@ -110,11 +110,16 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
 	console.log(util.inspect(req.session, false, null));
 	console.log('req.cookies[\'connect.sid\']: '+req.cookies['connect.sid']);
   
-  var datenow = new Date().toISOString().
-    replace(/T/, ' ').      // replace T with a space
-    replace(/\s.+/, '');     // delete the dot and everything after;
-  datenow = datenow.toString();
-	console.log("date " + datenow);
+  var fulldatenow = new Date().toISOString()
+    .replace(/T/, ' ')      // replace T with a space
+    .replace(/\..*/, '');     // delete the dot and everything after
+  var datenow = fulldatenow.replace(/\s.+/, '');  // delete the dot and everything after
+  var timenow = fulldatenow.replace(/^[^\s]*\s/, '')  //delete everything before the space
+    .replace(/\s.+/, '');// delete the dot and everything after
+  fulldatenow = fulldatenow.toString();
+	console.log("fulldatenow " + fulldatenow);
+  console.log("datenow " + datenow);
+  console.log("timenow " + timenow);
   
   //Random seed & Revenue generator for testing purposes!
   
@@ -122,6 +127,21 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
   console.log("seed " + seed);
     var x = Math.sin(seed) * 10;
    var thisRevenue = x - Math.floor(x);
+   
+    var statistic = new Statistics();
+    statistic.adId = req.params.ad_id;
+    statistic.type = "pageView"
+    statistic.revenue = thisRevenue;
+    statistic.sessionCookies= req.cookies['connect.sid'];
+    statistic.fulldate= fulldatenow;
+    statistic.date= datenow;
+    statistic.time= timenow;
+    
+    //save the stat to the db
+      statistic.save(function(err,a){
+          if(err) throw err;                   
+      });
+   
 	//update ad page view counter
 	/* Statistics.findOne({adId:req.params.ad_id},{},function(err,thisStatistics){
 		var found = 0;
@@ -129,7 +149,9 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
 			found = 1;
 			Statistics.create({adId:req.params.ad_id, pageViews.sessionCookies: req.cookies['connect.sid'], pageView:0, adViews.sessionCookies:0, revenue:0});
 		} */
-    var found = 0;
+    
+    
+/*     var found = 0;
   async.series([
     function(callback) {
      Statistics.findOne({adId:req.params.ad_id},{},function(err,thisStatistics){
@@ -137,57 +159,45 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
         found = 1;
         var statistic = new Statistics();
         statistic.adId = req.params.ad_id;
-        statistic.uniqueViewCount = 1;
         statistic.revenue = 1;
-        statistic.adViews = [{
-          "sessionCookies": 0,
-          "date": 0}];
-        statistic.pageViews = [{
-          "sessionCookies": req.cookies['connect.sid'],
-          "date": datenow,
-          "revenue": thisRevenue}];
+        statistic.sessionCookies= req.cookies['connect.sid'];
+        statistic.fulldate= fulldatenow;
         
         //save the stat to the db
           statistic.save(function(err,a){
               if(err) throw err;                   
           });
       }
-      // console.log("Date.now " + datenow);
+      // console.log("Date.now " + fulldatenow);
       // console.log("thisStatistics.sessionCookies ", thisStatistics.sessionCookies[0]);
       console.log('thisStatistics: ');
       console.log(util.inspect(thisStatistics, false, null));
       
       
-      for (i = 0; (found==0)&&(i < thisStatistics.pageViews.length) ; i++) {
+       for (i = 0; (found==0)&&(i < thisStatistics.length) ; i++) {
         console.log("i= " + i);
-                  	console.log('req.cookies[\'connect.sid\']: ');
-            console.log(util.inspect(req.cookies['connect.sid'], false, null));
-            console.log('thisStatistics.pageViews[i]: ');
-            console.log(util.inspect(thisStatistics.pageViews[i], false, null));
-        if(thisStatistics.pageViews[i].sessionCookies == req.cookies['connect.sid']){
+        console.log('req.cookies[\'connect.sid\']: ');
+        console.log(util.inspect(req.cookies['connect.sid'], false, null));
+        console.log('thisStatistics: ');
+        console.log(util.inspect(thisStatistics, false, null));
+        if(thisStatistics.sessionCookies == req.cookies['connect.sid']){
           found = 1;
           console.log("found = 1");
           break;
         }
-      }
+      } 
       callback();
     });},
       function(callback) {
-        //commented for now to count same user views as well
-        // if (found == 0){
-          console.log("found=0, $push");
-          //keep only one of the following 2?? TBD
-          Statistics.findOneAndUpdate({adId:req.params.ad_id},{$push: {"pageViews": {"sessionCookies": req.cookies['connect.sid'], "date": datenow, "revenue": thisRevenue}}, $inc: {uniqueViewCount:1}},{},function(err,stat){});
-          // Ad.findOneAndUpdate({_id:req.params.ad_id},{$inc: {pageView:1} },{},function(err,ad){});
-          // Statistics.findOneAndUpdate({adId:req.params.ad_id},{$inc: {pageView:1} },{},function(err,stat){});
-        // }
+          console.log("$push");
+          Statistics.findOneAndUpdate({adId:req.params.ad_id},{$push: {"type": "pageView", "sessionCookies": req.cookies['connect.sid'], "fulldate": fulldatenow, "revenue": thisRevenue}},{},function(err,stat){});
         // });
         callback();
     }],
       function(err) { //This function gets called after the two tasks have called their "task callbacks"
           if (err) return next(err);
       }
-    );
+    ); */
 	
 	//fetch ad
 	Ad.findOne({ "_id" : req.params.ad_id }, function(err, viewthisad) {

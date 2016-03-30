@@ -26,18 +26,19 @@ var dataSet;
     
   }
   else{
-    // $("#dashboard_nodata").hide();
-    // $("#dashboard").show();
-    console.log("apiData.length == 1");
-    dataSet = JSON.stringify(apiData[0].pageViews);  
+    $("#dashboard_nodata").hide();
+    $("#dashboard_page").show();
+    console.log("apiData.length != 0 ");
+    dataSet = JSON.stringify(apiData);  
   dataSet = JSON.parse(dataSet);
   
   
 
-  
-	var dateFormat = d3.time.format("%Y-%m-%d");
-  // var dateFormat = d3.time.format("%Y-%m-%d %X");
+  console.log("dashboarddata " + JSON.stringify(apiData));
+	var dateFormat = d3.time.format("%Y-%m-%d");  //date only
+  // var dateFormat = d3.time.format("%Y-%m-%d %X"); //date and time
 	dataSet.forEach(function(d) {
+  // console.log("d.date " + d.date);
 		d.date = dateFormat.parse(d.date);
     console.log("d.date " + d.date);
 	});
