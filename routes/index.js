@@ -110,9 +110,19 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
 	console.log(util.inspect(req.session, false, null));
 	console.log('req.cookies[\'connect.sid\']: '+req.cookies['connect.sid']);
   
-  var fulldatenow = new Date().toISOString()
+  var fulldatenow;
+  
+  //For creating random data, generate random date and time => (max - min) + min
+  randomdate = Math.random() * (1459377840218 - 1452377840218) + 1452377840218;
+  fulldatenow = new Date(randomdate).toISOString();
+  
+  //Default date
+  // fulldatenow = new Date().toISOString();
+  
+  fulldatenow = fulldatenow
     .replace(/T/, ' ')      // replace T with a space
     .replace(/\..*/, '');     // delete the dot and everything after
+    
   var datenow = fulldatenow.replace(/\s.+/, '');  // delete the dot and everything after
   var timenow = fulldatenow.replace(/^[^\s]*\s/, '')  //delete everything before the space
     .replace(/\s.+/, '');// delete the dot and everything after
@@ -123,7 +133,7 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
   
   //Random seed & Revenue generator for testing purposes!
   
-  var seed = req.params.ad_id.charAt(0);
+  var seed = req.params.ad_id.match(/(\d)/g)[3];  //to randomly generate seed, find 3rd number in the ad id
   console.log("seed " + seed);
     var x = Math.sin(seed) * 10;
    var thisRevenue = x - Math.floor(x);
