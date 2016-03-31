@@ -24,10 +24,10 @@ function adPageViewCount(req, res) {
 
 // check if the user is authenticated 
 var isAuthenticated = function (req, res, next) {
- 	if (req.isAuthenticated())
+ 	// if (req.isAuthenticated())
 		return next();
 	//redirecto to the following if not authenticated 
-	else res.redirect('/login'); 
+	// else res.redirect('/login'); 
 
 }
 

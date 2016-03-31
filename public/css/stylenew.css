@@ -37,6 +37,8 @@
   font-size: 14px;
   font-weight: 200;
   padding: 7px 10px 4px;
+  margin-left: -20px;
+  text-align: center;
 }
 
 .chart-wrapper .chart-stage {
@@ -96,18 +98,18 @@ transform: translateX(-50%);
                 padding-bottom: 0px;
             }
         .dc-select-menu {
-                background: #33CC99;
+                background: white;
                 width: 80%;
                 border:none;
                 position:relative;
                 height:31px;
                 font-size: 15px;
-                color: white;
+                color: black;
                 vertical-align: middle;
                 text-align: center;
                 padding-top: 4px;
                 padding-bottom: 0px;
-
+                text-align: center;
 
             }
 

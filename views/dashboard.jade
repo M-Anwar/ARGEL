@@ -31,7 +31,7 @@ block content
       section.content.content-2      
         .mbr-section__container.container      
           .row.animated.fadeInUp   
-              .col-sm-12.text-white
+              .col-sm-12
                 #dashboard
                   // Header
                   #header
@@ -54,46 +54,49 @@ block content
                     #page(style='margin-top:-61px;')
                       .container
                         .row
-                          #menuselect.2u.chart-wrapper(style='background-color: #FFA500; height: 60px;')
+                          #menuselect.4u.chart-wrapper(style='background-color: #FFA500; height: 60px; margin-left:30px;')
                             .chart-title
-                              strong  Date Selector 
-                          .2u
-                            div
-                              span  &nbsp
+                              strong  Filter By Ad
                           #total-projects.2u.chart-wrapper(style='background-color: #FFA500; height: 60px;')
                             .chart-title
-                              strong  Total Record Count  
-                          #row-selection.3u.dc-data-count.dc-chart
+                              strong  Total Record Count
+                            span.number-display(style='font-size:30px; color:white; text-align:center')
+                          #total-revenue.2u.chart-wrapper(style='background-color: #FFA500; height: 60px;')
+                            .chart-title
+                              strong  Total Revenue
+                            span.number-display(style='font-size:30px; color:white; margin-left:30px')
+                          #row-selection.3u.dc-data-count.dc-chart(style='margin-right:50px;')
                             span.filter-count _
                             |  selected out of 
                             span.total-count _
-                            |  records |
+                            | |
                             span
                               a(href='javascript:dc.filterAll();dc.redrawAll();')
-                                font(color='#33CC99') Reset All
+                                font(color='blue') Reset All
                         .row
-                          #date-chart.7u.chart-wrapper
+                          #date-chart.7u.chart-wrapper(style='margin-left:30px; margin-right:20px;')
                             .chart-title.bold
                               strong  Number of Views by Day 
-                          #spaceholder.1u
-                          #sessionCookie-chart.3u.chart-wrapper
-                            .chart-title
-                              strong  Visits by user
+                          //
+                            #sessionCookie-chart.4u.chart-wrapper
+                              .chart-title
+                                strong  Visits by user
                           //
                             #funding-chart.3u.chart-wrapper
                               .chart-title
                                 strong  
+                        //
+                          .row
+                            #revenue-chart.7u.chart-wrapper(style='margin-left:30px; margin-right:20px;')
+                              .chart-title
+                                strong  Revenue Chart
                         .row
-                          #revenue-chart.8u.chart-wrapper
+                          #user-count.7u.chart-wrapper(style='margin-left:30px; margin-right:20px; height:450px;')
+                            .chart-title 
+                              strong  View Count By User
+                          #ad-distribution-chart.4u.chart-wrapper(style='height:450px')
                             .chart-title
-                              strong  Revenue Chart
-                          //
-                            #poverty-chart.4u.chart-wrapper
-                              .chart-title
-                                strong  
-                            #state-donations.4u.chart-wrapper
-                              .chart-title
-                                strong
+                              strong Ad Distribution Chart
       script(src='/js/crossfilter.js', type='text/javascript')
       script(src='/js/d3.js', type='text/javascript')
       script(src='/js/dc.js', type='text/javascript')

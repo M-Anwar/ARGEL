@@ -32,15 +32,16 @@ var dataSet;
     dataSet = JSON.stringify(apiData);  
   dataSet = JSON.parse(dataSet);
   
-  
-
   console.log("dashboarddata " + JSON.stringify(apiData));
 	var dateFormat = d3.time.format("%Y-%m-%d");  //date only
+  var timeFormat = d3.time.format("%X"); //time
   // var dateFormat = d3.time.format("%Y-%m-%d %X"); //date and time
 	dataSet.forEach(function(d) {
   // console.log("d.date " + d.date);
 		d.date = dateFormat.parse(d.date);
+    d.time = timeFormat.parse(d.time);
     console.log("d.date " + d.date);
+    console.log("d.time " + d.time);
 	});
 
 	//Create a Crossfilter instance
@@ -52,13 +53,16 @@ var dataSet;
 	var resourceType = ndx.dimension(function(d) { return d.resource_type; });
 	var fundingStatus = ndx.dimension(function(d) { return d.funding_status; });
 	var povertyLevel = ndx.dimension(function(d) { return d.poverty_level; });
-	var state = ndx.dimension(function(d) { return d.school_state; });
+	// var state = ndx.dimension(function(d) { return d.school_state; });
 	var totalDonations  = ndx.dimension(function(d) { return d.total_donations; });
   
+  /*** THINGS TO ADD: SUM of revenue; dropdown selector for view by ad; graph by time; 
+        revenue by time; revenue by ad***/
   	//Define Dimensions
-	var pageViewsDate = ndx.dimension(function(d){return d.date;});
-	var pageViewsSessionCookies = ndx.dimension(function(d) { return d.sessionCookies; });
-  var pageViewsrevenue = ndx.dimension(function(d) { return d.revenue; });
+	var Date = ndx.dimension(function(d){return d.date;});
+	var SessionCookies = ndx.dimension(function(d) { return d.sessionCookies; });
+  var revenue = ndx.dimension(function(d) { return d.revenue; });
+  var adId = ndx.dimension(function(d) { return d.adId; });
 
 /*   var pageViewsDate = ndx.dimension(function(d){
     return d.date_posted; 
@@ -73,10 +77,11 @@ var dataSet;
     } */
 
 	//Calculate metrics
-	var projectsBypageViewsDate = pageViewsDate.group(); 
-	var projectsBypageViewsSessionCookies = pageViewsSessionCookies.group(); 
-  var projectsBypageViewsrevenue = pageViewsrevenue.group();
-  var projectsBypageViewsrevenuebydate = pageViewsDate.group().reduceSum(function(d) {return d.revenue;});
+	var projectsByDate = Date.group(); 
+	var projectsBySessionCookies = SessionCookies.group(); 
+  var projectsByrevenue = revenue.group();
+  var projectsByrevenuebydate = Date.group().reduceSum(function(d) {return d.revenue;});
+  var projectsByadId = adId.group();
 	var all = ndx.groupAll();
 
 	//Calculate Groups
@@ -93,31 +98,34 @@ var dataSet;
 	// });
 
 
-
+  var projectsBytotalRevenuePerAd = adId.group().reduceSum(function(d) {return d.revenue});
 	// var netTotalDonations = ndx.groupAll().reduceSum(function(d) {return d.total_donations;});
+	var projectsBytotalRevenuetotal = ndx.groupAll().reduceSum(function(d) {return d.revenue;});
 
 	//Define threshold values for data
-	var minDate = pageViewsDate.bottom(1)[0].date;
-	var maxDate = pageViewsDate.top(1)[0].date;
+	var minDate = Date.bottom(1)[0].date;
+	var maxDate = Date.top(1)[0].date;
 
 console.log(minDate);
 console.log(maxDate);
 
     //Charts
 	var dateChart = dc.lineChart("#date-chart");
-	// var pageViewsSessionCookiesChart = dc.rowChart("#grade-chart");
+	// var SessionCookiesChart = dc.rowChart("#grade-chart");
 	var sessionCookieChart = dc.barChart("#sessionCookie-chart");
+  var userCountChart = dc.rowChart("#user-count");
 	// var fundingStatusChart = dc.pieChart("#funding-chart");
 	// var povertyLevelChart = dc.rowChart("#poverty-chart");
+  var AdDistributionChart = dc.pieChart("#ad-distribution-chart");
 	var totalProjects = dc.numberDisplay("#total-projects");
-	// var netDonations = dc.numberDisplay("#net-donations");
+	var totalRevenue = dc.numberDisplay("#total-revenue");
 	// var stateDonations = dc.barChart("#state-donations");
-  var revenueChart = dc.lineChart("#revenue-chart");
+  // var revenueChart = dc.lineChart("#revenue-chart");
 
 
   selectField = dc.selectMenu('#menuselect')
-        .dimension(pageViewsDate)
-        .group(projectsBypageViewsDate); 
+        .dimension(adId)
+        .group(projectsByadId); 
 
        dc.dataCount("#row-selection")
         .dimension(ndx)
@@ -129,18 +137,26 @@ console.log(maxDate);
 		.valueAccessor(function(d){return d; })
 		.group(all);
 
-/* 	netDonations
+	totalRevenue
 		.formatNumber(d3.format("d"))
 		.valueAccessor(function(d){return d; })
-		.group(netTotalDonations)
-		.formatNumber(d3.format(".3s")); */
+		.group(projectsBytotalRevenuetotal)
+		.formatNumber(d3.format("$.2f"))    ;
 
  	dateChart
 		.width(700)
 		.height(300)
+    .legend(dc.legend().x(600).y(10).itemHeight(13).gap(5))
+        .brushOn(false)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
-		.dimension(pageViewsDate)
-		.group(projectsBypageViewsDate)
+		.dimension(Date)
+		.group(projectsByDate, "Group by Date")
+    .valueAccessor(function (d) {
+            return d.value;
+        })
+    .stack(projectsByrevenuebydate, "Group by Revenue", function (d) {
+            return d.value;
+        })
 		.renderArea(true)
 		.transitionDuration(500)
 		.x(d3.time.scale().domain([minDate, maxDate]))
@@ -148,19 +164,20 @@ console.log(maxDate);
 		.renderHorizontalGridLines(true)
     	.renderVerticalGridLines(true)
 		.xAxisLabel("Date")
+    .yAxisLabel("Ad View Count")
 		.yAxis().ticks(4); 
 
 	sessionCookieChart
         .width(400)
         .height(300)
         .transitionDuration(1000)
-        .dimension(pageViewsSessionCookies)
-        .group(projectsBypageViewsSessionCookies)
+        .dimension(SessionCookies)
+        .group(projectsBySessionCookies)
         .margins({top: 10, right: 50, bottom: 30, left: 50})
         .centerBar(false)
         .gap(5)
         .elasticY(true)
-        .x(d3.scale.ordinal().domain(state))
+        .x(d3.scale.ordinal().domain(Date))
         .xUnits(dc.units.ordinal)
         .renderHorizontalGridLines(true)
         .renderVerticalGridLines(true)
@@ -174,12 +191,21 @@ console.log(maxDate);
         .group(projectsBypageViewCount)
         .xAxis().ticks(4);*/
 
-	revenueChart
+ 	userCountChart
+		// .width(300)
+		.height(450)
+        .dimension(SessionCookies)
+        .group(projectsBySessionCookies)
+        // .xAxisLabel("View Count")
+        // .yAxisLabel("User ID")
+        .xAxis().ticks(4);
+
+/* 	revenueChart
     .width(700)
 		.height(300)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
-		.dimension(pageViewsDate)
-		.group(projectsBypageViewsrevenuebydate)
+		.dimension(Date)
+		.group(projectsByrevenuebydate)
 		.renderArea(true)
 		.transitionDuration(500)
 		.x(d3.time.scale().domain([minDate, maxDate]))
@@ -189,7 +215,7 @@ console.log(maxDate);
 		.xAxisLabel("Date")
     .yAxisLabel("Revenue in $")
 		.yAxis().ticks(4); 
-
+ */
   
 /*           fundingStatusChart
             .height(220)
@@ -200,6 +226,15 @@ console.log(maxDate);
             .dimension(fundingStatus)
             .group(projectsByFundingStatus); */
 
+
+           AdDistributionChart
+            // .height(500)
+            // .width(500)
+            .radius(170)
+            // .innerRadius(40)
+            .transitionDuration(1000)
+            .dimension(adId)
+            .group(projectsByadId); 
 
 /*     stateDonations
     	//.width(800)
