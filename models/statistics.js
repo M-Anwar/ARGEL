@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 var Statistics = new Schema({
   adId: String,
+  adname: String,
   type: String, //the type will be either pageView, adPlay, etc
   sessionCookies: String,
   revenue: Number,

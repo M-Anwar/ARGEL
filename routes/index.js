@@ -111,12 +111,13 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
 	console.log('req.cookies[\'connect.sid\']: '+req.cookies['connect.sid']);
   
   var fulldatenow;
-  
   //For creating random data, generate random date and time => (max - min) + min
   randomdate = Math.random() * (1459377840218 - 1452377840218) + 1452377840218;
+  // randomdate = Math.random() * (1455377840218 - 1448377840218) + 1448377840218;
+  // randomdate = Math.random() * (1459377840218 - 1450377840218) + 1450377840218;
   fulldatenow = new Date(randomdate).toISOString();
   
-  //Default date
+  //Default date 
   // fulldatenow = new Date().toISOString();
   
   fulldatenow = fulldatenow
@@ -138,19 +139,7 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
     var x = Math.sin(seed) * 10;
    var thisRevenue = x - Math.floor(x);
    
-    var statistic = new Statistics();
-    statistic.adId = req.params.ad_id;
-    statistic.type = "pageView"
-    statistic.revenue = thisRevenue;
-    statistic.sessionCookies= req.cookies['connect.sid'];
-    statistic.fulldate= fulldatenow;
-    statistic.date= datenow;
-    statistic.time= timenow;
-    
-    //save the stat to the db
-      statistic.save(function(err,a){
-          if(err) throw err;                   
-      });
+
    
 	//update ad page view counter
 	/* Statistics.findOne({adId:req.params.ad_id},{},function(err,thisStatistics){
@@ -218,6 +207,22 @@ router.get('/adprofile/:ad_id', isAuthenticated, function(req, res){
                 video = false;
             }
         }
+    
+      //create a statistics schema and save the relevant data about this ad view
+    var statistic = new Statistics();
+    statistic.adId = req.params.ad_id;
+    statistic.adname = viewthisad.adname;
+    statistic.type = "pageView"
+    statistic.revenue = thisRevenue;
+    statistic.sessionCookies= req.cookies['connect.sid'];
+    statistic.fulldate= fulldatenow;
+    statistic.date= datenow;
+    statistic.time= timenow;
+    
+    //save the stat to the db
+      statistic.save(function(err,a){
+          if(err) throw err;                   
+      });
         //console.log(viewthisad.tags[1]);
         res.render('adprofile', { user: req.user , ad: viewthisad, isVideo: video}); 
 	});

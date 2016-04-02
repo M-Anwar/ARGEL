@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var Ad = new Schema({
 	adname: String,
-    userid: String,
+  userid: String,
 	description: String,
 	tags: {type : Array, "default" : []},
 	videoad: { _id: String, filename: String, contentType: String },
