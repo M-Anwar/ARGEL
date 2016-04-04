@@ -74,6 +74,15 @@ function uploadAd(event){
         sendLocations[i] = {lat: markers[i].getPosition().lat(), lng:markers[i].getPosition().lng(),radius:markers[i].radius};        
     }
     myFormData.append('locations',JSON.stringify(sendLocations));    
+    
+    //Upload coupon information
+    //Populate the form data
+    $.each($('#couponUpload').serializeArray(), function(i, field) {
+        if(field.value =="" || !field.value){           
+            return;
+        }        
+        myFormData.append(field.name, field.value);
+    });
   
     //Send the data to the server - Only works if authenticated
     $.ajax({ // create an AJAX call...     

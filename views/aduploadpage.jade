@@ -87,7 +87,15 @@ block content
                                             p 
                                                 |Add some descriptive tags to your advertisement to help us understand what its about. 
                                                 |The more specific you are, the better we can use them to help target your product.
-                                            input.form-control(id="descTags", name="metaData")                                      
+                                            input.form-control(id="descTags", name="metaData")  
+                            .row
+                                .col-sm-12
+                                    .col-sm-12.span.h4 Coupon 
+                                    .col-sm-12
+                                        form(role='form', action="#",method="post", enctype="multipart/form-data", style='max-width: 100%;' id="couponUpload")                                           
+                                            .form-group
+                                                span.h4 Coupon Offer
+                                                input.form-control(type='text', id="coupon", name="coupon", placeholder='15% off our product')
                                     
                                 
                         

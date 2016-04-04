@@ -308,6 +308,7 @@ router.post('/adupload', isAuthenticated,upload.single('videoAd'), function(req,
     var tagArray = [req.body.tags, req.body.locations];
     ad.tags = tagArray;
     ad.metaData = req.body.metaData;
+    ad.coupon= req.body.coupon;
 	ad.pageView=0;
 	
 	//save the ad to the db
