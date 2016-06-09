@@ -21,13 +21,14 @@ def FaceRecog(session):
 
     api = API(API_KEY, API_SECRET)
 
-    imurl = session+'.jpg'
+    #imurl = session+'.jpg'
+    imurl = session+'.png'
     startTime = datetime.now()
-    #status, cropped_imgs = detect_image(imurl)
-    status = 'valid'
+    status, cropped_imgs = detect_image(imurl)
+    #status = 'valid'
     print "The Time it took for OpenCV:"
     print datetime.now() - startTime
-    cropped_imgs = [cv2.imread(imurl)]
+    #cropped_imgs = [cv2.imread(imurl)]
 
     font = cv2.FONT_HERSHEY_SIMPLEX
 
@@ -71,21 +72,21 @@ def FaceRecog(session):
                         glasses.append(attribute['glass'])
                         smilings.append(attribute['smiling'])
 
-                        #image = cv2.imread(new_im)
+                        image = cv2.imread(new_im)
                         #print image
-                        #pt1 = (int(each_face['position']['center']['x']*width/100-each_face['position']['width']*width/100/2),int(each_face['position']['center']['y']*height/100+each_face['position']['height']*height/100/2))
-                        #pt2 = (int(each_face['position']['center']['x']*width/100+each_face['position']['width']*width/100/2),int(each_face['position']['center']['y']*height/100-each_face['position']['height']*height/100/2))
-                        #image = cv2.rectangle(image,pt1,pt2,(0,255,0))
-                        # image = cv2.circle(image,(int(each_face['position']['eye_left']['x']*width/100),int(each_face['position']['eye_left']['y']*height/100)),3,(0,255,0))
-                        # image = cv2.circle(image,(int(each_face['position']['eye_right']['x']*width/100),int(each_face['position']['eye_right']['y']*height/100)),3,(0,255,0))
-                        # image = cv2.circle(image,(int(each_face['position']['nose']['x']*width/100),int(each_face['position']['nose']['y']*height/100)),3,(0,255,0),-1)
-                        # image = cv2.circle(image,(int(each_face['position']['mouth_left']['x']*width/100),int(each_face['position']['mouth_left']['y']*height/100)),3,(0,255,0),-1)
-                        # image = cv2.circle(image,(int(each_face['position']['mouth_right']['x']*width/100),int(each_face['position']['mouth_right']['y']*height/100)),3,(0,255,0),-1)
-                        #image = cv2.putText(image, str(attribute['gender']['value']) + ' ' + str(attribute['gender']['confidence']),(int(pt1[0]+(pt2[0]-pt1[0])/2),int(pt2[1]*0.95)),font,1, (0,255,0),1,cv2.LINE_AA)
-                        #image = cv2.putText(image, 'Age: ' + str(attribute['age']['value']) + ' Range: ' + str(attribute['age']['range']),(int(pt1[0]+(pt2[0]-pt1[0])/2),int(pt1[1]*1.05)),font,1,(0,255,0),1,cv2.LINE_AA)
+                        pt1 = (int(each_face['position']['center']['x']*width/100-each_face['position']['width']*width/100/2),int(each_face['position']['center']['y']*height/100+each_face['position']['height']*height/100/2))
+                        pt2 = (int(each_face['position']['center']['x']*width/100+each_face['position']['width']*width/100/2),int(each_face['position']['center']['y']*height/100-each_face['position']['height']*height/100/2))
+                        image = cv2.rectangle(image,pt1,pt2,(0,255,0))
+                        image = cv2.circle(image,(int(each_face['position']['eye_left']['x']*width/100),int(each_face['position']['eye_left']['y']*height/100)),3,(0,255,0))
+                        image = cv2.circle(image,(int(each_face['position']['eye_right']['x']*width/100),int(each_face['position']['eye_right']['y']*height/100)),3,(0,255,0))
+                        image = cv2.circle(image,(int(each_face['position']['nose']['x']*width/100),int(each_face['position']['nose']['y']*height/100)),3,(0,255,0),-1)
+                        image = cv2.circle(image,(int(each_face['position']['mouth_left']['x']*width/100),int(each_face['position']['mouth_left']['y']*height/100)),3,(0,255,0),-1)
+                        image = cv2.circle(image,(int(each_face['position']['mouth_right']['x']*width/100),int(each_face['position']['mouth_right']['y']*height/100)),3,(0,255,0),-1)
+                        image = cv2.putText(image, str(attribute['gender']['value']) + ' ' + str(attribute['gender']['confidence']),(int(pt1[0]+(pt2[0]-pt1[0])/2),int(pt2[1]*0.95)),font,1, (0,255,0),1,cv2.LINE_AA)
+                        image = cv2.putText(image, 'Age: ' + str(attribute['age']['value']) + ' Range: ' + str(attribute['age']['range']),(int(pt1[0]+(pt2[0]-pt1[0])/2),int(pt1[1]*1.05)),font,1,(0,255,0),1,cv2.LINE_AA)
                         #cv2.imshow('preview',image)
                         #cv2.waitKey(0)
-                        #cv2.imwrite(new_im,image)
+                        cv2.imwrite(new_im,image)
 
         if len(genders) > 0:
             amount_of_people = len(genders)
@@ -114,7 +115,9 @@ def FaceRecog(session):
 
             #print "Crowd Test Array: " + str(test_x)
 
-
+            fornow= K_near_age_2(test_x)
+            print fornow
+            return fornow
             # file = 'train_data.csv'
             # with open(file, 'rb') as f:
             #         reader = csv.reader(f)
@@ -123,6 +126,7 @@ def FaceRecog(session):
             #Get any associated meta-data with the session. Returns an array
             startTime = datetime.now()
             myResponse = requests.get(("http://localhost:3000/api/getsessioninfo/" + session))
+
             if(myResponse.ok):
                 jData2 = json.loads(myResponse.content)
 
@@ -132,6 +136,8 @@ def FaceRecog(session):
                 other_data = [get_weather(jData2["metaData"][1]), get_temp(jData2["metaData"][2]), 0.0]
             else:
                 other_data = [get_weather('sunny'), get_temp('120'), 0.0]
+
+
 
             ids, X = get_ads(session)
             #pred = learn_tree_and_predict(X, test_x)
@@ -155,12 +161,38 @@ def FaceRecog(session):
             return recommend
         else:
             print 'No one detected!'
+            return 0
             ids, X = get_ads(session)
             print time.time() - st
             return ids[0:3]
     else:
         print 'No one detected at all!'
+        return 0
         ids, X = get_ads(session)
         print time.time() - st
         return ids[0:3]
 
+
+if __name__ == '__main__':
+    import glob
+    a = glob.glob("sample_imgs\*.png")
+    text_file = open("Output_center.txt", "w")
+    np.set_printoptions(precision=2)
+    #print a[1][:-4]
+    count = 0
+    tot = 0
+    for imgs in a:
+        text_file.write(imgs)
+        text_file.write(": ")
+        val = FaceRecog(imgs[:-4])
+        if isinstance(val,int):
+            text_file.write('NONE\n')
+        else:
+            text_file.write(np.array_str(val))
+            text_file.write('\n')
+        #if val == 1:
+        #    count = count+1
+        #tot = tot+1
+    #print count
+    #print tot
+    text_file.close()

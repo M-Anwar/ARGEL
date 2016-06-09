@@ -77,8 +77,6 @@ def get_ads(session="none"):
     else:
         url = host
 
-
-
     myResponse = requests.get(url)
 
     if(myResponse.ok):

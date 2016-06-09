@@ -1,0 +1,93 @@
+sample_imgs2\1459368624673.jpg.png: NONE
+sample_imgs2\1459368629675.jpg.png: NONE
+sample_imgs2\1459368634675.jpg.png: NONE
+sample_imgs2\1459368639676.jpg.png: [ 0.26  0.    0.67  1.    0.67  0.33  0.    0.  ]
+sample_imgs2\1459368644677.jpg.png: NONE
+sample_imgs2\1459368649677.jpg.png: [ 0.18  0.    1.    1.    1.    0.    0.    0.  ]
+sample_imgs2\1459368654679.jpg.png: [ 1.   0.   0.5  0.5  1.   0.5  0.5  0. ]
+sample_imgs2\1459368659679.jpg.png: NONE
+sample_imgs2\1459368664680.jpg.png: NONE
+sample_imgs2\1459368669680.jpg.png: [-0.54  0.    1.    1.    0.    0.    0.    0.  ]
+sample_imgs2\1459368674680.jpg.png: NONE
+sample_imgs2\1459368679681.jpg.png: NONE
+sample_imgs2\1459368684682.jpg.png: NONE
+sample_imgs2\1459368689682.jpg.png: NONE
+sample_imgs2\1459368694682.jpg.png: NONE
+sample_imgs2\1459368699684.jpg.png: [-0.96  0.    0.    1.    1.    1.    0.    0.  ]
+sample_imgs2\1459368704685.jpg.png: NONE
+sample_imgs2\1459368709685.jpg.png: NONE
+sample_imgs2\1459368714686.jpg.png: [ 0.   0.   0.   1.   1.   0.5  0.   0. ]
+sample_imgs2\1459368719686.jpg.png: NONE
+sample_imgs2\1459368724687.jpg.png: NONE
+sample_imgs2\1459368729687.jpg.png: NONE
+sample_imgs2\1459368734688.jpg.png: NONE
+sample_imgs2\1459368739688.jpg.png: NONE
+sample_imgs2\1459368744688.jpg.png: NONE
+sample_imgs2\1459368749688.jpg.png: [ 0.52  0.    1.    1.    1.    0.    0.    0.  ]
+sample_imgs2\1459368754689.jpg.png: [ 0.95  0.    0.    1.    1.    1.    0.    0.  ]
+sample_imgs2\1459368759690.jpg.png: NONE
+sample_imgs2\1459368764690.jpg.png: [ 0.54  0.    0.    0.    0.    1.    1.    0.  ]
+sample_imgs2\1459368769691.jpg.png: NONE
+sample_imgs2\1459368774692.jpg.png: NONE
+sample_imgs2\1459368779693.jpg.png: [-0.85  1.    1.    0.    0.    0.    0.    0.  ]
+sample_imgs2\1459368784693.jpg.png: NONE
+sample_imgs2\1459368789694.jpg.png: NONE
+sample_imgs2\1459368794693.jpg.png: [ 0.2  0.   1.   1.   0.5  0.5  0.   0. ]
+sample_imgs2\1459368799694.jpg.png: [ 1.  0.  0.  0.  1.  1.  1.  0.]
+sample_imgs2\1459368804694.jpg.png: NONE
+sample_imgs2\1459368809695.jpg.png: [-0.94  0.33  0.67  0.67  0.67  0.33  0.    0.  ]
+sample_imgs2\1459368814695.jpg.png: [-0.96  0.    0.    1.    1.    1.    0.    0.  ]
+sample_imgs2\1459368819697.jpg.png: NONE
+sample_imgs2\1459368824697.jpg.png: NONE
+sample_imgs2\1459368829698.jpg.png: NONE
+sample_imgs2\1459368834698.jpg.png: [ 1.  0.  0.  1.  1.  1.  0.  0.]
+sample_imgs2\1459368839698.jpg.png: [-0.97  0.    0.    1.    1.    1.    0.    0.  ]
+sample_imgs2\1459368844699.jpg.png: NONE
+sample_imgs2\1459368849699.jpg.png: [ 1.  0.  1.  1.  1.  0.  0.  0.]
+sample_imgs2\1459368854700.jpg.png: NONE
+sample_imgs2\1459368859701.jpg.png: NONE
+sample_imgs2\1459368864701.jpg.png: NONE
+sample_imgs2\1459368869702.jpg.png: NONE
+sample_imgs2\1459368874703.jpg.png: [ 0.96  0.    1.    1.    1.    0.    0.    0.  ]
+sample_imgs2\1459368879703.jpg.png: NONE
+sample_imgs2\1459368884705.jpg.png: NONE
+sample_imgs2\1459368889705.jpg.png: NONE
+sample_imgs2\1459368894706.jpg.png: NONE
+sample_imgs2\1459368899705.jpg.png: [-0.86  0.    0.33  0.67  0.67  0.67  0.33  0.  ]
+sample_imgs2\1459368904706.jpg.png: NONE
+sample_imgs2\1459368909706.jpg.png: [ 0.96  0.    1.    1.    1.    0.    0.    0.  ]
+sample_imgs2\1459368914707.jpg.png: NONE
+sample_imgs2\1459368919708.jpg.png: [ 1.  0.  0.  0.  1.  1.  1.  0.]
+sample_imgs2\1459368924708.jpg.png: NONE
+sample_imgs2\1459368929709.jpg.png: NONE
+sample_imgs2\1459368934710.jpg.png: [ 1.  0.  0.  1.  1.  1.  0.  0.]
+sample_imgs2\1459368939711.jpg.png: [ 0.33  0.    0.    0.67  1.    1.    0.67  0.  ]
+sample_imgs2\1459368944711.jpg.png: [-1.  1.  1.  0.  0.  0.  0.  0.]
+sample_imgs2\1459368949712.jpg.png: NONE
+sample_imgs2\1459368954712.jpg.png: NONE
+sample_imgs2\1459368959712.jpg.png: NONE
+sample_imgs2\1459368964712.jpg.png: [-0.65  0.    0.    1.    1.    1.    0.    0.  ]
+sample_imgs2\1459368969713.jpg.png: [ 1.  0.  0.  1.  1.  1.  0.  0.]
+sample_imgs2\1459368974713.jpg.png: NONE
+sample_imgs2\1459368979714.jpg.png: [ 1.  0.  0.  0.  0.  1.  1.  0.]
+sample_imgs2\1459368984714.jpg.png: NONE
+sample_imgs2\1459368989714.jpg.png: [ 0.82  0.5   0.5   0.5   0.    0.5   0.5   0.5 ]
+sample_imgs2\1459368994716.jpg.png: NONE
+sample_imgs2\1459368999716.jpg.png: NONE
+sample_imgs2\1459369005277.jpg.png: NONE
+sample_imgs2\1459369010277.jpg.png: [ 0.86  0.    1.    1.    1.    0.    0.    0.  ]
+sample_imgs2\1459369015278.jpg.png: NONE
+sample_imgs2\1459369020277.jpg.png: NONE
+sample_imgs2\1459369025278.jpg.png: NONE
+sample_imgs2\1459369030278.jpg.png: [ 0.01  0.5   0.5   0.5   0.5   0.    0.    0.  ]
+sample_imgs2\1459369035278.jpg.png: [-1.  0.  0.  0.  1.  1.  1.  0.]
+sample_imgs2\1459369040277.jpg.png: NONE
+sample_imgs2\1459369045278.jpg.png: [ 1.  0.  0.  0.  1.  1.  0.  0.]
+sample_imgs2\1459369050278.jpg.png: [-1.  0.  0.  0.  1.  1.  0.  0.]
+sample_imgs2\1459369055278.jpg.png: [-0.58  0.    0.    0.    1.    1.    1.    0.  ]
+sample_imgs2\1459369060277.jpg.png: NONE
+sample_imgs2\1459369065278.jpg.png: NONE
+sample_imgs2\1459369070277.jpg.png: NONE
+sample_imgs2\1459369075277.jpg.png: NONE
+sample_imgs2\1459369080278.jpg.png: [ 1.  0.  0.  1.  1.  1.  0.  0.]
+sample_imgs2\1459369085278.jpg.png: [ 0.94  0.    0.    0.    1.    1.    0.    0.  ]

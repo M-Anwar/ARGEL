@@ -1,0 +1,58 @@
+Eaton_Center	Available	Gender	Column1	Column2	Column3	Column4	Column5	Column6	Column7
+sample_imgs\1459367572959.jpg.png:	YES	0.93	0	0	0.5	1	1	1	0
+sample_imgs\1459367582960.jpg.png:	YES	0.33	0	0.33	0.33	0.33	0.67	0.67	0
+sample_imgs\1459367592961.jpg.png:	YES	1	1	1	0	0	0	0	0
+sample_imgs\1459367602964.jpg.png:	YES	0.81	0	0	0	0	1	1	0
+sample_imgs\1459367617965.jpg.png:	YES	1	0	1	1	1	0	0	0
+sample_imgs\1459367642968.jpg.png:	YES	0.93	0.5	0.5	1	0.5	0.5	0	0
+sample_imgs\1459367672970.jpg.png:	YES	0.95	0.5	0.5	1	0.5	0	0	0
+sample_imgs\1459367677971.jpg.png:	YES	1	0	1	1	1	0	0	0
+sample_imgs\1459367687973.jpg.png:	YES	0.78	0	1	1	0	0	0	0
+sample_imgs\1459367697974.jpg.png:	YES	0.88	0	0	1	1	1	0	0
+sample_imgs\1459367707975.jpg.png:	YES	0.94	0.25	0.25	0.5	0.5	0.75	0.25	0
+sample_imgs\1459367727981.jpg.png:	YES	0.7	0	1	1	0	0	0	0
+sample_imgs\1459367844856.jpg.png:	YES	0.98	0	0	0	1	1	0	0
+sample_imgs\1459367864862.jpg.png:	YES	0.99	0	0	0.5	0.5	1	0.5	0
+sample_imgs\1459367880278.jpg.png:	YES	0.33	0.33	1	0.67	0	0	0	0
+sample_imgs\1459367890278.jpg.png:	YES	0.2	0	0	0.5	1	1	0.5	0
+sample_imgs\1459367895278.jpg.png:	YES	1	0	0	0	0	0	1	1
+sample_imgs\1459367722980.jpg.png:	YES	-0.28	0.33	0.67	0.33	0.33	0.33	0	0
+sample_imgs\1459367632967.jpg.png:	YES	-0.31	0	0	0.33	1	0.67	0.33	0
+sample_imgs\1459367637968.jpg.png:	YES	-0.76	0	0.5	0.5	0.5	0.5	0.5	0
+sample_imgs\1459367662969.jpg.png:	YES	-0.83	1	1	1	0	0	0	0
+sample_imgs\1459367622966.jpg.png:	YES	-0.88	1	1	0	0	0	0	0
+sample_imgs\1459367859861.jpg.png:	YES	-0.92	0	1	1	1	0	0	0
+sample_imgs\1459367869862.jpg.png:	YES	-0.92	0	0	0	1	1	0	0
+sample_imgs\1459367747987.jpg.png:	YES	-0.94	0	0	0	1	1	0	0
+sample_imgs\1459367652969.jpg.png:	YES	-0.98	1	1	0	0	0	0	0
+sample_imgs\1459367874862.jpg.png:	YES	-0.98	0	0	1	1	0	0	0
+sample_imgs\1459367885278.jpg.png:	YES	-1	0	1	1	1	0	0	0
+sample_imgs\1459367557958.jpg.png:	NONE								
+sample_imgs\1459367562957.jpg.png:	NONE								
+sample_imgs\1459367567958.jpg.png:	NONE								
+sample_imgs\1459367577959.jpg.png:	NONE								
+sample_imgs\1459367587961.jpg.png:	NONE								
+sample_imgs\1459367597962.jpg.png:	NONE								
+sample_imgs\1459367607965.jpg.png:	NONE								
+sample_imgs\1459367612964.jpg.png:	NONE								
+sample_imgs\1459367627967.jpg.png:	NONE								
+sample_imgs\1459367647968.jpg.png:	NONE								
+sample_imgs\1459367657969.jpg.png:	NONE								
+sample_imgs\1459367667970.jpg.png:	NONE								
+sample_imgs\1459367682972.jpg.png:	NONE								
+sample_imgs\1459367692974.jpg.png:	NONE								
+sample_imgs\1459367702975.jpg.png:	NONE								
+sample_imgs\1459367712976.jpg.png:	NONE								
+sample_imgs\1459367717978.jpg.png:	NONE								
+sample_imgs\1459367732982.jpg.png:	NONE								
+sample_imgs\1459367737983.jpg.png:	NONE								
+sample_imgs\1459367742986.jpg.png:	NONE								
+sample_imgs\1459367752988.jpg.png:	NONE								
+sample_imgs\1459367757989.jpg.png:	NONE								
+sample_imgs\1459367762999.jpg.png:	NONE								
+sample_imgs\1459367824846.jpg.png:	NONE								
+sample_imgs\1459367829846.jpg.png:	NONE								
+sample_imgs\1459367834854.jpg.png:	NONE								
+sample_imgs\1459367839855.jpg.png:	NONE								
+sample_imgs\1459367849859.jpg.png:	NONE								
+sample_imgs\1459367854860.jpg.png:	NONE								

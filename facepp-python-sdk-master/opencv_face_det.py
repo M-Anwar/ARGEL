@@ -73,7 +73,8 @@ def divide_im (img,wr,hr,pocx,pocy, faces):
     return divided_imgs
 
 def detect_image (img_url):
-    face_cascade = cv2.CascadeClassifier('facepp-python-sdk-master/haarcascades/haarcascade_frontalface_alt.xml')
+    #face_cascade = cv2.CascadeClassifier('facepp-python-sdk-master/haarcascades/haarcascade_frontalface_alt.xml')
+    face_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_alt.xml')
     #eye_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_eye.xml')
 
     #img_url = 'test_pic/test_face.jpg'

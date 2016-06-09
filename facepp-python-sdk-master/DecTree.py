@@ -301,3 +301,27 @@ def K_near_age(train_data, X_Test, N, other_data):
     print str(test_x)
 
 '''
+def K_near_age_2(X_Test):
+
+    feature_names = ['Gender','0-5','6-12','13-19','20-27','28-35','36-50','55+']
+    features = len(feature_names)
+    age_features = 7
+
+    #Test Array:
+    to_predict_with = np.zeros((1,features))
+
+    mean_gender = np.mean(X_Test[:,0],0)
+    to_predict_with[0,0] = mean_gender
+
+    #Finding age to predict
+    age_hist = np.zeros((np.shape(X_Test)[0],age_features))
+    for i in range(0,np.shape(X_Test)[0]):
+        person = X_Test[i,:]
+        age_hist[i,:] = convert_age_to_bin_array(person[1],person[2])
+
+    age_test_groups = age_hist.sum(0)/np.shape(X_Test)[0] #Array of how many people fall into the age group specified by index
+    to_predict_with[0,1:age_features+1] = age_test_groups
+
+    print "Predicting with:"
+    return to_predict_with[0,:]
+
