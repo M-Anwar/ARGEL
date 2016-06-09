@@ -40,11 +40,11 @@ router.get('*', function(req, res, next) {
 });
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-	if (req.isAuthenticated())
-		res.redirect('/dashboard');
-	else  res.render('index', { title: 'ARGEL' });
-});
+// router.get('/', function(req, res, next) {
+// 	if (req.isAuthenticated())
+// 		res.redirect('/dashboard');
+// 	else  res.render('index', { title: 'ARGEL' });
+// });
 
 router.get('/ads', isAuthenticated,function(req, res, next) {
 
