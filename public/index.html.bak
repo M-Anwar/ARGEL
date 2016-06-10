@@ -68,7 +68,7 @@ function resizeText() {
   <div class="container">
     <div class="header_section">
     
-    <div class="logo"><a href="javascript:void(0)"><img src="img/name.png" width=145 height=45 alt=""></a>
+    <div class="logo"><a href="javascript:void(0)"><img src="img/name.png" width=102 height=32 alt=""></a>
     <a class="res-nav_click animated wobble wow"  href="javascript:void(0)"><i class="fa-bars"></i></a></div>
 
       <nav class="nav" id="nav">
@@ -81,7 +81,7 @@ function resizeText() {
           <li><a href="#team">Team</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
-        <ul class="norm_nav">
+        <ul class="norm">
           <li><a href="#top_content">Home</a></li>
           <li><a href="#service">Services</a></li>
           <li><a href="#work_outer">Work</a></li>

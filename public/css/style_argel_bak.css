@@ -120,7 +120,7 @@ p{
 
 #header_outer{
 	background:#ffffff;
-	padding:5px 0px;
+	padding:30px 0px;
 	border-bottom: 1px solid #D7D7D7
 	}
 
@@ -150,7 +150,6 @@ p{
 .nav ul{
 	list-style:none;
 	padding:0px;
-	
 	}
 .nav ul.toggle{
 	display:none;
@@ -159,11 +158,6 @@ p{
 	overflow:hidden;
 	margin-bottom: 0;
 	}
-.nav ul.norm_nav{
-	line-height: 45px;
-	vertical-align: middle;
-	margin-bottom: 0px;
-}
 	
 .nav ul li{
 	display:inline-block;

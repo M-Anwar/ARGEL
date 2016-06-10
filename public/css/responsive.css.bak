@@ -87,7 +87,7 @@
 	.we-create li{ font-size:13px; padding:0 0 0 8px}
 	.header h1{ font-size:28px;}
 	.header{ padding:60px 0;}
-	#header_outer{padding:5px 0px;	}
+	#header_outer{padding:10px 0px;	}
 	.main-section{ padding:60px 0 70px;}
 	.main-nav{ display:none; position:absolute; left:0; width:100%; top:74px; margin:0 auto; flote : none; background:#fff;}
 	.main-nav li{ display:block;}
@@ -112,7 +112,7 @@
 	.main-section.contact{ padding:60px 0 70px}
 	.client-part-haead{ font-size:20px; line-height:30px;}
 	.link{ font-size:14px; padding:10px 25px;}
-	.logo{ width:145px;}
+	.logo{ width:100px;}
 	.main-section.contact{ background-size:contain;}
 	.Portfolio-nav li a{ padding:5px 16px;}
 	.Portfolio-nav li{ display:block;}
@@ -124,13 +124,13 @@
 	
 	.portfolioContainer { max-width:350px; margin:0px auto;}
 	.logo{ margin:0px auto 0px; }
-	.nav{ float:none; position:absolute; width:100%; top: 55px;}
+	.nav{ float:none; position:absolute; width:100%; top: 50px;}
 	
 	toggle.ul{ background:#fff; width:100%;}
 	.nav ul li{ border-bottom:1px solid #CCC; display:block; float:none; width:100%; margin:0px; text-align:center;}
 	.nav ul li a{ padding:6px 0px}
 	.res-nav_click{ 
-		bottom: -52px;
+		bottom: -42px;
 		display: block;
 		font-size: 25px;
 		left: 95%;
