@@ -8,6 +8,8 @@ var flash = require('connect-flash');
 
 var routes = require('./routes/index');
 var api = require('./routes/api');
+var routes_new = require('./routes/index_new');
+
 var users = require('./routes/users');
 var Account = require('./models/account');
 // var User = require('./models/account');
@@ -42,9 +44,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
 app.enable('trust proxy');
 
-
+app.use('/', routes_new);
 app.use('/', routes);
 app.use('/api', api);
+
 
 passport.use(new LocalStrategy(Account.authenticate()));
 passport.serializeUser(Account.serializeUser());
