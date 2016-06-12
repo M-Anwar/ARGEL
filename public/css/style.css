@@ -207,10 +207,13 @@ p{
 .top_cont_outer{
 	background:#f9f9f9;
 	position:relative;
+	/*background:url(../img/white_pad.gif) no-repeat right bottom;*/
+	/*background-size: 100% 100%;*/
 	}
 	
 .top_cont_inner{
-	background:url(../img/white_pad.png) no-repeat right bottom;
+	background:url(../img/white_pad.gif) no-repeat right bottom;
+	background-size: 853px 480px;
 	}
 	
 .top_content{
@@ -284,7 +287,6 @@ a.learn_more2:hover{
 	background:#222222;
 	}
 
-	
 
 
 
@@ -705,13 +707,14 @@ img {
 /* Team
 ---------------------------------*/
 .team-leader-block{
-	max-width:993px;
+	/*max-width:993px;*/
 	margin:0 auto;
+	
 }
 .team-leader-box{
-	width:30.66%;
-	margin-right: 3.82979%;
-	height: 490px;
+	width:22%;
+	margin-right: 4%;/*3.82979%;*/
+	/*height: 400px;*/
 	overflow: hidden;
 	text-align: center;
 	float: left;
@@ -720,7 +723,7 @@ img {
 	margin-bottom:24px;
 	display:block;
 }
-.team-leader-box:nth-of-type(3n+0){ margin:0;}
+.team-leader-box:nth-of-type(4n+0){ margin:0;}
 .team-leader{
 	width:auto;
 	height:auto;
@@ -803,7 +806,7 @@ img {
 	color:#dd4b39;
 }
 .team-leader ul li a.fa-linkedin:hover{
-	color:#3b5998;
+	color:#1C87BD;
 }
 /* Twitter Feed
 ---------------------------------*/
